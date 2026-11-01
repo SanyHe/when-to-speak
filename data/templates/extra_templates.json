@@ -1,0 +1,258 @@
+{
+  "_comment": "Additional templates for the M2 synthetic pipeline. Merged with seed_templates.json by training/src/build_dataset.py. The gold label is always produced by the rule expert (F1.3); expected_action is a design hint only. Pools are kept at 4 entries so the (sender, subject, snippet) key space is large enough to split SFT / DPO / Eval without near-duplicates crossing splits.",
+  "templates": [
+    {
+      "template_id": "tpl_email_customer_question",
+      "source": "email",
+      "expected_action": "notify",
+      "sender_pool": ["customer-a@client.com", "customer-b@client.com", "customer-c@client.com", "customer-d@client.com"],
+      "subject_pool": ["客户咨询订单问题，需要你确认", "需要你回复客户的方案确认", "客户在等你确认交付时间", "客户升级问题需要你介入"],
+      "snippet_pool": ["客户在等回复，希望今天内给出确认。", "客户对方案有疑问，需要你拍板。", "客户反馈交付延期，请确认新的排期。", "客户的问题升级到你这层，需要你回复。"],
+      "mentions_user": true,
+      "is_direct": true,
+      "time_sensitive": false
+    },
+    {
+      "template_id": "tpl_email_boss_fyi",
+      "source": "email",
+      "expected_action": "digest",
+      "sender_pool": ["boss@company.com", "vp@company.com", "pm-lead@company.com", "team-lead@company.com"],
+      "subject_pool": ["同步一下本周进展", "FYI：组织架构调整通知", "季度目标更新说明", "例会纪要请查收"],
+      "snippet_pool": ["本周进展已同步，无需回复。", "架构调整下周生效，细节见附件。", "季度目标有微调，供你参考。", "例会纪要已整理，有空看一下。"],
+      "mentions_user": false,
+      "is_direct": true,
+      "time_sensitive": false
+    },
+    {
+      "template_id": "tpl_email_invoice_reminder",
+      "source": "email",
+      "expected_action": "digest",
+      "sender_pool": ["finance@company.com", "billing@vendor.com", "ap@company.com", "invoice@vendor.com"],
+      "subject_pool": ["本月账单待确认", "发票开具提醒", "付款流程待审批", "费用报销单待处理"],
+      "snippet_pool": ["账单已生成，请在月底前确认。", "发票已开具，请查收附件。", "付款流程停留在你这一环。", "报销单等待你的审批。"],
+      "mentions_user": false,
+      "is_direct": true,
+      "time_sensitive": false
+    },
+    {
+      "template_id": "tpl_email_hr_policy",
+      "source": "email",
+      "expected_action": "digest",
+      "sender_pool": ["hr@company.com", "people@company.com", "admin@company.com", "culture@company.com"],
+      "subject_pool": ["差旅政策更新说明", "年度体检安排通知", "培训课程报名开放", "办公区搬迁通知"],
+      "snippet_pool": ["新的差旅政策下月生效。", "体检预约通道已开放。", "内训课程可自由报名。", "下月办公区将调整。"],
+      "mentions_user": false,
+      "is_direct": false,
+      "time_sensitive": false
+    },
+    {
+      "template_id": "tpl_email_phishing_alert",
+      "source": "email",
+      "expected_action": "digest",
+      "sender_pool": ["security@company.com", "it@company.com", "soc@company.com", "helpdesk@company.com"],
+      "subject_pool": ["钓鱼邮件预警", "异常附件下载提醒", "账号异地登录风险提示", "安全周报"],
+      "snippet_pool": ["近期出现仿冒登录页，请注意识别。", "有员工下载了可疑附件，请留意。", "如非本人操作请及时改密。", "本周拦截可疑邮件 32 封。"],
+      "mentions_user": false,
+      "is_direct": false,
+      "time_sensitive": false
+    },
+    {
+      "template_id": "tpl_email_meeting_invite",
+      "source": "email",
+      "expected_action": "digest",
+      "sender_pool": ["calendar@company.com", "assistant@company.com", "pm@company.com", "ops@company.com"],
+      "subject_pool": ["评审会邀请", "周会改期通知", "客户沟通会安排", "复盘会材料准备"],
+      "snippet_pool": ["明天 10:00 评审会，请确认参加。", "周会调整到周四下午。", "客户沟通会定在下周二。", "复盘会前请准备材料。"],
+      "mentions_user": false,
+      "is_direct": true,
+      "time_sensitive": false
+    },
+    {
+      "template_id": "tpl_email_newsletter_promo",
+      "source": "email",
+      "expected_action": "silence",
+      "sender_pool": ["newsletter@saas.com", "promo@store.com", "marketing@cloud.com", "deals@shop.com"],
+      "subject_pool": ["限时优惠：全场 6 折", "会员专享折扣来了", "免费试用延长 30 天", "618 促销提前开启"],
+      "snippet_pool": ["优惠券数量有限，先到先得。", "升级套餐立享折扣，仅限本周。", "免费试用名额开放，立即领取。", "促销活动今晚结束，勿错过。"],
+      "mentions_user": false,
+      "is_direct": false,
+      "time_sensitive": false
+    },
+    {
+      "template_id": "tpl_im_dm_question",
+      "source": "im",
+      "expected_action": "notify",
+      "sender_pool": ["alice", "bob", "carol", "dave"],
+      "subject_pool": ["有个问题想请教你", "麻烦确认一下这个口径", "这份文档你能看一下吗", "需要你决定一下"],
+      "snippet_pool": ["这个需求的口径想跟你确认。", "文档里的结论需要你确认。", "两个方案你更倾向哪个？", "这块只有你熟悉，麻烦看一下。"],
+      "mentions_user": true,
+      "is_direct": true,
+      "time_sensitive": false
+    },
+    {
+      "template_id": "tpl_im_group_mention",
+      "source": "im",
+      "expected_action": "notify",
+      "sender_pool": ["project-alpha", "release-team", "customer-success", "oncall-room"],
+      "subject_pool": ["@你 看一下这个讨论", "群里 @你 需要确认", "同步一个需要你拍板的点", "麻烦你回复一下群里"],
+      "snippet_pool": ["@你 刚才的结论需要你确认。", "这个问题在群里等你回复。", "需要你拍板后我们继续推进。", "客户在群里等你答复。"],
+      "mentions_user": true,
+      "is_direct": true,
+      "time_sensitive": false
+    },
+    {
+      "template_id": "tpl_im_group_alert",
+      "source": "im",
+      "expected_action": "digest",
+      "sender_pool": ["ops-room", "incident-channel", "monitor-room", "sre-room"],
+      "subject_pool": ["群里在讨论延迟上升", "告警在群里刷屏", "服务错误率波动", "有人反馈页面变慢"],
+      "snippet_pool": ["多个同学反馈接口响应变慢。", "监控机器人连续发出告警。", "错误率从 0.2% 升到 1.1%。", "页面加载时间明显变长。"],
+      "mentions_user": false,
+      "is_direct": false,
+      "time_sensitive": true
+    },
+    {
+      "template_id": "tpl_im_group_promo",
+      "source": "im",
+      "expected_action": "silence",
+      "sender_pool": ["deal-channel", "福利群", "拼单群", "团购群"],
+      "subject_pool": ["限时折扣拼单", "优惠券快来领", "团购促销开团", "免费试用名额"],
+      "snippet_pool": ["折扣名额只剩最后几个。", "优惠券今晚过期，速领。", "促销团购价很划算。", "免费试用限时开放。"],
+      "mentions_user": false,
+      "is_direct": false,
+      "time_sensitive": false
+    },
+    {
+      "template_id": "tpl_im_vendor_pitch",
+      "source": "im",
+      "expected_action": "silence",
+      "sender_pool": ["sales-a@vendor", "sales-b@vendor", "bd-a@vendor", "bd-b@vendor"],
+      "subject_pool": ["想和你聊聊合作", "我们的产品可以免费试用", "限时优惠只给你们团队", "方便约个时间介绍吗"],
+      "snippet_pool": ["我们的方案可以打 7 折，限时优惠。", "免费试用 14 天，随时开通。", "促销期签约有额外折扣。", "要不要安排一次产品介绍？"],
+      "mentions_user": false,
+      "is_direct": false,
+      "time_sensitive": false
+    },
+    {
+      "template_id": "tpl_task_ci_failure_undirected",
+      "source": "task",
+      "expected_action": "silence",
+      "sender_pool": ["ci@company.com", "github-actions@noreply.com", "pipeline@company.com", "build-bot@company.com"],
+      "subject_pool": ["CI 构建失败", "流水线执行失败", "夜间构建报警", "依赖安装失败"],
+      "snippet_pool": ["main 分支构建失败，日志已归档。", "pipeline #221 执行失败。", "夜间构建出现 3 个失败用例。", "依赖解析失败，已保留现场。"],
+      "mentions_user": false,
+      "is_direct": false,
+      "time_sensitive": false
+    },
+    {
+      "template_id": "tpl_task_job_done_mention",
+      "source": "task",
+      "expected_action": "notify",
+      "sender_pool": ["job-runner@company.com", "batch@company.com", "etl@company.com", "worker@company.com"],
+      "subject_pool": ["你提交的任务已完成", "批处理结果需要你确认", "数据导出已就绪", "模型训练任务完成"],
+      "snippet_pool": ["任务已完成，结果需要你确认。", "批处理产物已生成，请查看。", "导出文件已就绪，等你下载。", "训练已完成，指标等待你验收。"],
+      "mentions_user": true,
+      "is_direct": true,
+      "time_sensitive": false
+    },
+    {
+      "template_id": "tpl_task_quota_warning",
+      "source": "task",
+      "expected_action": "digest",
+      "sender_pool": ["quota@company.com", "storage@company.com", "cost@company.com", "monitor@company.com"],
+      "subject_pool": ["存储配额接近上限", "本月算力预算告警", "API 调用量异常增长", "队列积压提醒"],
+      "snippet_pool": ["对象存储已使用 92%，本周可能触顶。", "算力预算已使用 85%。", "API 调用量较昨日增长 3 倍。", "任务队列积压超过 500 条。"],
+      "mentions_user": false,
+      "is_direct": false,
+      "time_sensitive": true
+    },
+    {
+      "template_id": "tpl_task_deploy_success",
+      "source": "task",
+      "expected_action": "silence",
+      "sender_pool": ["deploy-bot@company.com", "cd@company.com", "release-bot@company.com", "ops-bot@company.com"],
+      "subject_pool": ["部署成功", "灰度发布完成", "回滚执行完成", "镜像已推送"],
+      "snippet_pool": ["v1.4.2 已部署到生产环境。", "灰度批次 10% 发布完成。", "回滚到上一个稳定版本完成。", "新镜像已推送到仓库。"],
+      "mentions_user": false,
+      "is_direct": false,
+      "time_sensitive": false
+    },
+    {
+      "template_id": "tpl_routine_cert_expiry",
+      "source": "routine",
+      "expected_action": "digest",
+      "sender_pool": ["cert-monitor@company.com", "domain@company.com", "pki@company.com", "ops@company.com"],
+      "subject_pool": ["证书 7 天后过期", "域名证书即将到期", "内部 CA 证书轮换提醒", "过期证书清单"],
+      "snippet_pool": ["主域名证书 7 天后过期，请安排续期。", "有 3 张证书将在两周内到期。", "CA 证书需要在本月完成轮换。", "本周检测到 2 张证书已过期。"],
+      "mentions_user": false,
+      "is_direct": false,
+      "time_sensitive": true
+    },
+    {
+      "template_id": "tpl_routine_backup_failure",
+      "source": "routine",
+      "expected_action": "notify",
+      "sender_pool": ["backup-svc@company.com", "scheduler@company.com", "dba@company.com", "storage@company.com"],
+      "subject_pool": ["备份任务失败，需要你处理", "夜间备份异常，请确认", "数据同步失败，需要介入", "归档任务连续失败"],
+      "snippet_pool": ["昨晚备份失败，需要你确认重跑方案。", "同步任务连续两次失败。", "归档失败可能影响审计，请处理。", "备份窗口已错过，需要你决定。"],
+      "mentions_user": true,
+      "is_direct": true,
+      "time_sensitive": true
+    },
+    {
+      "template_id": "tpl_routine_promo_trial",
+      "source": "routine",
+      "expected_action": "silence",
+      "sender_pool": ["trial@vendor.com", "growth@vendor.com", "campaign@vendor.com", "promo@vendor.com"],
+      "subject_pool": ["免费试用即将结束", "限时升级优惠", "专属折扣已发放", "促销活动最后一天"],
+      "snippet_pool": ["免费试用还剩 3 天，续费享折扣。", "升级套餐限时 8 折。", "你的专属优惠券已到账。", "促销今晚 24 点结束。"],
+      "mentions_user": false,
+      "is_direct": false,
+      "time_sensitive": false
+    },
+    {
+      "template_id": "tpl_system_security_block",
+      "source": "system",
+      "expected_action": "notify",
+      "sender_pool": ["waf@company.com", "security@company.com", "soc@company.com", "gateway@company.com"],
+      "subject_pool": ["检测到高危攻击，需要你确认", "安全策略拦截异常流量", "生产密钥疑似泄露", "异常提权行为告警"],
+      "snippet_pool": ["WAF 拦截到针对你的定向攻击。", "生产密钥可能已泄露，请立即轮换。", "检测到异常提权操作，请确认。", "网关拦截了大量异常请求。"],
+      "mentions_user": true,
+      "is_direct": true,
+      "time_sensitive": true
+    },
+    {
+      "template_id": "tpl_system_approval_request",
+      "source": "system",
+      "expected_action": "digest",
+      "sender_pool": ["approval@company.com", "workflow@company.com", "it@company.com", "admin@company.com"],
+      "subject_pool": ["有一条审批待你处理", "权限申请等待审批", "发布审批单待确认", "采购申请待审批"],
+      "snippet_pool": ["有一条权限申请等待你审批。", "发布审批单已提交，等待处理。", "采购申请需要你的确认。", "审批流停留在你这一环。"],
+      "mentions_user": false,
+      "is_direct": true,
+      "time_sensitive": false
+    },
+    {
+      "template_id": "tpl_system_disk_warning",
+      "source": "system",
+      "expected_action": "digest",
+      "sender_pool": ["alertmanager@company.com", "ops@company.com", "infra@company.com", "monitor@company.com"],
+      "subject_pool": ["磁盘空间不足告警", "内存使用率持续偏高", "节点负载超过阈值", "数据库连接数接近上限"],
+      "snippet_pool": ["prod-node-2 磁盘使用率 93%。", "内存使用率连续 10 分钟超过 90%。", "节点负载达到 85%，请关注。", "连接数已用到 90%，可能影响新请求。"],
+      "mentions_user": false,
+      "is_direct": false,
+      "time_sensitive": true
+    },
+    {
+      "template_id": "tpl_system_maintenance_notice",
+      "source": "system",
+      "expected_action": "digest",
+      "sender_pool": ["maintenance@company.com", "ops@company.com", "platform@company.com", "infra@company.com"],
+      "subject_pool": ["计划维护窗口通知", "机房网络调整说明", "版本升级公告", "依赖服务下线通知"],
+      "snippet_pool": ["周六凌晨将进行网络调整，可能有短暂抖动。", "下周三计划升级平台版本。", "旧版依赖服务将在月底下线。", "维护窗口为 2 小时，请知悉。"],
+      "mentions_user": false,
+      "is_direct": false,
+      "time_sensitive": false
+    }
+  ]
+}

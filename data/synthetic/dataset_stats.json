@@ -1,0 +1,49 @@
+{
+  "seed": 42,
+  "templates": 38,
+  "combos_available": 1750,
+  "sizes": {
+    "sft": 800,
+    "grpo_prompts": 300,
+    "eval": 200
+  },
+  "action_dist": {
+    "sft": {
+      "silence": 276,
+      "notify": 165,
+      "digest": 359
+    },
+    "grpo": {
+      "digest": 131,
+      "silence": 108,
+      "notify": 61
+    },
+    "eval": {
+      "digest": 88,
+      "silence": 74,
+      "notify": 38
+    }
+  },
+  "source_dist": {
+    "eval": {
+      "im": 54,
+      "email": 70,
+      "routine": 21,
+      "task": 29,
+      "system": 26
+    }
+  },
+  "intentional_duplicates": {
+    "sft": 80,
+    "grpo": 30,
+    "eval": 20
+  },
+  "boundary": {
+    "sft": 320,
+    "grpo": 122,
+    "eval": 81
+  },
+  "reviewed_overrides": 0,
+  "boundary_exported": 60,
+  "near_duplicate_cross_split": 0
+}

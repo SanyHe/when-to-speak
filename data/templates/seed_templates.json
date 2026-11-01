@@ -1,0 +1,170 @@
+{
+  "_comment": "Seed event templates for the When-to-Speak demo. Each template is a partial event; gen_events.py fills event_id, received_at and randomizes context. expected_action is a design hint only — the real gold label is produced by the rule expert (F1.3).",
+  "templates": [
+    {
+      "template_id": "tpl_email_p0_alert",
+      "source": "email",
+      "expected_action": "notify",
+      "sender_pool": ["boss@company.com", "cto@company.com", "sre-oncall@company.com"],
+      "subject_pool": ["线上故障需要你确认", "P0 告警 - 订单服务不可用", "生产环境宕机，请立即处理"],
+      "snippet_pool": ["生产环境 P0 告警，需要你 10 分钟内确认处理方案。", "订单服务 5xx 错误率超过 50%，请立即介入。", "主数据库连接池打满，影响所有写请求。"],
+      "mentions_user": true,
+      "is_direct": true,
+      "time_sensitive": true
+    },
+    {
+      "template_id": "tpl_email_weekly_report",
+      "source": "email",
+      "expected_action": "digest",
+      "sender_pool": ["weekly@company.com", "report-bot@company.com"],
+      "subject_pool": ["本周团队周报", "Q4 第 4 周运营数据", "研发效能周报"],
+      "snippet_pool": ["本周团队完成 12 个需求，3 个待评审。", "运营数据环比增长 8%，详情见附件。", "代码合并请求数较上周持平。"],
+      "mentions_user": false,
+      "is_direct": false,
+      "time_sensitive": false
+    },
+    {
+      "template_id": "tpl_email_marketing",
+      "source": "email",
+      "expected_action": "silence",
+      "sender_pool": ["newsletter@shop.com", "promo@cloud.com", "no-reply@marketing.io"],
+      "subject_pool": ["【限时】全场 5 折", "新功能上线，免费试用 30 天", "您有一张优惠券即将过期"],
+      "snippet_pool": ["点击链接立即抢购，数量有限。", "升级到专业版立享 8 折。", "有效期至本月底，不要错过。"],
+      "mentions_user": false,
+      "is_direct": false,
+      "time_sensitive": false
+    },
+    {
+      "template_id": "tpl_im_urgent_mention",
+      "source": "im",
+      "expected_action": "notify",
+      "sender_pool": ["alice", "bob", "carol"],
+      "subject_pool": ["紧急问题需要你确认", "@你 线上有个 bug", "在吗？客户在等回复"],
+      "snippet_pool": ["@你 刚才部署的版本有问题，麻烦看一下。", "客户反馈支付失败，需要你马上确认。", "这个线上 issue 只有你能处理，在吗？"],
+      "mentions_user": true,
+      "is_direct": true,
+      "time_sensitive": true
+    },
+    {
+      "template_id": "tpl_im_group_discussion",
+      "source": "im",
+      "expected_action": "digest",
+      "sender_pool": ["team-channel", "project-alpha", "design-review"],
+      "subject_pool": ["关于下季度 OKR 的讨论", "设计稿评审意见汇总", "技术方案选型投票"],
+      "snippet_pool": ["大家对下季度 OKR 有什么想法？", "设计稿评审意见已整理，请看一下。", "方案 A 和 B 各有优劣，欢迎投票。"],
+      "mentions_user": false,
+      "is_direct": false,
+      "time_sensitive": false
+    },
+    {
+      "template_id": "tpl_im_bot_status",
+      "source": "im",
+      "expected_action": "silence",
+      "sender_pool": ["deploy-bot", "ci-bot", "weather-bot"],
+      "subject_pool": ["部署已完成", "CI 构建成功", "今日天气提醒"],
+      "snippet_pool": ["main 分支已部署到 staging。", "构建 #1234 成功，耗时 3 分钟。", "今日晴，气温 22°C。"],
+      "mentions_user": false,
+      "is_direct": false,
+      "time_sensitive": false
+    },
+    {
+      "template_id": "tpl_task_ci_failure",
+      "source": "task",
+      "expected_action": "notify",
+      "sender_pool": ["ci@company.com", "github-actions@noreply.com"],
+      "subject_pool": ["【失败】CI 构建 - main", "构建 #987 失败", "测试用例未通过"],
+      "snippet_pool": ["main 分支 CI 构建失败，有 5 个测试未通过。", "构建 #987 在单元测试阶段失败，请查看日志。", "合并请求的测试未通过，请修复。"],
+      "mentions_user": true,
+      "is_direct": true,
+      "time_sensitive": true
+    },
+    {
+      "template_id": "tpl_task_backup_done",
+      "source": "task",
+      "expected_action": "digest",
+      "sender_pool": ["backup-svc@company.com", "scheduler@company.com"],
+      "subject_pool": ["每日备份已完成", "定时任务执行成功", "数据同步完成"],
+      "snippet_pool": ["数据库每日备份已完成，大小 12GB。", "定时清理任务执行成功，释放 3GB 空间。", "跨区域数据同步完成，无差异。"],
+      "mentions_user": false,
+      "is_direct": false,
+      "time_sensitive": false
+    },
+    {
+      "template_id": "tpl_task_cleanup",
+      "source": "task",
+      "expected_action": "silence",
+      "sender_pool": ["maintenance-bot@company.com"],
+      "subject_pool": ["日志轮转完成", "临时文件已清理", "缓存刷新成功"],
+      "snippet_pool": ["旧日志已归档，保留最近 30 天。", "临时文件清理完成。", "CDN 缓存已刷新。"],
+      "mentions_user": false,
+      "is_direct": false,
+      "time_sensitive": false
+    },
+    {
+      "template_id": "tpl_routine_security_scan",
+      "source": "routine",
+      "expected_action": "notify",
+      "sender_pool": ["security@company.com", "scanner@company.com"],
+      "subject_pool": ["安全扫描发现高危漏洞", "异常登录检测告警", "证书即将过期"],
+      "snippet_pool": ["扫描发现 2 个高危漏洞，请尽快修复。", "检测到来自异常 IP 的登录尝试。", "主域名 SSL 证书 3 天后过期。"],
+      "mentions_user": true,
+      "is_direct": true,
+      "time_sensitive": true
+    },
+    {
+      "template_id": "tpl_routine_health_check",
+      "source": "routine",
+      "expected_action": "digest",
+      "sender_pool": ["monitor@company.com", "health-bot@company.com"],
+      "subject_pool": ["每日系统健康检查报告", "资源使用率周报", "服务可用性月报"],
+      "snippet_pool": ["所有服务运行正常，可用性 99.98%。", "本周 CPU 平均使用率 35%，内存 60%。", "本月无重大故障，SLA 达标。"],
+      "mentions_user": false,
+      "is_direct": false,
+      "time_sensitive": false
+    },
+    {
+      "template_id": "tpl_routine_log_rotation",
+      "source": "routine",
+      "expected_action": "silence",
+      "sender_pool": ["log-svc@company.com"],
+      "subject_pool": ["日志轮转完成", "归档任务执行成功"],
+      "snippet_pool": ["日志轮转已完成，无异常。", "归档任务执行成功。"],
+      "mentions_user": false,
+      "is_direct": false,
+      "time_sensitive": false
+    },
+    {
+      "template_id": "tpl_system_server_down",
+      "source": "system",
+      "expected_action": "notify",
+      "sender_pool": ["ops@company.com", "alertmanager@company.com"],
+      "subject_pool": ["【严重】服务器宕机", "磁盘空间不足告警", "网络连接中断"],
+      "snippet_pool": ["prod-node-3 宕机，已自动切换到备机。", "磁盘使用率 95%，请尽快清理。", "主网络链路中断，切换到备用链路。"],
+      "mentions_user": true,
+      "is_direct": true,
+      "time_sensitive": true
+    },
+    {
+      "template_id": "tpl_system_password_expiry",
+      "source": "system",
+      "expected_action": "digest",
+      "sender_pool": ["it@company.com", "identity@company.com"],
+      "subject_pool": ["密码即将过期", "权限变更通知", "账号安全提醒"],
+      "snippet_pool": ["您的密码将在 7 天后过期，请及时修改。", "您的访问权限已更新。", "建议开启两步验证以提升账号安全。"],
+      "mentions_user": false,
+      "is_direct": true,
+      "time_sensitive": false
+    },
+    {
+      "template_id": "tpl_system_new_device_login",
+      "source": "system",
+      "expected_action": "silence",
+      "sender_pool": ["security-noreply@company.com"],
+      "subject_pool": ["新设备登录通知", "登录地点变更提醒"],
+      "snippet_pool": ["检测到新设备登录，如非本人操作请修改密码。", "登录地点与往常不同，请注意账号安全。"],
+      "mentions_user": false,
+      "is_direct": true,
+      "time_sensitive": false
+    }
+  ]
+}

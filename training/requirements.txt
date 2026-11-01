@@ -1,0 +1,15 @@
+# Training dependencies for the When-to-Speak demo.
+# Install on a CUDA-enabled host (e.g. AutoDL single GPU).
+# These packages are NOT required for the data/schema/eval/reward tooling
+# in this repo (which only needs jsonschema + pytest).
+#
+# Pipeline: full-parameter SFT (training/src/full_sft.py)
+#           -> GRPO RL (training/src/grpo.py, TRL GRPOTrainer)
+# No LoRA / no 4-bit quantisation / no Unsloth.
+
+torch>=2.1
+transformers>=4.51
+datasets>=2.18
+trl>=0.19
+accelerate>=0.29
+numpy

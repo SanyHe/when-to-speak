@@ -1,0 +1,30 @@
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.pytest_cache/
+
+# Training outputs (not committed; weights go to GitHub Release / HF)
+output/
+*.safetensors
+*.bin
+*.pt
+*.pth
+checkpoints/
+
+# Private data (real exports, redaction) — never commit
+private/
+
+# Packaging artifacts (not committed)
+standalone_train.zip
+.trae-html-share-packages/
+.screenshots/
+
+# IDE / OS
+.vscode/
+.idea/
+.DS_Store
+
+# Env
+.env
+*.log

@@ -1,0 +1,50 @@
+# harness.yaml — Centralized guardrails for the When-to-Speak repo.
+# This is the single structured source for operating boundaries and role
+# config. AGENTS.md references the rules here; keep both in sync.
+
+project:
+  name: when-to-speak
+  description: "Post-training (full SFT + GRPO) demo: teach a small model when to speak vs stay silent in an always-on agent event stream."
+  milestones: [M1, M2, M3]
+  strict_order: true  # M1 must pass before M2, etc.
+
+guardrails:
+  # Agents may not declare a feature passing without recorded evidence.
+  evidence_required_for_passing: true
+  # Only one feature may be in_progress at any time.
+  single_in_progress: true
+  # No secrets, no real private data in the public repo.
+  no_secrets_in_repo: true
+  synthetic_data_only: true
+  # Training does not run locally; it runs on a domestic cloud GPU.
+  training_on_cloud_only: true
+  training_cloud_provider: "AutoDL (国内)"
+  # All source comments in English.
+  comments_language: en
+
+verification:
+  standard_command: "python3 -m pytest training/tests/ -v"
+  must_pass_before_feature_done: true
+
+paths:
+  agents_md: AGENTS.md
+  # Harness state files live in private/ (gitignored, never published).
+  feature_list: private/feature_list.json
+  progress: private/claude-progress.md
+  plan: private/PLAN.md
+  cloud_runbook: docs/cloud-training.md
+  schema: training/src/schema.py
+  expert: training/src/expert_rules.py
+  sft_train: training/src/full_sft.py
+  grpo_train: training/src/grpo.py
+  grpo_rewards: training/src/rewards.py
+
+roles:
+  planner:
+    description: "Reads private/PLAN.md + private/feature_list.json, selects the next feature, writes a brief plan before coding."
+  developer:
+    description: "Implements one feature at a time; runs tests; records evidence."
+  reviewer:
+    description: "Checks evidence is real and reproducible; rejects features marked passing without proof."
+
+status_enum: [not_started, in_progress, blocked, passing]

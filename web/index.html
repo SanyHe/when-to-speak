@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>When to Speak — 何时该说话</title>
+  <meta name="description" content="一个后训练 demo：让小模型学会在 always-on agent 的事件流中判断何时通知、何时静默。">
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <div class="app">
+    <header class="topbar">
+      <div class="brand">
+        <span class="brand-mark"></span>
+        <span class="brand-name">When to Speak</span>
+        <span class="brand-sub" data-i18n="brand.sub">post-training demo · 何时该说话</span>
+      </div>
+      <div class="badges">
+        <span class="badge badge-mock" id="modeBadge" data-i18n="badge.mock" data-i18n-title="badge.mockTitle">MOCK TRACES</span>
+        <span class="badge" id="gpuBadge">WebGPU 检测中…</span>
+        <button class="lang-btn" id="langBtn" type="button" data-i18n-title="lang.switch" aria-label="切换到英文">
+          <span data-i18n="lang.button">EN</span>
+        </button>
+      </div>
+    </header>
+
+    <section class="hero">
+      <div class="hero-copy">
+        <h1 data-i18n="hero.title">什么时候该打断用户？</h1>
+        <p data-i18n-html="hero.body">
+          把邮件、IM 提及、任务完成、定时检查这些事件流喂给小模型，让它输出严格 JSON 决策：
+          立即通知 <code>notify</code>、进入汇总 <code>digest</code>、或保持静默 <code>silence</code>。
+          切换模型，逐条回放，直观看到后训练如何降低噪音而不增加漏报。
+        </p>
+      </div>
+      <div class="model-switch" id="modelSwitch" role="tablist" aria-label="模型切换"></div>
+    </section>
+
+    <div class="banner hidden" id="banner"></div>
+
+    <main class="grid">
+      <section class="panel stream-panel">
+        <div class="panel-head">
+          <div>
+            <h2 data-i18n="stream.title">事件流</h2>
+            <p class="muted" id="streamSub">Eval 集 · 200 条留出事件</p>
+          </div>
+          <span class="counter" id="counter">0 / 200</span>
+        </div>
+
+        <div class="controls">
+          <button class="btn btn-primary" id="stepBtn" data-i18n="controls.step">单步</button>
+          <button class="btn" id="autoBtn" data-i18n="controls.auto">自动播放</button>
+          <button class="btn btn-ghost" id="resetBtn" data-i18n="controls.reset">重置</button>
+        </div>
+
+        <div class="progress"><div class="progress-fill" id="progressFill"></div></div>
+        <div class="stream" id="stream"></div>
+      </section>
+
+      <section class="right-column">
+        <div class="panel decision-panel">
+          <div class="panel-head">
+            <div>
+              <h2 data-i18n="decision.title">当前决策</h2>
+              <p class="muted" id="decisionSub">点击「单步」开始回放</p>
+            </div>
+            <span class="verdict hidden" id="verdict"></span>
+          </div>
+          <div id="eventDetail" class="event-detail empty">
+            <p class="empty-text">事件尚未开始。按「单步」或「自动播放」，模型会为每条事件给出一个 JSON 决策。</p>
+          </div>
+          <div class="decision-grid hidden" id="decisionGrid">
+            <div class="decision-card gold">
+              <div class="card-label" data-i18n="decision.goldLabel">GOLD · 规则专家</div>
+              <div class="decision-body" id="goldBody"></div>
+            </div>
+            <div class="decision-card model">
+              <div class="card-label" id="modelCardLabel">MODEL</div>
+              <div class="decision-body" id="modelBody"></div>
+            </div>
+          </div>
+          <div class="raw-block hidden" id="rawBlock">
+            <div class="card-label" data-i18n="decision.rawLabel">RAW MODEL OUTPUT</div>
+            <pre id="rawOutput"></pre>
+          </div>
+        </div>
+
+        <div class="panel metrics-panel">
+          <div class="panel-head">
+            <div>
+              <h2 data-i18n="metrics.title">实时指标</h2>
+              <p class="muted" id="metricsSub">对照 gold label · 随回放累计</p>
+            </div>
+          </div>
+          <div class="metric-grid" id="metricGrid"></div>
+          <div class="confusion">
+            <div class="card-label" data-i18n="metrics.confusion">混淆矩阵</div>
+            <table id="confusionTable"></table>
+          </div>
+        </div>
+
+        <div class="panel compare-panel">
+          <div class="panel-head">
+            <div>
+              <h2 data-i18n="compare.title">三模型终局对比</h2>
+              <p class="muted" data-i18n="compare.sub">全量 Eval 集 · mock 值，待云端训练后替换</p>
+            </div>
+          </div>
+          <div class="compare-grid" id="compareGrid"></div>
+        </div>
+      </section>
+    </main>
+
+    <footer>
+      <p data-i18n-html="footer">
+        纯静态 · 零后端 · 零 API Key · 数据不出端。
+        当前决策来自确定性 mock 轨迹（base / SFT / SFT+DPO 行为模型），用于验证完整链路；
+        真实权重在 AutoDL 上训练并经 MLC 编译后接入。
+      </p>
+    </footer>
+  </div>
+
+  <script src="js/metrics.js"></script>
+  <script src="js/i18n.js"></script>
+  <script src="js/model-records.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>
