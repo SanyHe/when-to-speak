@@ -1,5 +1,5 @@
 """
-GRPO reward functions (F2.4).
+GRPO reward functions.
 
 Pure-Python and dependency-free (only the JSON schema helpers), so the
 reward logic can be unit-tested locally while the GRPO run itself needs a

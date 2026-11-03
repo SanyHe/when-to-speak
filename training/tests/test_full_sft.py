@@ -1,5 +1,5 @@
 """
-Unit tests for the full-parameter SFT training helpers (F1.4 / F2.3).
+Unit tests for the full-parameter SFT training helpers.
 
 Only the pure label-masking logic is tested here; the training loop itself
 requires a CUDA GPU and runs on the cloud host.

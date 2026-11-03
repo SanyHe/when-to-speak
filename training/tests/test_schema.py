@@ -1,7 +1,7 @@
 """
 Unit tests for the data contract (event / decision schemas).
 
-Covers the acceptance criteria for F1.1:
+Covers the decision schema contract:
   - a group of valid samples passes validation
   - a group of invalid samples fails with meaningful error paths
   - cross-field business rules (silence <-> channel/message) are enforced

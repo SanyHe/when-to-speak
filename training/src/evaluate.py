@@ -1,7 +1,7 @@
 """
-Evaluation harness for When-to-Speak (F1.5 / F2.5).
+Evaluation harness for When-to-Speak.
 
-Computes the metrics defined in docs/PLAN.md section 7 on a held-out,
+Computes the metrics defined in docs/03-eval.md on a held-out,
 gold-labelled event set and compares models:
 
     precision / recall / macro-F1   (3-class, plus notify-specific)
@@ -28,7 +28,7 @@ Usage (repo root):
         --errors-out data/eval/errors.jsonl \
         --web-out web/data/traces.json
 
-    # F1.5 base vs SFT on the 100 seed events (mock):
+    # Base vs SFT on the 100 seed events (mock):
     python3 training/src/evaluate.py \
         --eval data/synthetic/seed_labeled.jsonl \
         --models base,sft \

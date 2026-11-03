@@ -1,11 +1,11 @@
 """
-Synthetic dataset builder (F2.1 / F2.2).
+Synthetic dataset builder.
 
-Builds the full M2 dataset from templates in one reproducible run:
+Builds the full dataset from templates in one reproducible run:
 
     seed_templates.json  +  extra_templates.json
         -> deterministic event materialization (one event per template combo)
-        -> rule-expert gold labels (F1.3), optional human-review overrides
+        -> rule-expert gold labels, optional human-review overrides
         -> intentional duplicate events (gold = silence)
         -> split into SFT / GRPO / Eval with no near-duplicate leakage
         -> data/synthetic/{sft_full,grpo_prompts,eval_set}.jsonl
@@ -61,7 +61,7 @@ BOUNDARY_EXPORT_LIMIT = 60
 # ---------------------------------------------------------------------------
 
 def load_all_templates() -> List[Dict[str, Any]]:
-    """Merge the M1 seed templates with the M2 extra templates."""
+    """Merge the seed templates with the extra templates."""
     templates = []
     for path in (SEED_TEMPLATES, EXTRA_TEMPLATES):
         with open(path, "r", encoding="utf-8") as f:

@@ -1,5 +1,5 @@
 """
-Synthetic seed event generator (F1.2).
+Synthetic seed event generator.
 
 Reads template specs from ``data/templates/seed_templates.json`` and emits a
 deterministic, reproducible set of events to ``data/synthetic/seed_events.jsonl``.
@@ -59,7 +59,7 @@ def random_timestamp(rng: random.Random, base: datetime, window_days: int) -> st
     """Return an ISO-8601 timestamp with offset within ``window_days`` of ``base``."""
     offset_seconds = rng.randint(0, window_days * 24 * 3600)
     ts = base - timedelta(seconds=offset_seconds)
-    # Use +08:00 timezone to match the PLAN example and keep offsets stable.
+    # Use +08:00 timezone to match the documented example and keep offsets stable.
     return ts.astimezone(timezone(timedelta(hours=8))).strftime("%Y-%m-%dT%H:%M:%S+08:00")
 
 

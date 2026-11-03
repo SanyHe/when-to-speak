@@ -1,5 +1,5 @@
 """
-Full-parameter supervised fine-tuning (F1.4 / F2.3).
+Full-parameter supervised fine-tuning.
 
 Trains **every** parameter of Qwen3-0.6B (no LoRA, no 4-bit quantisation)
 on the SFT split so the model learns to emit a strict JSON decision.

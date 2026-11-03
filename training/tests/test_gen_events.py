@@ -1,5 +1,5 @@
 """
-Acceptance tests for the seed event generator (F1.2).
+Acceptance tests for the seed event generator.
 
 Verifies:
   - one-click rebuild produces exactly the expected count

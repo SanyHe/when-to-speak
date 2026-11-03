@@ -1,5 +1,5 @@
 """
-Acceptance tests for the M2 dataset builder (F2.1 / F2.2).
+Acceptance tests for the dataset builder.
 
 Verifies sizes, gold validity, split isolation, reproducibility, GRPO
 prompt integrity, and the boundary-review write-back path.

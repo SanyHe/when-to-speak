@@ -13,3 +13,4 @@ datasets>=2.18
 trl>=0.19
 accelerate>=0.29
 numpy
+pytest

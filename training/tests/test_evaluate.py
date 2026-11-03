@@ -1,9 +1,9 @@
 """
-Tests for the evaluation harness (F1.5 / F2.5).
+Tests for the evaluation harness.
 
 Covers:
   - metric math on hand-built records
-  - the mock model comparison satisfies the M1/M2 acceptance direction
+  - the mock model comparison satisfies the expected metric direction
     (SFT JSON validity >= 95%; GRPO noise down and miss rate not up)
   - web traces are consistent with the reported metrics
 """

@@ -5,7 +5,7 @@ Defines JSON schemas and validation helpers for:
   - event:    the input event arriving at the always-on agent
   - decision: the structured output decision produced by the model / expert
 
-Schemas follow docs/PLAN.md section 4. All objects are strict JSON:
+Schemas follow docs/02-method.md section 4. All objects are strict JSON:
 fixed keys, UTF-8, no extra fields allowed.
 
 Cross-field business rules are encoded inside the schemas themselves
@@ -20,7 +20,7 @@ import jsonschema
 
 # ---------------------------------------------------------------------------
 # Field enums — single source of truth, reused by the data generator and the
-# rule-based expert (see PLAN 4.3 for the allowed values).
+# rule-based expert (see docs/02-method.md for the allowed values).
 # ---------------------------------------------------------------------------
 
 SOURCES = ("email", "im", "task", "routine", "system")
@@ -96,7 +96,7 @@ DECISION_SCHEMA: dict = {
         "reason": {"type": "string"},
         "message": {"type": "string"},
     },
-    # Cross-field business rules (PLAN 4.3):
+    # Cross-field business rules (see docs/02-method.md):
     #   action == "silence"  => channel == "none" AND message == ""
     #   action != "silence"  => channel != "none" AND message != ""
     "allOf": [

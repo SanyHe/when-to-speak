@@ -1,5 +1,5 @@
 """
-GRPO reinforcement learning (F2.4).
+GRPO reinforcement learning.
 
 Starts from the full-parameter SFT checkpoint and optimises the policy
 with Group Relative Policy Optimization (TRL ``GRPOTrainer``) on the

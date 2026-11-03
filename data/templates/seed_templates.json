@@ -1,5 +1,5 @@
 {
-  "_comment": "Seed event templates for the When-to-Speak demo. Each template is a partial event; gen_events.py fills event_id, received_at and randomizes context. expected_action is a design hint only — the real gold label is produced by the rule expert (F1.3).",
+  "_comment": "Seed event templates for the When-to-Speak demo. Each template is a partial event; gen_events.py fills event_id, received_at and randomizes context. expected_action is a design hint only — the real gold label is produced by the rule expert.",
   "templates": [
     {
       "template_id": "tpl_email_p0_alert",

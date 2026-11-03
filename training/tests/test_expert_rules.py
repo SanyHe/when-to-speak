@@ -1,5 +1,5 @@
 """
-Unit tests for the rule-based expert (F1.3).
+Unit tests for the rule-based expert.
 
 Verifies:
   - every emitted decision passes the decision schema

@@ -1,5 +1,5 @@
 """
-Unit tests for the GRPO reward functions (F2.4).
+Unit tests for the GRPO reward functions.
 
 These run locally with no GPU: the rewards are pure Python, so the exact
 scoring rules used during cloud training are verifiable here.

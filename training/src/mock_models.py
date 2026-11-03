@@ -1,5 +1,5 @@
 """
-Deterministic mock model policies (F1.5 / F2.5 / M3 traces).
+Deterministic mock model policies.
 
 The real base / full-SFT / SFT+GRPO checkpoints are trained on a cloud GPU
 (AutoDL) and are not available in the local toolchain. To unblock the

@@ -1,5 +1,5 @@
 {
-  "_comment": "Additional templates for the M2 synthetic pipeline. Merged with seed_templates.json by training/src/build_dataset.py. The gold label is always produced by the rule expert (F1.3); expected_action is a design hint only. Pools are kept at 4 entries so the (sender, subject, snippet) key space is large enough to split SFT / DPO / Eval without near-duplicates crossing splits.",
+  "_comment": "Additional templates for the synthetic dataset. Merged with seed_templates.json by training/src/build_dataset.py. The gold label is always produced by the rule expert; expected_action is a design hint only. Pools are kept at 4 entries so the (sender, subject, snippet) key space is large enough to split SFT / GRPO / Eval without near-duplicates crossing splits.",
   "templates": [
     {
       "template_id": "tpl_email_customer_question",

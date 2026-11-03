@@ -1,9 +1,9 @@
 """
-Rule-based expert that produces gold labels for events (F1.3).
+Rule-based expert that produces gold labels for events.
 
 The expert is a *deterministic* decision function: given the same event it
 always returns the same decision. It encodes simple heuristics derived from
-PLAN section 5.2 (source, mentions_user, is_direct, time_sensitive,
+docs/02-method.md (source, mentions_user, is_direct, time_sensitive,
 marketing keywords, user_focus, duplicate_of).
 
 Events that are NOT covered by the strong rules are flagged as "boundary"
@@ -39,7 +39,7 @@ AUTOMATED_SOURCES = ("routine", "task")
 
 
 def _channel_for(source: str, action: str) -> str:
-    """Map source + action to a delivery channel (PLAN 4.3)."""
+    """Map source + action to a delivery channel (see docs/02-method.md)."""
     if action == "silence":
         return "none"
     if source == "im":

@@ -1,5 +1,5 @@
 """
-Format labeled events into SFT training samples (F1.4 prep).
+Format labeled events into SFT training samples.
 
 Each labeled event (event + gold decision) becomes a chat-style sample:
     system  : task instruction (output strict JSON decision)

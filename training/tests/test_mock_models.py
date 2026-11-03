@@ -1,5 +1,5 @@
 """
-Unit tests for the deterministic mock model policies (F1.5 / F2.5).
+Unit tests for the deterministic mock model policies.
 
 The mock policies stand in for the cloud-GPU checkpoints. Tests pin the
 properties that make them usable as evidence:
