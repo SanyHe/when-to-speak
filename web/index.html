@@ -17,7 +17,6 @@
       </div>
       <div class="badges">
         <span class="badge badge-mock" id="modeBadge" data-i18n="badge.mock" data-i18n-title="badge.mockTitle">MOCK TRACES</span>
-        <span class="badge" id="gpuBadge">WebGPU 检测中…</span>
         <button class="lang-btn" id="langBtn" type="button" data-i18n-title="lang.switch" aria-label="切换到英文">
           <span data-i18n="lang.button">EN</span>
         </button>
@@ -143,16 +142,13 @@
 
     <footer>
       <p data-i18n-html="footer">
-        纯静态 · 零后端 · 零 API Key · 数据不出端。
-        当前决策来自确定性 mock 轨迹（base / SFT / SFT+DPO 行为模型），用于验证完整链路；
-        真实权重在 AutoDL 上训练并经 MLC 编译后接入。
+        纯静态页面 · 默认离线回放 mock 轨迹；启用远程推理后由 AutoDL 上的 vLLM 服务返回真实模型决策。
       </p>
     </footer>
   </div>
 
   <script src="js/metrics.js"></script>
   <script src="js/i18n.js"></script>
-  <script src="js/model-records.js"></script>
   <script src="js/remote.js"></script>
   <script src="js/app.js"></script>
 </body>

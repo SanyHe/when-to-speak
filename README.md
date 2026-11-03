@@ -4,8 +4,8 @@
 
 - 基座：Qwen3-0.6B
 - 后训练：**全参 SFT + GRPO 强化学习**（TRL，无 LoRA / 无量化）
-- 浏览器推理：WebLLM + WebGPU（mlc-llm 编译）
-- 交付：GitHub Pages 纯静态站点，**零后端、零 API Key、数据不出端**
+- 推理：**vLLM**（OpenAI 兼容 API，部署在云端 GPU，网页直连调用）
+- 交付：静态站点 + 可选远程推理；默认离线回放轨迹，无需本机 GPU
 - 界面：中英文双语（右上角按钮切换，或 `?lang=zh` / `?lang=en`）
 
 ## 快速开始
@@ -29,8 +29,7 @@ python3 -m http.server 8765 --directory web
 ```
 
 > 当前网页展示的是确定性 **mock 决策轨迹**（base / SFT / SFT+GRPO 行为模型，UI 中明确标注），
-> 用于验证完整链路；真实权重在云端全参 SFT + GRPO 训练并经 MLC 编译后接入，
-> 替换 `web/data/traces.json` 即可。
+> 用于验证完整链路；真实权重在云端全参 SFT + GRPO 训练后由 vLLM 服务提供（见下节）。
 
 ### 云端训练（国内 GPU，如 AutoDL）
 
@@ -38,7 +37,7 @@ python3 -m http.server 8765 --directory web
 
 ```bash
 pip install -r training/requirements.txt
-./training/run_all.sh   # 数据集 → 全参 SFT → GRPO → 真实评测 → 可选 MLC 编译
+./training/run_all.sh   # 数据集 → 全参 SFT → GRPO → 真实评测
 ```
 
 逐条命令、显存估算与排错见 [docs/cloud-training.md](docs/cloud-training.md)。
@@ -69,7 +68,7 @@ pip install -r training/requirements.txt
 |---|---|---|
 | M1 最小闭环 | 代码完成（mock 验收通过） | 数据契约 / 种子集 / 规则专家就绪；SFT 训练待云 GPU |
 | M2 数据 + 训练 + 评测 | 数据与评测链路完成 | 800/300/200 合成数据集、GRPO prompts、评测报告均已生成；训练待 GPU |
-| M3 WebGPU 网页 | 网页完成 | 播放器 / 模型切换 / 实时统计 / 降级提示 / 远程 vLLM 直连已实现；端侧权重编译待 GPU |
+| M3 网页 Demo | 网页完成 | 播放器 / 模型切换 / 实时统计 / 远程 vLLM 直连已实现 |
 
 ## 范围边界
 

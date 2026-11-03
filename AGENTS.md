@@ -49,7 +49,8 @@ A feature is done when all of the following are true:
 | Format SFT data | `python3 training/src/format_sft.py` |
 | Full SFT (cloud only) | see [`docs/cloud-training.md`](./docs/cloud-training.md) §3 |
 | GRPO RL (cloud only) | see [`docs/cloud-training.md`](./docs/cloud-training.md) §4 |
-| Full pipeline (cloud only) | `./training/run_all.sh`（数据集 → SFT → GRPO → 评测 → 可选编译） |
+| Full pipeline (cloud only) | `./training/run_all.sh`（数据集 → SFT → GRPO → 评测） |
+| Serve inference (cloud only) | `./training/src/serve_vllm.sh`（vLLM OpenAI 兼容 API） |
 
 Key paths:
 - Schemas & validation: [`training/src/schema.py`](./training/src/schema.py)

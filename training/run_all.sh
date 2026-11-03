@@ -1,7 +1,6 @@
 #!/usr/bin/env bash
-# End-to-end cloud GPU pipeline (F2.3 -> F2.4 -> F2.5 -> F3.1):
-#   build dataset -> full-parameter SFT -> GRPO -> real-checkpoint eval
-#   -> optional MLC WebGPU compile.
+# End-to-end cloud GPU pipeline:
+#   build dataset -> full-parameter SFT -> GRPO -> real-checkpoint eval.
 #
 # Runs on the training host only (AutoDL, CUDA required). Local Mac runs
 # stop at step 1. See docs/cloud-training.md for provisioning.
@@ -13,7 +12,6 @@
 #   SEED=42                global seed
 #   SFT_EPOCHS=2  SFT_BATCH=2  SFT_ACCUM=8
 #   GRPO_EPOCHS=1 GRPO_BATCH=2 GRPO_GENERATIONS=8 GRPO_BETA=0.04
-#   RUN_COMPILE=1          also compile MLC WebGPU artifacts (needs mlc-llm)
 set -euo pipefail
 
 cd "$(dirname "$0")/.."   # repo root
@@ -26,12 +24,11 @@ GRPO_EPOCHS=${GRPO_EPOCHS:-1}
 GRPO_BATCH=${GRPO_BATCH:-2}
 GRPO_GENERATIONS=${GRPO_GENERATIONS:-8}
 GRPO_BETA=${GRPO_BETA:-0.04}
-RUN_COMPILE=${RUN_COMPILE:-0}
 
-echo "=== 1/5 Build dataset (deterministic, seed=${SEED}) ==="
+echo "=== 1/4 Build dataset (deterministic, seed=${SEED}) ==="
 python3 training/src/build_dataset.py
 
-echo "=== 2/5 Full-parameter SFT (F2.3) ==="
+echo "=== 2/4 Full-parameter SFT ==="
 python3 training/src/full_sft.py \
   --data data/synthetic/sft_full.jsonl \
   --output_dir output/full_sft \
@@ -41,7 +38,7 @@ python3 training/src/full_sft.py \
   --learning_rate 2e-5 \
   --seed "${SEED}"
 
-echo "=== 3/5 GRPO reinforcement learning (F2.4) ==="
+echo "=== 3/4 GRPO reinforcement learning ==="
 python3 training/src/grpo.py \
   --model_path output/full_sft/final \
   --data data/synthetic/grpo_prompts.jsonl \
@@ -52,7 +49,7 @@ python3 training/src/grpo.py \
   --beta "${GRPO_BETA}" \
   --seed "${SEED}"
 
-echo "=== 4/5 Real-checkpoint evaluation (F2.5) ==="
+echo "=== 4/4 Real-checkpoint evaluation ==="
 python3 training/src/evaluate.py --mode hf \
   --eval data/synthetic/eval_set.jsonl \
   --models base=Qwen/Qwen3-0.6B,sft=output/full_sft/final,sft_grpo=output/grpo/final \
@@ -61,17 +58,9 @@ python3 training/src/evaluate.py --mode hf \
   --errors-out data/eval/errors_hf.jsonl \
   --web-out web/data/traces.json
 
-echo "=== 5/5 MLC WebGPU compile (F3.1, optional) ==="
-if [ "${RUN_COMPILE}" = "1" ]; then
-  ./training/src/compile_webgpu.sh output/full_sft/final dist/wts-sft wts-sft
-  ./training/src/compile_webgpu.sh output/grpo/final dist/wts-grpo wts-grpo
-else
-  echo "skipped (set RUN_COMPILE=1 to enable; requires mlc-llm on this host)"
-fi
-
 echo
-echo "Pipeline finished. Remaining manual steps:"
-echo "  1. Publish dist/ artifacts to GitHub Release / Hugging Face."
-echo "  2. Fill web/js/model-records.js entries and set status to \"ready\"."
-echo "  3. Backfill evidence into private/feature_list.json + private/claude-progress.md"
-echo "     (run_config.json, train_log.json, eval_report_hf.*, final loss/reward)."
+echo "Pipeline finished. Weights: output/full_sft/final, output/grpo/final."
+echo "Next: start the inference service with ./training/src/serve_vllm.sh"
+echo "      (see docs/cloud-training.md section 6), then open the web demo."
+echo "Also backfill evidence into private/feature_list.json + private/claude-progress.md"
+echo "      (run_config.json, train_log.json, eval_report_hf.*, final loss/reward)."

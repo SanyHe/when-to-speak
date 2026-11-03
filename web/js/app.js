@@ -7,8 +7,8 @@
 // All user-facing strings come from js/i18n.js, so the whole page can switch
 // between Chinese and English at runtime (button in the top-right corner).
 //
-// When the compiled WebLLM records land (F3.1), this file is the only place
-// that needs a real inference branch; the UI and statistics stay unchanged.
+// Real model output comes from a remote vLLM endpoint (see js/remote.js);
+// the mock traces remain the default when no endpoint is configured.
 
 (function () {
   "use strict";
@@ -23,7 +23,6 @@
     index: -1,
     timer: null,
     renderedCount: 0,
-    gpu: "checking",
     loadError: null,
     // Remote (vLLM) channel: off unless the visitor enables it.
     liveEnabled: false,
@@ -549,56 +548,17 @@
   }
 
   // ---------------------------------------------------------------------
-  // Environment / fallback
+  // Load errors
   // ---------------------------------------------------------------------
   function renderBanner() {
     var banner = el("banner");
-    var text = "";
-    if (state.gpu === "unavailable") text = t("banner.noWebGPU");
-    else if (state.gpu === "no-adapter") text = t("banner.noAdapter");
     if (state.loadError) {
-      text = (text ? text + "<br>" : "") +
-        t("banner.loadFail", { error: escapeHtml(state.loadError) });
-    }
-    if (text) {
-      banner.innerHTML = text;
+      banner.innerHTML = t("banner.loadFail", { error: escapeHtml(state.loadError) });
       banner.classList.remove("hidden");
     } else {
       banner.innerHTML = "";
       banner.classList.add("hidden");
     }
-  }
-
-  function renderGpu() {
-    var badge = el("gpuBadge");
-    badge.classList.remove("badge-ok", "badge-bad");
-    if (state.gpu === "ok") {
-      badge.textContent = t("gpu.ok");
-      badge.classList.add("badge-ok");
-      return;
-    }
-    badge.textContent = t("gpu." + state.gpu);
-    if (state.gpu !== "checking") badge.classList.add("badge-bad");
-  }
-
-  function detectWebGPU() {
-    state.gpu = "checking";
-    renderGpu();
-    if (!("gpu" in navigator)) {
-      state.gpu = "unavailable";
-      renderGpu();
-      renderBanner();
-      return;
-    }
-    navigator.gpu.requestAdapter().then(function (adapter) {
-      state.gpu = adapter ? "ok" : "no-adapter";
-      renderGpu();
-      renderBanner();
-    }).catch(function () {
-      state.gpu = "error";
-      renderGpu();
-      renderBanner();
-    });
   }
 
   function escapeHtml(text) {
@@ -622,7 +582,6 @@
     i18n.applyDom();
     renderLangButton();
     el("modelSwitch").setAttribute("aria-label", t("hero.switchAria"));
-    renderGpu();
     renderBanner();
     renderAutoButton();
     renderLiveBadge();
@@ -652,7 +611,6 @@
   function init() {
     i18n.applyDom();
     renderLangButton();
-    renderGpu();
     renderMetrics();
     state.liveEnabled = remote.isEnabled();
     bindLivePanel();
@@ -661,8 +619,6 @@
       i18n.setLang(i18n.getLang() === "zh" ? "en" : "zh");
     });
     i18n.onChange(relocalize);
-
-    detectWebGPU();
 
     fetch("data/traces.json")
       .then(function (response) {

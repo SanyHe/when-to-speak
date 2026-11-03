@@ -51,8 +51,8 @@ python3 training/src/build_dataset.py
 - 三类 action 均有分布
 - `near_duplicate_cross_split: 0`
 
-> **一键执行**：§3–§5 已封装为 `./training/run_all.sh`（数据集 → SFT → GRPO → 评测 → 可选编译）。
-> 超参用环境变量覆盖（如 `SFT_BATCH=4 GRPO_GENERATIONS=4 ./training/run_all.sh`），`RUN_COMPILE=1` 触发第 7 步编译。
+> **一键执行**：§3–§5 已封装为 `./training/run_all.sh`（数据集 → SFT → GRPO → 评测）。
+> 超参用环境变量覆盖（如 `SFT_BATCH=4 GRPO_GENERATIONS=4 ./training/run_all.sh`）。
 > 训练完需要在线服务时，按 §6 起 vLLM。下面各节是等价的逐条命令与排错说明，建议首次跑通仍按节执行、逐步确认。
 
 ## 3. 全参 SFT
@@ -233,26 +233,7 @@ python3 -m http.server 8765 --directory web
 
 ---
 
-## 7. 编译 WebGPU 产物（可选）
-
-```bash
-# 依赖（在 GPU 机器上）
-pip install mlc-llm
-
-# 对 SFT / SFT+GRPO 各编译一次
-./training/src/compile_webgpu.sh output/full_sft/final dist/wts-sft wts-sft
-./training/src/compile_webgpu.sh output/grpo/final dist/wts-grpo wts-grpo
-```
-
-产物：`dist/<name>/params/`、`mlc-chat-config.json`、`<name>-webgpu.wasm`。
-
-发布与接入：
-
-1. 把 `params/` 与 `wasm` 上传到 GitHub Release 或 Hugging Face 仓库（单文件 < 2GB）。
-2. 填写 `web/js/model-records.js` 中对应条目的 `model` / `modelLib`，`status` 改为 `"ready"`。
-3. 本地核对 WebLLM 能加载 custom record（见官方文档的 custom model record 说明）。
-
-## 8. 回传 evidence
+## 7. 回传 evidence
 
 训练/评测完成后，把以下内容回传并更新 `private/feature_list.json`：
 
@@ -260,18 +241,17 @@ pip install mlc-llm
 - `run_config.json` 与 `train_log.json`（SFT 与 GRPO 各一份）
 - `eval_report_hf.json` / `eval_report_hf.md`
 - 错误案例数量与类型分布
-- 编译产物清单（文件名与体积）
 
 同时把 `web/data/traces.json` 换成真实模型轨迹（`--mode hf --web-out ...`），并在网页上确认三模型可切换、统计一致。
 
-## 9. 下载产物到本地
+## 8. 下载产物到本地
 
 ```bash
-# 在 AutoDL 控制台或通过 scp 下载 output/*/final/ 与 dist/
-# 权重不入代码仓库：GitHub Release / HF 是唯一分发渠道。
+# 在 AutoDL 控制台或通过 scp 下载 output/*/final/
+# 权重不入代码仓库。
 ```
 
-## 10. 常见问题
+## 9. 常见问题
 
 - **OOM（SFT）**：减小 `--batch_size`、增大 `--grad_accum_steps`；`max_seq_length` 默认 1024。
 - **OOM（GRPO）**：先降 `--num_generations`（8 → 4），再设 `--beta 0` 关闭参考模型。
@@ -281,4 +261,3 @@ pip install mlc-llm
   `private/claude-progress.md` 记录偏差。
 - **HuggingFace 下载慢**：设置 `HF_ENDPOINT=https://hf-mirror.com`，或预先下载模型到本地目录并用
   `--model_path` 指向。
-- **mlc-llm 子命令报错**：CLI 随版本变化，先 `mlc_llm --help` 核对，再更新 `compile_webgpu.sh`。

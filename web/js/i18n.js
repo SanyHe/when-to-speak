@@ -21,7 +21,7 @@
       "brand.sub": "post-training demo · 何时该说话",
       "badge.mock": "MOCK TRACES",
       "badge.real": "REAL TRACES",
-      "badge.mockTitle": "当前展示的是确定性 mock 决策轨迹，真实 WebLLM 权重待编译",
+      "badge.mockTitle": "当前展示的是确定性 mock 决策轨迹，启用远程推理可切换到真实模型",
       "lang.switch": "切换到英文",
       "lang.button": "EN",
 
@@ -100,17 +100,9 @@
       "live.needBase": "请先填写服务地址。",
       "live.onMsg": "已启用远程推理（模型 {model}）。切到「vLLM Live」标签并点「单步」发起请求。",
 
-      "footer": "纯静态 · 零后端 · 零 API Key · 数据不出端。当前决策来自确定性 mock 轨迹（base / SFT / SFT+DPO 行为模型），用于验证完整链路；真实权重在 AutoDL 上训练并经 MLC 编译后接入。",
+      "footer": "纯静态页面 · 默认离线回放 mock 轨迹；启用远程推理后由 AutoDL 上的 vLLM 服务返回真实模型决策。",
 
-      "banner.noWebGPU": "<b>当前浏览器不支持 WebGPU。</b> 页面已自动切换到预置决策回放（mock traces），事件流、模型切换与实时统计均可正常使用。体验真实端侧推理请改用 Chrome / Edge 113+。",
-      "banner.noAdapter": "<b>检测到 WebGPU 但未取得 GPU 适配器。</b> 已使用预置决策回放，功能不受影响。",
       "banner.loadFail": "<b>无法加载决策轨迹 data/traces.json：</b> {error}。请先生成数据（python3 training/src/evaluate.py --web-out web/data/traces.json）。",
-
-      "gpu.checking": "WebGPU 检测中…",
-      "gpu.ok": "WebGPU 可用",
-      "gpu.noAdapter": "WebGPU 无适配器",
-      "gpu.unavailable": "WebGPU 不可用",
-      "gpu.error": "WebGPU 检测失败",
 
       "source.email": "邮件",
       "source.im": "IM",
@@ -131,7 +123,7 @@
       "brand.sub": "post-training demo · when to speak",
       "badge.mock": "MOCK TRACES",
       "badge.real": "REAL TRACES",
-      "badge.mockTitle": "Showing deterministic mock decision traces; real WebLLM weights are pending compilation.",
+      "badge.mockTitle": "Showing deterministic mock decision traces; enable remote inference for real model output.",
       "lang.switch": "Switch to Chinese",
       "lang.button": "中文",
 
@@ -210,17 +202,9 @@
       "live.needBase": "Enter the endpoint first.",
       "live.onMsg": "Remote inference enabled (model {model}). Switch to the “vLLM Live” tab and press “Step” to send a request.",
 
-      "footer": "Pure static · zero backend · zero API keys · data never leaves your device. Decisions shown here come from deterministic mock traces (base / SFT / SFT+DPO behaviour models) used to validate the full pipeline; real weights are trained on AutoDL and compiled with MLC.",
+      "footer": "Static page · replays mock traces offline by default; once remote inference is enabled, decisions come from a vLLM server on AutoDL.",
 
-      "banner.noWebGPU": "<b>This browser does not support WebGPU.</b> The page fell back to the pre-recorded decision traces (mock), so the event stream, model switch, and live metrics keep working. Use Chrome / Edge 113+ for on-device inference.",
-      "banner.noAdapter": "<b>WebGPU is present but no GPU adapter was found.</b> Pre-recorded traces are used instead; functionality is unaffected.",
       "banner.loadFail": "<b>Failed to load decision traces data/traces.json:</b> {error}. Generate them first with python3 training/src/evaluate.py --web-out web/data/traces.json.",
-
-      "gpu.checking": "Checking WebGPU…",
-      "gpu.ok": "WebGPU ready",
-      "gpu.noAdapter": "WebGPU: no adapter",
-      "gpu.unavailable": "WebGPU unavailable",
-      "gpu.error": "WebGPU check failed",
 
       "source.email": "Email",
       "source.im": "IM",

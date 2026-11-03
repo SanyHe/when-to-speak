@@ -344,8 +344,8 @@ def build_web_traces(items: List[Dict[str, Any]],
             "mode": mode,
             "total": len(items),
             "note": (
-                "Mock decision traces (deterministic). Compiled WebLLM model "
-                "records will replace these once F3.1 is unblocked."
+                "Mock decision traces (deterministic). Real checkpoint traces "
+                "are generated after cloud GPU training."
                 if mode == "mock" else
                 "Real checkpoint decision traces (cloud GPU)."
             ),
