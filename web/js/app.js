@@ -14,6 +14,8 @@
   "use strict";
 
   var ACTIONS = ["notify", "digest", "silence"];
+  // Virtual model id for decisions coming from the remote vLLM endpoint.
+  var LIVE_ID = "live";
 
   var state = {
     traces: null,
@@ -23,11 +25,15 @@
     renderedCount: 0,
     gpu: "checking",
     loadError: null,
+    // Remote (vLLM) channel: off unless the visitor enables it.
+    liveEnabled: false,
+    livePending: {},
   };
 
   // Metric math lives in js/metrics.js (shared with the node verification step).
   var computeMetrics = window.WTSMetrics.computeMetrics;
   var i18n = window.WTSI18n;
+  var remote = window.WTSRemote;
 
   function t(key, vars) { return i18n.t(key, vars); }
   function sourceLabel(value) { return i18n.label("source", value); }
@@ -35,14 +41,27 @@
   function actionLabel(value) { return i18n.label("action", value); }
 
   function metricsFor(events, modelId) {
-    var records = events.map(function (entry) {
-      return {
+    var records = [];
+    events.forEach(function (entry) {
+      var pred = entry.pred && entry.pred[modelId];
+      // Live results arrive one event at a time; skip pending/absent ones.
+      if (!pred || pred.pending) return;
+      records.push({
         gold: entry.gold,
-        pred: entry.pred[modelId].decision,
-        json_valid: entry.pred[modelId].json_valid,
-      };
+        pred: pred.decision,
+        json_valid: pred.json_valid,
+      });
     });
     return computeMetrics(records);
+  }
+
+  function liveModelSpec() {
+    return {
+      id: LIVE_ID,
+      label: "vLLM Live",
+      tagline: "远程推理",
+      tagline_en: "remote inference",
+    };
   }
 
   // ---------------------------------------------------------------------
@@ -107,12 +126,14 @@
     renderCurrent();
     renderMetrics();
     renderCompare();
+    if (modelId === LIVE_ID && state.index >= 0) requestLive(state.index);
   }
 
   function eventItem(entry, index) {
     var event = entry.event;
     var pred = entry.pred[state.modelId];
-    var isMatch = errorType(entry.gold, pred.decision, pred.json_valid) === "exact";
+    var isMatch = pred && !pred.pending &&
+      errorType(entry.gold, pred.decision, pred.json_valid) === "exact";
     var div = document.createElement("div");
     div.className = "event-item" + (index === state.index ? " current" : "");
     div.innerHTML =
@@ -126,7 +147,9 @@
           focusLabel(event.context.user_focus) +
         "</div>" +
       "</div>" +
-      "<div>" + actionBadge(pred.decision.action) +
+      "<div>" + (pred && pred.decision
+        ? actionBadge(pred.decision.action)
+        : '<span class="action-badge action-pending">…</span>') +
         '<span class="match-dot ' + (isMatch ? "match-ok" : "match-bad") + '" title="' +
         (isMatch ? t("match.same") : t("match.diff")) + '"></span>' +
       "</div>";
@@ -196,7 +219,6 @@
     var event = entry.event;
     var pred = entry.pred[state.modelId];
     var model = state.traces.models.find(function (m) { return m.id === state.modelId; });
-    var kind = errorType(entry.gold, pred.decision, pred.json_valid);
 
     detail.className = "event-detail";
     detail.innerHTML =
@@ -218,6 +240,21 @@
     el("modelCardLabel").textContent = t("decision.modelLabel", { label: model.label });
 
     renderDecisionBody(el("goldBody"), entry.gold, true);
+
+    if (!pred || pred.pending) {
+      // Live request in flight (or awaiting the first step in live mode).
+      el("modelBody").innerHTML =
+        '<div class="decision-reason">' + t("live.pending") + "</div>";
+      el("rawOutput").textContent = "";
+      verdict.classList.add("hidden");
+      sub.textContent = t("decision.subLive", {
+        n: state.index + 1,
+        time: formatTime(event.received_at),
+      });
+      return;
+    }
+
+    var kind = errorType(entry.gold, pred.decision, pred.json_valid);
     renderDecisionBody(el("modelBody"), pred.decision, pred.json_valid);
 
     el("rawOutput").textContent = pred.raw;
@@ -288,6 +325,7 @@
   }
 
   function formatPct(value) {
+    if (typeof value !== "number" || isNaN(value)) return "—";
     return (value * 100).toFixed(1) + "%";
   }
 
@@ -311,13 +349,27 @@
     var container = el("compareGrid");
     if (!state.traces) return;
     container.innerHTML = state.traces.models.map(function (model) {
-      var metrics = state.traces.metrics[model.id];
+      var metrics;
+      if (model.id === LIVE_ID) {
+        // Live numbers come from whatever has been requested so far.
+        metrics = metricsFor(state.traces.events, LIVE_ID);
+        if (metrics.total === 0) metrics = null;
+      } else {
+        metrics = state.traces.metrics[model.id];
+      }
+      var sub = modelTagline(model);
+      if (model.id === LIVE_ID) {
+        sub = t("compare.liveCount", { n: metrics ? metrics.total : 0 });
+      }
       return '<div class="compare-card' + (model.id === state.modelId ? " active" : "") + '">' +
         '<div class="c-label">' + model.label + "</div>" +
-        '<div class="c-sub">' + modelTagline(model) + "</div>" +
-        '<div class="c-row"><span>' + t("compare.noise") + "</span><b>" + formatPct(metrics.noise_rate) + "</b></div>" +
-        '<div class="c-row"><span>' + t("compare.miss") + "</span><b>" + formatPct(metrics.miss_rate) + "</b></div>" +
-        '<div class="c-row"><span>' + t("compare.json") + "</span><b>" + formatPct(metrics.json_valid_rate) + "</b></div>" +
+        '<div class="c-sub">' + sub + "</div>" +
+        '<div class="c-row"><span>' + t("compare.noise") + "</span><b>" +
+          (metrics ? formatPct(metrics.noise_rate) : "—") + "</b></div>" +
+        '<div class="c-row"><span>' + t("compare.miss") + "</span><b>" +
+          (metrics ? formatPct(metrics.miss_rate) : "—") + "</b></div>" +
+        '<div class="c-row"><span>' + t("compare.json") + "</span><b>" +
+          (metrics ? formatPct(metrics.json_valid_rate) : "—") + "</b></div>" +
         "</div>";
     }).join("");
   }
@@ -332,6 +384,7 @@
     renderCurrent();
     renderMetrics();
     renderProgress();
+    if (state.liveEnabled) requestLive(state.index);
   }
 
   function stopAuto() {
@@ -346,10 +399,12 @@
     if (state.timer) { stopAuto(); return; }
     if (!state.traces) return;
     if (state.index >= state.traces.events.length - 1) return;
+    // Remote inference is slower than the mock replay; give each request time.
+    var interval = state.modelId === LIVE_ID ? 2500 : 900;
     state.timer = setInterval(function () {
       if (state.index >= state.traces.events.length - 1) { stopAuto(); return; }
       step();
-    }, 900);
+    }, interval);
     renderAutoButton();
   }
 
@@ -360,6 +415,137 @@
     renderCurrent();
     renderMetrics();
     renderProgress();
+  }
+
+  // ---------------------------------------------------------------------
+  // Remote (vLLM) channel
+  // ---------------------------------------------------------------------
+  function ensureLiveSpec() {
+    if (!state.traces) return;
+    var has = state.traces.models.some(function (m) { return m.id === LIVE_ID; });
+    if (state.liveEnabled && !has) {
+      state.traces.models.push(liveModelSpec());
+    } else if (!state.liveEnabled && has) {
+      state.traces.models = state.traces.models.filter(function (m) {
+        return m.id !== LIVE_ID;
+      });
+      if (state.modelId === LIVE_ID) state.modelId = state.traces.models[0].id;
+    }
+  }
+
+  function requestLive(index) {
+    if (!state.liveEnabled || !state.traces) return;
+    var entry = state.traces.events[index];
+    if (!entry || entry.pred[LIVE_ID] || state.livePending[index]) return;
+
+    state.livePending[index] = true;
+    entry.pred[LIVE_ID] = { pending: true };
+    if (state.modelId === LIVE_ID) renderCurrent();
+    renderMetrics();
+    renderCompare();
+
+    // Reuse the exact prompt the model was trained with, when available.
+    var prompt = state.traces._meta && state.traces._meta.system_prompt;
+    remote.decide(entry.event, prompt).then(function (result) {
+      entry.pred[LIVE_ID] = result;
+    }).catch(function (error) {
+      entry.pred[LIVE_ID] = {
+        decision: {
+          action: "notify",
+          channel: "im",
+          urgency: "normal",
+          reason: "request failed: " + error.message,
+          message: "",
+        },
+        json_valid: false,
+        raw: "ERROR: " + error.message,
+      };
+    }).then(function () {
+      state.livePending[index] = false;
+      if (state.modelId === LIVE_ID) {
+        rebuildStream();
+        renderCurrent();
+      }
+      renderMetrics();
+      renderCompare();
+    });
+  }
+
+  function readLiveForm() {
+    return {
+      baseUrl: el("liveBase").value.trim(),
+      model: el("liveModel").value.trim() || "wts",
+      apiKey: el("liveKey").value,
+      enabled: state.liveEnabled,
+    };
+  }
+
+  function fillLiveForm() {
+    var cfg = remote.getConfig();
+    el("liveBase").value = cfg.baseUrl || "";
+    el("liveModel").value = cfg.model || "wts";
+    el("liveKey").value = cfg.apiKey || "";
+  }
+
+  function setLiveMsg(text, isError) {
+    var msg = el("liveMsg");
+    msg.textContent = text;
+    msg.classList.toggle("live-error", !!isError);
+  }
+
+  function renderLiveBadge() {
+    var badge = el("liveBadge");
+    badge.classList.remove("badge-ok", "badge-bad");
+    badge.textContent = state.liveEnabled ? t("live.badgeOn") : t("live.badgeOff");
+    badge.classList.add(state.liveEnabled ? "badge-ok" : "badge-bad");
+    el("liveSave").textContent = state.liveEnabled
+      ? t("live.disable") : t("live.enable");
+  }
+
+  function applyLive(enabled) {
+    var cfg = readLiveForm();
+    if (enabled && !cfg.baseUrl) {
+      setLiveMsg(t("live.needBase"), true);
+      return;
+    }
+    cfg.enabled = enabled;
+    remote.saveConfig(cfg);
+    state.liveEnabled = enabled;
+    ensureLiveSpec();
+    renderLiveBadge();
+    renderModelTabs();
+    renderCompare();
+    if (enabled) {
+      setLiveMsg(t("live.onMsg", { model: cfg.model }), false);
+      if (state.modelId === LIVE_ID && state.index >= 0) requestLive(state.index);
+    } else {
+      setLiveMsg(t("live.hint"), false);
+      if (state.modelId === LIVE_ID) {
+        state.modelId = state.traces ? state.traces.models[0].id : "base";
+        renderModelTabs();
+        rebuildStream();
+        renderCurrent();
+        renderMetrics();
+      }
+    }
+  }
+
+  function bindLivePanel() {
+    fillLiveForm();
+    renderLiveBadge();
+    el("liveTest").addEventListener("click", function () {
+      remote.saveConfig(readLiveForm());
+      setLiveMsg(t("live.testing"), false);
+      remote.ping().then(function (result) {
+        var names = result.models.length ? result.models.join(", ") : "—";
+        setLiveMsg(t("live.testOk", { models: names }), false);
+      }).catch(function (error) {
+        setLiveMsg(t("live.testFail", { error: error.message }), true);
+      });
+    });
+    el("liveSave").addEventListener("click", function () {
+      applyLive(!state.liveEnabled);
+    });
   }
 
   // ---------------------------------------------------------------------
@@ -439,6 +625,7 @@
     renderGpu();
     renderBanner();
     renderAutoButton();
+    renderLiveBadge();
 
     if (!state.traces) {
       rebuildStream();
@@ -467,6 +654,8 @@
     renderLangButton();
     renderGpu();
     renderMetrics();
+    state.liveEnabled = remote.isEnabled();
+    bindLivePanel();
 
     el("langBtn").addEventListener("click", function () {
       i18n.setLang(i18n.getLang() === "zh" ? "en" : "zh");
@@ -484,6 +673,7 @@
         state.traces = traces;
         state.index = -1;
         state.modelId = traces.models[0].id;
+        ensureLiveSpec();
         el("streamSub").textContent = t("stream.sub", { total: traces.events.length });
         el("modeBadge").textContent = traces._meta.mode === "mock" ? t("badge.mock") : t("badge.real");
         if (traces._meta.mode === "mock") {

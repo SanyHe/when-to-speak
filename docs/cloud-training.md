@@ -10,6 +10,7 @@
 | 显卡 | RTX 4090 / 3090（24GB）起步；GRPO 建议 A100 40GB 更稳 |
 | 镜像 | PyTorch 2.x + CUDA 12.1（平台预置镜像） |
 | 训练方式 | **全参微调**（无 LoRA / 无 4-bit 量化 / 无 Unsloth） |
+| 推理服务 | **vLLM**（OpenAI 兼容 API），部署见 §6 |
 | 显存预算 | 0.6B 全参 SFT ≈ 11–13GB；GRPO（G=8）≈ 18–22GB |
 | 预计训练量 | SFT 800 条 / 2 epoch；GRPO 300 prompts × 8 rollouts / 1 epoch |
 
@@ -50,11 +51,11 @@ python3 training/src/build_dataset.py
 - 三类 action 均有分布
 - `near_duplicate_cross_split: 0`
 
-> **一键执行**：§3–§6 已封装为 `./training/run_all.sh`（数据集 → SFT → GRPO → 评测 → 可选编译）。
-> 超参用环境变量覆盖（如 `SFT_BATCH=4 GRPO_GENERATIONS=4 ./training/run_all.sh`），`RUN_COMPILE=1` 触发第 6 步编译。
-> 下面各节是等价的逐条命令与排错说明，建议首次跑通仍按节执行、逐步确认。
+> **一键执行**：§3–§5 已封装为 `./training/run_all.sh`（数据集 → SFT → GRPO → 评测 → 可选编译）。
+> 超参用环境变量覆盖（如 `SFT_BATCH=4 GRPO_GENERATIONS=4 ./training/run_all.sh`），`RUN_COMPILE=1` 触发第 7 步编译。
+> 训练完需要在线服务时，按 §6 起 vLLM。下面各节是等价的逐条命令与排错说明，建议首次跑通仍按节执行、逐步确认。
 
-## 3. 全参 SFT（F2.3）
+## 3. 全参 SFT
 
 ```bash
 python3 training/src/full_sft.py \
@@ -79,7 +80,7 @@ python3 training/src/full_sft.py \
 - `enable_thinking=False`，避免 Qwen3 生成思考块污染严格 JSON 目标。
 - 全参训练用较低学习率（2e-5），prompt 掩码逻辑有本地单测（`test_full_sft.py`）。
 
-## 4. GRPO 强化学习（F2.4）
+## 4. GRPO 强化学习
 
 ```bash
 python3 training/src/grpo.py \
@@ -123,7 +124,7 @@ python3 training/src/grpo.py \
 （`training/tests/test_rewards.py`、`test_full_sft.py`），`pytest` 全绿即证明打分规则与
 数据契约一致；训练指标本身在 GPU 跑完后才回填，当前下游 mock 数字均明确标注 MOCK。
 
-## 5. 真实模型评测（F2.5）
+## 5. 真实模型评测
 
 ```bash
 python3 training/src/evaluate.py --mode hf \
@@ -149,7 +150,90 @@ python3 training/src/evaluate.py --mode hf \
 | SFT | 98.50% | 7.00% | 7.89% |
 | SFT + GRPO | 99.00% | 3.50% | 2.63% |
 
-## 6. 编译 WebGPU 产物（F3.1）
+## 6. 部署推理服务（vLLM）
+
+训练完成后，用 vLLM 起一个 OpenAI 兼容的推理服务，让本地网页直接调用真实模型。
+
+### 6.1 安装
+
+```bash
+pip install -i https://pypi.tuna.tsinghua.edu.cn/simple vllm
+# 0.6B 模型对 vLLM 版本要求不高，但 Qwen3 需要较新版本：
+python3 -c "import vllm; print(vllm.__version__)"
+```
+
+### 6.2 启动服务
+
+```bash
+# 默认加载 output/grpo/final，服务名 wts，端口 6006
+ALLOWED_ORIGINS="http://localhost:8765 http://127.0.0.1:8765" \
+  ./training/src/serve_vllm.sh
+
+# 也可以指定 SFT 权重做对比：
+./training/src/serve_vllm.sh output/full_sft/final
+```
+
+常用环境变量：
+
+| 变量 | 默认 | 说明 |
+|---|---|---|
+| `PORT` | `6006` | AutoDL 自定义服务端口 |
+| `SERVED_NAME` | `wts` | 网页里填写的模型名 |
+| `API_KEY` | 空 | 设置后请求需带 `Authorization: Bearer <key>` |
+| `ALLOWED_ORIGINS` | `*` | CORS 允许来源，空格分隔；本地调试可放宽，公网建议收紧 |
+| `MAX_MODEL_LEN` | `2048` | 不小于训练时的 1024 |
+| `GPU_UTIL` | `0.6` | 0.6B 模型占用很小，0.6 足够 |
+
+服务起来后先在实例内自测：
+
+```bash
+curl -s http://127.0.0.1:6006/v1/models
+```
+
+### 6.3 暴露到公网（AutoDL）
+
+1. AutoDL 控制台 → 实例 → **自定义服务**，映射端口 `6006`。
+2. 得到形如 `https://<region>-6006.autodl.pro` 的地址。
+3. 把这个地址（**不要带 `/v1`**）填进网页的「服务地址」。
+
+> AutoDL 的自定义服务域名会变化（实例重启/迁移后可能换）。以控制台显示的为准。
+
+### 6.4 本地网页接入
+
+```bash
+# 本地起静态站点（必须用 http://，file:// 的 Origin 为 null，会被 CORS 拒绝）
+python3 -m http.server 8765 --directory web
+```
+
+浏览器打开 `http://localhost:8765`，在「远程推理（vLLM）」面板：
+
+1. 填服务地址、模型名（默认 `wts`），需要时填 API Key。
+2. 点 **测试连接**，应返回 `连接成功，可用模型：wts`。
+3. 点 **启用**，模型切换栏会多出「vLLM Live」标签。
+4. 切到该标签，点 **单步** —— 页面把当前事件实时发给 vLLM，并显示返回的 JSON 决策。
+
+说明：
+
+- 请求使用的是与训练完全一致的 system prompt（`evaluate.py` 把它写进
+  `web/data/traces.json` 的 `_meta.system_prompt`），并显式关闭 Qwen3 thinking。
+- Live 结果按事件缓存，只在切换标签/单步时请求，不会后台批量抓取。
+- 「实时指标」只统计已请求的 Live 事件，未请求的记为待定。
+- 浏览器直连意味着 API Key 对能打开页面的人可见；本地自用可以，公开部署请改用
+  无 Key 的内网端口，或加一层后端代理。
+
+### 6.5 排错
+
+| 现象 | 原因 / 处理 |
+|---|---|
+| 测试连接报 `Failed to fetch` | CORS：`ALLOWED_ORIGINS` 没包含 `http://localhost:8765`；或服务地址带了 `/v1` |
+| `HTTP 401` | 服务端设置了 `API_KEY`，网页里没填或填错 |
+| `HTTP 404` | 模型名与服务端 `SERVED_NAME` 不一致 |
+| 返回带 ` thinking` 前缀 | vLLM 版本过旧，不支持 `chat_template_kwargs`；升级 vLLM 或依赖前端解析兜底 |
+| 显存不足 | 降低 `GPU_UTIL`，或加 `EAGER=1` 关掉 CUDA graph |
+
+---
+
+## 7. 编译 WebGPU 产物（可选）
 
 ```bash
 # 依赖（在 GPU 机器上）
@@ -168,7 +252,7 @@ pip install mlc-llm
 2. 填写 `web/js/model-records.js` 中对应条目的 `model` / `modelLib`，`status` 改为 `"ready"`。
 3. 本地核对 WebLLM 能加载 custom record（见官方文档的 custom model record 说明）。
 
-## 7. 回传 evidence
+## 8. 回传 evidence
 
 训练/评测完成后，把以下内容回传并更新 `private/feature_list.json`：
 
@@ -180,14 +264,14 @@ pip install mlc-llm
 
 同时把 `web/data/traces.json` 换成真实模型轨迹（`--mode hf --web-out ...`），并在网页上确认三模型可切换、统计一致。
 
-## 8. 下载产物到本地
+## 9. 下载产物到本地
 
 ```bash
 # 在 AutoDL 控制台或通过 scp 下载 output/*/final/ 与 dist/
 # 权重不入代码仓库：GitHub Release / HF 是唯一分发渠道。
 ```
 
-## 9. 常见问题
+## 10. 常见问题
 
 - **OOM（SFT）**：减小 `--batch_size`、增大 `--grad_accum_steps`；`max_seq_length` 默认 1024。
 - **OOM（GRPO）**：先降 `--num_generations`（8 → 4），再设 `--beta 0` 关闭参考模型。

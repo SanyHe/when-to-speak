@@ -38,6 +38,35 @@
 
     <div class="banner hidden" id="banner"></div>
 
+    <section class="panel live-panel">
+      <div class="panel-head">
+        <div>
+          <h2 data-i18n="live.title">远程推理（vLLM）</h2>
+          <p class="muted" data-i18n="live.sub">连接 AutoDL 上的 vLLM 服务，实时对比真实模型决策</p>
+        </div>
+        <span class="badge badge-bad" id="liveBadge" data-i18n="live.badgeOff">OFFLINE</span>
+      </div>
+      <div class="live-form">
+        <label class="live-field">
+          <span data-i18n="live.baseLabel">服务地址</span>
+          <input id="liveBase" type="url" spellcheck="false" placeholder="https://xxxx.autodl.pro" autocomplete="off">
+        </label>
+        <label class="live-field">
+          <span data-i18n="live.modelLabel">模型名</span>
+          <input id="liveModel" type="text" spellcheck="false" placeholder="wts" autocomplete="off">
+        </label>
+        <label class="live-field">
+          <span data-i18n="live.keyLabel">API Key（可选）</span>
+          <input id="liveKey" type="password" spellcheck="false" placeholder="—" autocomplete="off">
+        </label>
+        <div class="live-actions">
+          <button class="btn btn-ghost" id="liveTest" type="button" data-i18n="live.test">测试连接</button>
+          <button class="btn btn-primary" id="liveSave" type="button" data-i18n="live.enable">启用</button>
+        </div>
+      </div>
+      <p class="live-msg muted" id="liveMsg" data-i18n="live.hint">未启用时页面只回放 mock 轨迹，不会发起任何网络请求。</p>
+    </section>
+
     <main class="grid">
       <section class="panel stream-panel">
         <div class="panel-head">
@@ -124,6 +153,7 @@
   <script src="js/metrics.js"></script>
   <script src="js/i18n.js"></script>
   <script src="js/model-records.js"></script>
+  <script src="js/remote.js"></script>
   <script src="js/app.js"></script>
 </body>
 </html>

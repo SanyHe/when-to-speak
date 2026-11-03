@@ -43,6 +43,18 @@ pip install -r training/requirements.txt
 
 逐条命令、显存估算与排错见 [docs/cloud-training.md](docs/cloud-training.md)。
 
+### 在线推理（vLLM）
+
+训练完成后，可在 GPU 机器上起一个 OpenAI 兼容的推理服务：
+
+```bash
+./training/src/serve_vllm.sh            # 默认加载 output/grpo/final，端口 6006
+```
+
+本地网页打开 `http://localhost:8765`，在「远程推理（vLLM）」面板填入服务地址与模型名
+（默认 `wts`），点「测试连接」→「启用」，再切到「vLLM Live」标签即可实时调用云端模型。
+完整步骤（AutoDL 端口映射、CORS、排错）见 [docs/cloud-training.md §6](docs/cloud-training.md)。
+
 ## 文档
 
 - [docs/01-why-when-to-speak.md](docs/01-why-when-to-speak.md) — 选题：为什么"何时说话"值得单独训练
@@ -57,7 +69,7 @@ pip install -r training/requirements.txt
 |---|---|---|
 | M1 最小闭环 | 代码完成（mock 验收通过） | 数据契约 / 种子集 / 规则专家就绪；SFT 训练待云 GPU |
 | M2 数据 + 训练 + 评测 | 数据与评测链路完成 | 800/300/200 合成数据集、GRPO prompts、评测报告均已生成；训练待 GPU |
-| M3 WebGPU 网页 | 网页完成 | 播放器 / 模型切换 / 实时统计 / 降级提示已实现；真实权重编译待 GPU |
+| M3 WebGPU 网页 | 网页完成 | 播放器 / 模型切换 / 实时统计 / 降级提示 / 远程 vLLM 直连已实现；端侧权重编译待 GPU |
 
 ## 范围边界
 

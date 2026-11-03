@@ -52,6 +52,7 @@ sys.path.insert(0, _SRC_DIR)
 
 from mock_models import MODEL_SPECS, mock_output, parse_model_output  # noqa: E402
 from schema import ACTIONS, validate_decision  # noqa: E402
+from format_sft import SYSTEM_PROMPT  # noqa: E402
 
 REPO_ROOT = os.path.abspath(os.path.join(_SRC_DIR, "..", ".."))
 
@@ -192,7 +193,7 @@ def evaluate_hf(specs: Dict[str, str], items: Iterable[Dict[str, Any]]) -> Dict[
     import torch  # noqa: F401  (lazy import: mock mode must stay dependency-free)
     from transformers import AutoModelForCausalLM, AutoTokenizer
 
-    from format_sft import SYSTEM_PROMPT, render_chat
+    from format_sft import render_chat
 
     results: Dict[str, List[Dict[str, Any]]] = {}
     for model_id, model_path in specs.items():
@@ -348,6 +349,9 @@ def build_web_traces(items: List[Dict[str, Any]],
                 if mode == "mock" else
                 "Real checkpoint decision traces (cloud GPU)."
             ),
+            # The prompt is part of the data contract: the web client reuses
+            # it for live vLLM requests so inference matches training exactly.
+            "system_prompt": SYSTEM_PROMPT,
         },
         "models": [
             {
