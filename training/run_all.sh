@@ -9,6 +9,7 @@
 #   ./training/run_all.sh
 #
 # Optional environment overrides:
+#   BASE_MODEL=Qwen/Qwen3-0.6B   HF repo id or a local directory with the base weights
 #   SEED=42                global seed
 #   SFT_EPOCHS=2  SFT_BATCH=2  SFT_ACCUM=8
 #   GRPO_EPOCHS=1 GRPO_BATCH=2 GRPO_GENERATIONS=8 GRPO_BETA=0.04
@@ -16,6 +17,7 @@ set -euo pipefail
 
 cd "$(dirname "$0")/.."   # repo root
 
+BASE_MODEL=${BASE_MODEL:-Qwen/Qwen3-0.6B}
 SEED=${SEED:-42}
 SFT_EPOCHS=${SFT_EPOCHS:-2}
 SFT_BATCH=${SFT_BATCH:-2}
@@ -28,8 +30,9 @@ GRPO_BETA=${GRPO_BETA:-0.04}
 echo "=== 1/4 Build dataset (deterministic, seed=${SEED}) ==="
 python3 training/src/build_dataset.py
 
-echo "=== 2/4 Full-parameter SFT ==="
+echo "=== 2/4 Full-parameter SFT (base=${BASE_MODEL}) ==="
 python3 training/src/full_sft.py \
+  --model_path "${BASE_MODEL}" \
   --data data/synthetic/sft_full.jsonl \
   --output_dir output/full_sft \
   --epochs "${SFT_EPOCHS}" \
@@ -52,7 +55,7 @@ python3 training/src/grpo.py \
 echo "=== 4/4 Real-checkpoint evaluation ==="
 python3 training/src/evaluate.py --mode hf \
   --eval data/synthetic/eval_set.jsonl \
-  --models base=Qwen/Qwen3-0.6B,sft=output/full_sft/final,sft_grpo=output/grpo/final \
+  --models base=${BASE_MODEL},sft=output/full_sft/final,sft_grpo=output/grpo/final \
   --out data/eval/eval_report_hf.json \
   --md-out data/eval/eval_report_hf.md \
   --errors-out data/eval/errors_hf.jsonl \

@@ -148,7 +148,9 @@ def build_trainer(model, tokenizer, dataset, cfg: GRPOExperimentConfig):
 def parse_args() -> argparse.Namespace:
     cfg = GRPOExperimentConfig()
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("--model_path", default=cfg.model_path)
+    parser.add_argument(
+        "--model_path", default=cfg.model_path,
+        help="Checkpoint to start from (SFT output dir or another HF path)")
     parser.add_argument("--data", default=cfg.data_path)
     parser.add_argument("--output_dir", default=cfg.output_dir)
     parser.add_argument("--epochs", type=int, default=cfg.epochs)

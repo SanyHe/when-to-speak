@@ -36,7 +36,7 @@ git clone <your-repo-url> when-to-speak
 cd when-to-speak
 
 # 3. 安装训练依赖（国内源）
-pip install -i https://pypi.tuna.tsinghua.edu.cn/simple -r training/requirements.txt
+pip install -r training/requirements.txt
 
 # 4. 验证工具链（不依赖 GPU）
 python3 -m pytest training/tests/ -q
@@ -59,6 +59,7 @@ python3 training/src/build_dataset.py
 
 ```bash
 python3 training/src/full_sft.py \
+  --model_path Qwen/Qwen3-0.6B \
   --data data/synthetic/sft_full.jsonl \
   --output_dir output/full_sft \
   --epochs 2 \
@@ -67,6 +68,18 @@ python3 training/src/full_sft.py \
   --learning_rate 2e-5 \
   --seed 42
 ```
+
+`--model_path` 接受 Hugging Face repo id 或**本地目录**。国内网络建议先把权重下到实例上，
+再指向本地路径，避免训练中途反复拉取：
+
+```bash
+HF_ENDPOINT=https://hf-mirror.com \
+  hf download Qwen/Qwen3-0.6B --local-dir /root/models/Qwen3-0.6B
+
+python3 training/src/full_sft.py --model_path /root/models/Qwen3-0.6B ...
+```
+
+用一键脚本时通过环境变量传入：`BASE_MODEL=/root/models/Qwen3-0.6B ./training/run_all.sh`。
 
 产物：
 

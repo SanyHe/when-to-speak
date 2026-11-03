@@ -13,9 +13,16 @@ seed; all hyperparameters are logged.
 
 Usage (on the training host):
     python3 training/src/full_sft.py \
+        --model_path Qwen/Qwen3-0.6B \
         --data data/synthetic/sft_full.jsonl \
         --output_dir output/full_sft \
         --epochs 2 --batch_size 2
+
+    # Pre-downloaded weights (recommended on slow networks):
+    python3 training/src/full_sft.py \
+        --model_path /root/models/Qwen3-0.6B \
+        --data data/synthetic/sft_full.jsonl \
+        --output_dir output/full_sft
 
 Outputs:
     <output_dir>/final/          full HF weights + tokenizer
@@ -50,7 +57,7 @@ IGNORE_INDEX = -100
 
 @dataclass
 class FullSFTConfig:
-    model_name: str = "Qwen/Qwen3-0.6B"
+    model_path: str = "Qwen/Qwen3-0.6B"
     max_seq_length: int = 1024
     epochs: int = 2
     batch_size: int = 4
@@ -124,7 +131,9 @@ def encode_sft_example(example: Dict[str, Any], tokenizer,
 def parse_args() -> argparse.Namespace:
     cfg = FullSFTConfig()
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("--model_name", default=cfg.model_name)
+    parser.add_argument(
+        "--model_path", default=cfg.model_path,
+        help="Base model location: a Hugging Face repo id or a local directory")
     parser.add_argument("--data", default=cfg.data_path)
     parser.add_argument("--output_dir", default=cfg.output_dir)
     parser.add_argument("--epochs", type=int, default=cfg.epochs)
@@ -148,7 +157,7 @@ def main() -> None:
 
     args = parse_args()
     cfg = FullSFTConfig(
-        model_name=args.model_name,
+        model_path=args.model_path,
         max_seq_length=args.max_seq_length,
         epochs=args.epochs,
         batch_size=args.batch_size,
@@ -166,12 +175,12 @@ def main() -> None:
         )
     set_seed(cfg.seed)
 
-    tokenizer = AutoTokenizer.from_pretrained(cfg.model_name)
+    tokenizer = AutoTokenizer.from_pretrained(cfg.model_path)
     if tokenizer.pad_token is None:
         tokenizer.pad_token = tokenizer.eos_token
 
     dtype = torch.bfloat16 if torch.cuda.is_bf16_supported() else torch.float16
-    model = AutoModelForCausalLM.from_pretrained(cfg.model_name, torch_dtype=dtype)
+    model = AutoModelForCausalLM.from_pretrained(cfg.model_path, torch_dtype=dtype)
     model.config.use_cache = False
 
     dataset = load_sft_dataset(cfg.data_path)
