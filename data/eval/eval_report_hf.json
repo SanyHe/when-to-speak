@@ -110,34 +110,34 @@
     "sft_grpo": {
       "total": 200,
       "json_valid_rate": 0.995,
-      "accuracy": 0.91,
-      "macro_f1": 0.8975,
-      "notify_precision": 0.8205,
-      "notify_recall": 0.8421,
+      "accuracy": 0.93,
+      "macro_f1": 0.924,
+      "notify_precision": 0.8372,
+      "notify_recall": 0.9474,
       "noise_rate": 0.035,
-      "miss_rate": 0.1579,
+      "miss_rate": 0.0526,
       "counts": {
         "should_notify": 38,
-        "predicted_notify": 39,
-        "true_notify": 32,
+        "predicted_notify": 43,
+        "true_notify": 36,
         "noisy_notify": 7,
-        "missed_notify": 6,
+        "missed_notify": 2,
         "invalid_json": 1
       },
       "per_class": {
         "notify": {
-          "precision": 0.8205,
-          "recall": 0.8421,
-          "f1": 0.8312,
+          "precision": 0.8372,
+          "recall": 0.9474,
+          "f1": 0.8889,
           "support": 38,
-          "predicted": 39
+          "predicted": 43
         },
         "digest": {
-          "precision": 0.9268,
+          "precision": 0.9744,
           "recall": 0.8636,
-          "f1": 0.8941,
+          "f1": 0.9157,
           "support": 88,
-          "predicted": 82
+          "predicted": 78
         },
         "silence": {
           "precision": 0.9367,
@@ -148,8 +148,8 @@
         }
       },
       "confusion": {
-        "notify->notify": 32,
-        "notify->digest": 6,
+        "notify->notify": 36,
+        "notify->digest": 2,
         "digest->notify": 7,
         "digest->digest": 76,
         "digest->silence": 5,
@@ -4780,27 +4780,6 @@
     },
     {
       "model": "sft_grpo",
-      "event_id": "evt_e0174",
-      "error_type": "missed_notify",
-      "gold": {
-        "action": "notify",
-        "channel": "email",
-        "urgency": "normal",
-        "reason": "直接发给用户的消息",
-        "message": "需要你回复客户的方案确认：客户反馈交付延期，请确认新的排期。"
-      },
-      "predicted": {
-        "action": "digest",
-        "channel": "email",
-        "urgency": "normal",
-        "reason": "直接发给用户的消息；用户处于 offline，降级为汇总",
-        "message": "需要你回复客户的方案确认：客户反馈交付延期，请确认新的排期。"
-      },
-      "json_valid": true,
-      "raw": "{\"action\": \"digest\", \"channel\": \"email\", \"urgency\": \"normal\", \"reason\": \"直接发给用户的消息；用户处于 offline，降级为汇总\", \"message\": \"需要你回复客户的方案确认：客户反馈交付延期，请确认新的排期。\"}"
-    },
-    {
-      "model": "sft_grpo",
       "event_id": "evt_e0178",
       "error_type": "wrong_action",
       "gold": {
@@ -4819,27 +4798,6 @@
       },
       "json_valid": true,
       "raw": "{\"action\": \"silence\", \"channel\": \"none\", \"urgency\": \"low\", \"reason\": \"例行自动化通知，无需打扰\", \"message\": \"\"}"
-    },
-    {
-      "model": "sft_grpo",
-      "event_id": "evt_e0015",
-      "error_type": "missed_notify",
-      "gold": {
-        "action": "notify",
-        "channel": "email",
-        "urgency": "normal",
-        "reason": "直接发给用户的消息",
-        "message": "客户升级问题需要你介入：客户反馈交付延期，请确认新的排期。"
-      },
-      "predicted": {
-        "action": "digest",
-        "channel": "email",
-        "urgency": "normal",
-        "reason": "直接发给用户的消息；用户处于 available，降级为汇总",
-        "message": "客户升级问题需要你介入：客户反馈交付延期，请确认新的排期。"
-      },
-      "json_valid": true,
-      "raw": "{\"action\": \"digest\", \"channel\": \"email\", \"urgency\": \"normal\", \"reason\": \"直接发给用户的消息；用户处于 available，降级为汇总\", \"message\": \"客户升级问题需要你介入：客户反馈交付延期，请确认新的排期。\"}"
     },
     {
       "model": "sft_grpo",
@@ -5092,48 +5050,6 @@
       },
       "json_valid": true,
       "raw": "{\"action\": \"digest\", \"channel\": \"email\", \"urgency\": \"normal\", \"reason\": \"直接发给用户的消息；用户处于 offline，降级为汇总\", \"message\": \"需要你回复客户的方案确认：客户的问题升级到你这层，需要你回复。\"}"
-    },
-    {
-      "model": "sft_grpo",
-      "event_id": "evt_e0035",
-      "error_type": "missed_notify",
-      "gold": {
-        "action": "notify",
-        "channel": "email",
-        "urgency": "normal",
-        "reason": "直接发给用户的消息",
-        "message": "客户升级问题需要你介入：客户的问题升级到你这层，需要你回复。"
-      },
-      "predicted": {
-        "action": "digest",
-        "channel": "email",
-        "urgency": "normal",
-        "reason": "直接发给用户的消息；用户处于 available，降级为汇总",
-        "message": "客户升级问题需要你介入：客户的问题升级到你这层，需要你回复。"
-      },
-      "json_valid": true,
-      "raw": "{\"action\": \"digest\", \"channel\": \"email\", \"urgency\": \"normal\", \"reason\": \"直接发给用户的消息；用户处于 available，降级为汇总\", \"message\": \"客户升级问题需要你介入：客户的问题升级到你这层，需要你回复。\"}"
-    },
-    {
-      "model": "sft_grpo",
-      "event_id": "evt_e0057",
-      "error_type": "missed_notify",
-      "gold": {
-        "action": "notify",
-        "channel": "email",
-        "urgency": "normal",
-        "reason": "直接发给用户的消息",
-        "message": "客户在等你确认交付时间：客户在等回复，希望今天内给出确认。"
-      },
-      "predicted": {
-        "action": "digest",
-        "channel": "email",
-        "urgency": "normal",
-        "reason": "直接发给用户的消息；用户处于离线状态，降级为汇总",
-        "message": "客户在等你确认交付时间：客户在等回复，希望今天内给出确认。"
-      },
-      "json_valid": true,
-      "raw": "{\"action\": \"digest\", \"channel\": \"email\", \"urgency\": \"normal\", \"reason\": \"直接发给用户的消息；用户处于离线状态，降级为汇总\", \"message\": \"客户在等你确认交付时间：客户在等回复，希望今天内给出确认。\"}"
     }
   ]
 }
