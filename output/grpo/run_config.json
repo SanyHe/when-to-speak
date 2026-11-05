@@ -1,0 +1,23 @@
+{
+  "model_path": "output/full_sft/final",
+  "max_prompt_length": 768,
+  "max_completion_length": 200,
+  "num_generations": 8,
+  "epochs": 1,
+  "batch_size": 2,
+  "grad_accum_steps": 4,
+  "learning_rate": 1e-06,
+  "beta": 0.04,
+  "temperature": 1.0,
+  "seed": 42,
+  "data_path": "data/synthetic/grpo_prompts.jsonl",
+  "output_dir": "output/grpo",
+  "full_finetune": true,
+  "algorithm": "grpo",
+  "reward_functions": [
+    "format_reward",
+    "action_reward",
+    "channel_reward"
+  ],
+  "train_samples": 300
+}
