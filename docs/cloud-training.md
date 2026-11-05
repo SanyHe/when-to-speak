@@ -123,6 +123,10 @@ python3 training/src/grpo.py \
 > 8 代采样中有 66.7% 的组内奖励完全相同（无优势可用），格式与渠道奖励已接近满分，
 > 因此需要更多采样、更高温度和一个更细的奖励项来制造组内差异。显存不够时先降回
 > `GRPO_GENERATIONS=8`。
+>
+> TRL 要求 `generation_batch_size` 能被 `num_generations` 整除；脚本会按
+> `batch_size × grad_accum_steps` 自动向上取整对齐（G=16 时从默认 8 提到 16），
+> 无需手动改 `--grad_accum_steps`。
 
 产物：
 

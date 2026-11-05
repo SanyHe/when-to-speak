@@ -83,7 +83,7 @@ pip install -r training/requirements.txt
 `private/`（gitignored，不随仓库发布）。
 
 ```bash
-./init.sh   # 安装本地依赖 + 跑验证（78 项测试）
+./init.sh   # 安装本地依赖 + 跑验证（81 项测试）
 ```
 
 ## 目录结构

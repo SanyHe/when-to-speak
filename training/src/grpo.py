@@ -99,6 +99,21 @@ def load_grpo_dataset(path: str, tokenizer) -> Any:
     return Dataset.from_list(records)
 
 
+def plan_generation_batch(num_generations: int, batch_size: int,
+                          grad_accum_steps: int) -> int:
+    """Smallest generation batch TRL accepts for this group size.
+
+    TRL requires ``generation_batch_size`` to be divisible by
+    ``num_generations``; its default (batch x accum) is not, so G=16 with
+    batch 2 x accum 4 raised "generation_batch_size (8) must be divisible by
+    num_generations (16)".
+    """
+    default = max(1, batch_size) * max(1, grad_accum_steps)
+    if default % num_generations == 0:
+        return default
+    return num_generations * math.ceil(default / num_generations)
+
+
 def build_trainer(model, tokenizer, dataset, cfg: GRPOExperimentConfig):
     """Build a TRL GRPOTrainer across tokenizer/processing_class versions."""
     import torch
@@ -106,6 +121,9 @@ def build_trainer(model, tokenizer, dataset, cfg: GRPOExperimentConfig):
     from trl import GRPOTrainer
 
     bf16_supported = torch.cuda.is_bf16_supported()
+    params = inspect.signature(TRLGRPOConfig.__init__).parameters
+    gen_batch = plan_generation_batch(
+        cfg.num_generations, cfg.batch_size, cfg.grad_accum_steps)
     grpo_kwargs = dict(
         output_dir=os.path.join(cfg.output_dir, "checkpoints"),
         num_train_epochs=cfg.epochs,
@@ -130,11 +148,14 @@ def build_trainer(model, tokenizer, dataset, cfg: GRPOExperimentConfig):
         beta=cfg.beta,
         temperature=cfg.temperature,
     )
+    if "generation_batch_size" in params:
+        grpo_kwargs["generation_batch_size"] = gen_batch
+        print(f"[grpo] generation_batch_size={gen_batch} "
+              f"for G={cfg.num_generations}")
 
     # TRL tracks transformers' TrainingArguments, whose newer releases removed
     # `warmup_ratio`. Derive warmup_steps, and drop any other keyword this
     # installed version no longer understands (e.g. max_prompt_length).
-    params = inspect.signature(TRLGRPOConfig.__init__).parameters
     if "warmup_ratio" not in params:
         steps_per_epoch = math.ceil(
             len(dataset) / max(1, cfg.batch_size * cfg.grad_accum_steps))
@@ -146,7 +167,6 @@ def build_trainer(model, tokenizer, dataset, cfg: GRPOExperimentConfig):
         grpo_kwargs.pop(key)
 
     grpo_config = TRLGRPOConfig(**grpo_kwargs)
-
     trainer_kwargs = {
         "model": model,
         "reward_funcs": list(REWARD_FUNCS),
