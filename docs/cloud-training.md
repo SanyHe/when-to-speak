@@ -102,7 +102,8 @@ python3 training/src/grpo.py \
   --output_dir output/grpo \
   --epochs 1 \
   --batch_size 2 \
-  --num_generations 8 \
+  --num_generations 16 \
+  --temperature 1.1 \
   --beta 0.04 \
   --seed 42
 ```
@@ -114,8 +115,14 @@ python3 training/src/grpo.py \
 | `format_reward` | 严格 schema 通过 / 仅 JSON 可解析 / 不可解析 | +1.0 / +0.5 / 0 |
 | `action_reward` | 动作正确 / 噪音 notify / 漏报 notify / digest↔silence | +1.0 / -0.5 / -1.0 / -0.15 |
 | `channel_reward` | 动作与渠道都正确 | +0.25 |
+| `urgency_reward` | 动作正确且 urgency 与 gold 一致 | +0.10 |
 
 > 非对称惩罚（漏报 -1.0 > 噪音 -0.5）是产品约束：宁可多一次汇总，不可漏掉 P0。
+>
+> `num_generations 16` + `temperature 1.1` + `urgency_reward` 是针对上一轮 GRPO 的诊断结果：
+> 8 代采样中有 66.7% 的组内奖励完全相同（无优势可用），格式与渠道奖励已接近满分，
+> 因此需要更多采样、更高温度和一个更细的奖励项来制造组内差异。显存不够时先降回
+> `GRPO_GENERATIONS=8`。
 
 产物：
 

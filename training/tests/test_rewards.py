@@ -13,9 +13,9 @@ sys.path.insert(0, os.path.abspath(_SRC_DIR))
 
 from rewards import (  # noqa: E402
     ACTION_ADJACENT, ACTION_EXACT, ACTION_MISSED, ACTION_NOISE,
-    CHANNEL_EXACT, FORMAT_PARSEABLE, FORMAT_VALID,
+    CHANNEL_EXACT, FORMAT_PARSEABLE, FORMAT_VALID, URGENCY_BONUS,
     action_reward, channel_reward, extract_completion_text, format_reward,
-    reward_breakdown,
+    reward_breakdown, urgency_reward,
 )
 
 _SILENCE = {"action": "silence", "channel": "none", "urgency": "low",
@@ -85,13 +85,23 @@ def test_channel_reward_requires_matching_action_and_channel():
     assert channel_reward([_as_message(_SILENCE)], gold_decision=[_NOTIFY]) == [0.0]
 
 
+def test_urgency_reward_bonus_requires_matching_action_and_urgency():
+    assert urgency_reward([_as_message(_NOTIFY)], gold_decision=[_NOTIFY]) == [URGENCY_BONUS]
+    wrong_urgency = {**_NOTIFY, "urgency": "normal"}
+    assert urgency_reward([_as_message(wrong_urgency)], gold_decision=[_NOTIFY]) == [0.0]
+    # A wrong action never earns the urgency bonus, even with the right urgency.
+    assert urgency_reward([_as_message(_SILENCE)], gold_decision=[_NOTIFY]) == [0.0]
+    assert urgency_reward(["not json"], gold_decision=[_NOTIFY]) == [0.0]
+
+
 def test_reward_breakdown_sums_components():
     breakdown = reward_breakdown(json.dumps(_NOTIFY, ensure_ascii=False),
                                  "notify", _NOTIFY)
     assert breakdown["format_reward"] == FORMAT_VALID
     assert breakdown["action_reward"] == ACTION_EXACT
     assert breakdown["channel_reward"] == CHANNEL_EXACT
-    assert breakdown["total"] == 2.25
+    assert breakdown["urgency_reward"] == URGENCY_BONUS
+    assert breakdown["total"] == 2.35
 
 
 def test_length_mismatch_is_rejected():

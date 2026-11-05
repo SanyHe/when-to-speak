@@ -12,7 +12,7 @@
 #   BASE_MODEL=Qwen/Qwen3-0.6B   HF repo id or a local directory with the base weights
 #   SEED=42                global seed
 #   SFT_EPOCHS=2  SFT_BATCH=2  SFT_ACCUM=8
-#   GRPO_EPOCHS=1 GRPO_BATCH=2 GRPO_GENERATIONS=8 GRPO_BETA=0.04
+#   GRPO_EPOCHS=1 GRPO_BATCH=2 GRPO_GENERATIONS=16 GRPO_TEMPERATURE=1.1 GRPO_BETA=0.04
 set -euo pipefail
 
 cd "$(dirname "$0")/.."   # repo root
@@ -24,7 +24,8 @@ SFT_BATCH=${SFT_BATCH:-2}
 SFT_ACCUM=${SFT_ACCUM:-8}
 GRPO_EPOCHS=${GRPO_EPOCHS:-1}
 GRPO_BATCH=${GRPO_BATCH:-2}
-GRPO_GENERATIONS=${GRPO_GENERATIONS:-8}
+GRPO_GENERATIONS=${GRPO_GENERATIONS:-16}
+GRPO_TEMPERATURE=${GRPO_TEMPERATURE:-1.1}
 GRPO_BETA=${GRPO_BETA:-0.04}
 
 echo "=== 1/4 Build dataset (deterministic, seed=${SEED}) ==="
@@ -49,6 +50,7 @@ python3 training/src/grpo.py \
   --epochs "${GRPO_EPOCHS}" \
   --batch_size "${GRPO_BATCH}" \
   --num_generations "${GRPO_GENERATIONS}" \
+  --temperature "${GRPO_TEMPERATURE}" \
   --beta "${GRPO_BETA}" \
   --seed "${SEED}"
 

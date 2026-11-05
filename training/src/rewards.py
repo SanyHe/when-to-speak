@@ -5,7 +5,7 @@ Pure-Python and dependency-free (only the JSON schema helpers), so the
 reward logic can be unit-tested locally while the GRPO run itself needs a
 cloud GPU.
 
-Reward is the sum of three functions (TRL sums every function in
+Reward is the sum of four functions (TRL sums every function in
 ``reward_funcs``):
 
     format_reward   1.0 strict schema-valid JSON | 0.5 parseable JSON
@@ -14,10 +14,13 @@ Reward is the sum of three functions (TRL sums every function in
                     notify | -0.15 digest<->silence confusion | 0.0 if the
                     completion cannot be parsed
     channel_reward  +0.25 when both action and channel match the gold
+    urgency_reward  +0.10 when the action and the urgency match the gold
 
 The asymmetric penalties encode the product rule: a missed urgent event
 costs twice as much as a needless notification, so GRPO is pushed to keep
-recall while reducing noise.
+recall while reducing noise. ``urgency_reward`` exists because format and
+channel rewards saturate on a 0.6B SFT model: without a finer signal most
+prompt groups score identically and contribute no GRPO advantage.
 """
 from __future__ import annotations
 
@@ -38,6 +41,7 @@ ACTION_NOISE = -0.5
 ACTION_MISSED = -1.0
 ACTION_ADJACENT = -0.15
 CHANNEL_EXACT = 0.25
+URGENCY_BONUS = 0.1
 
 
 def extract_completion_text(completion: Any) -> str:
@@ -156,7 +160,31 @@ def channel_reward(completions: List[Any],
     return rewards
 
 
-REWARD_FUNCS = [format_reward, action_reward, channel_reward]
+def urgency_reward(completions: List[Any],
+                   gold_decision: Optional[List[Dict[str, Any]]] = None,
+                   gold_action: Optional[List[str]] = None,
+                   **kwargs: Any) -> List[float]:
+    """Reward a correct action whose urgency also matches the gold label."""
+    count = len(completions)
+    decisions = _aligned(gold_decision, count, "gold_decision")
+    actions = _aligned(gold_action, count, "gold_action")
+
+    rewards: List[float] = []
+    for index, completion in enumerate(completions):
+        valid, pred = parse_decision(extract_completion_text(completion))
+        gold = decisions[index]
+        gold_act = _gold_action_of(actions[index], gold)
+        if not valid or not isinstance(gold, dict) or gold_act is None:
+            rewards.append(0.0)
+            continue
+        if pred["action"] != gold_act:
+            rewards.append(0.0)
+            continue
+        rewards.append(URGENCY_BONUS if pred.get("urgency") == gold.get("urgency") else 0.0)
+    return rewards
+
+
+REWARD_FUNCS = [format_reward, action_reward, channel_reward, urgency_reward]
 
 
 def reward_breakdown(completion: Any, gold_action: str,
