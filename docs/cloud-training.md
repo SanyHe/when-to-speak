@@ -130,9 +130,14 @@ python3 training/src/grpo.py \
 
 产物：
 
-- `output/grpo/final/` — GRPO 后的完整 HF 权重
+- `output/grpo/final/` — GRPO 后的完整 HF 权重（发布模型）
 - `output/grpo/run_config.json` — 超参、种子、奖励函数名、样本数
 - `output/grpo/train_log.json` — reward / loss / completion_length 曲线
+- `output/grpo_v1/` — 第一轮 GRPO（G=8、temperature 1.0）的日志，保留作对照；
+  它在 200 条评测上与 SFT 打平，第二轮（G=16、temperature 1.1、新增 urgency 奖励）才是发布模型
+
+> 发布模型最初跑在 `output/grpo_v2/`，定稿后重命名为 `output/grpo/`，第一轮改为 `output/grpo_v1/`。
+> 两个 `run_config.json` 里的 `output_dir` 字段仍记录运行时的原始路径，是训练事实，未回改。
 
 实现要点与版本提示：
 
