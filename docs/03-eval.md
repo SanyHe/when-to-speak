@@ -91,6 +91,9 @@ sft_grpo=output/grpo/final \
 ## 6. 局限
 
 - mock 策略只验证"链路正确"，不能证明真实模型的行为；所有 mock 数字都在 UI 与文档中显式标注。
+- GRPO 与 SFT 在 200 条评测上打平（macro-F1 0.8975 vs 0.8995，差值在抽样误差内）。训练日志显示
+  `frac_reward_zero_std` 均值 0.667——三分之二的 prompt 上 8 个采样奖励完全相同，没有优势可用；
+  且 format / channel 奖励已接近上限。本轮不构成 RL 增益的证据，见 `output/grpo/train_log.json`。
 - Eval 规模 200 条，单类样本量有限，指标存在抽样波动；扩充模板后可提高置信度。
 - gold label 来自确定性规则，规则本身对"非直接但时效性强"等边界场景偏保守，已通过 `boundary_review.jsonl` 保留人工复核入口。
 - 真实模型的 JSON 合法率可能低于 mock 假设，harness 的回退策略（解析失败 → 通知）会抬高噪音率，这正是 SFT 需要优先解决的问题。
