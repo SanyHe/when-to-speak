@@ -13,7 +13,7 @@
 #   PORT=6006              AutoDL exposes this port via its custom-service URL
 #   SERVED_NAME=wts        model id the web page must send
 #   API_KEY=               optional bearer token (vLLM --api-key)
-#   ALLOWED_ORIGINS=*      CORS origins (space-separated), e.g.
+#   ALLOWED_ORIGINS=*      CORS origins, space-separated or a JSON array, e.g.
 #                          "http://localhost:8765 http://127.0.0.1:8765"
 #   MAX_MODEL_LEN=2048     >= training max_seq_length (1024)
 #   GPU_UTIL=0.6           0.6 is plenty for a 0.6B model
@@ -49,9 +49,14 @@ if ! command -v vllm >/dev/null 2>&1; then
   exit 1
 fi
 
-# Build the argv array explicitly so empty optional flags are safe under
-# `set -u` on older bash versions (macOS ships 3.2).
-read -ra ORIGINS <<< "$ALLOWED_ORIGINS"
+# vLLM parses --allowed-origins as JSON, so a space-separated list must be
+# converted to a JSON array first. A value that is already JSON is passed
+# through unchanged.
+case "$ALLOWED_ORIGINS" in
+  \[*) ORIGINS_JSON=$ALLOWED_ORIGINS ;;
+  *) ORIGINS_JSON=$(python3 -c 'import json, sys; print(json.dumps(sys.argv[1].split()))' \
+       "$ALLOWED_ORIGINS") ;;
+esac
 
 CMD=(vllm serve "$MODEL_PATH"
   --served-model-name "$SERVED_NAME"
@@ -60,7 +65,7 @@ CMD=(vllm serve "$MODEL_PATH"
   --max-model-len "$MAX_MODEL_LEN"
   --gpu-memory-utilization "$GPU_UTIL"
   --dtype auto
-  --allowed-origins "${ORIGINS[@]}")
+  --allowed-origins "$ORIGINS_JSON")
 
 if [ -n "$API_KEY" ]; then
   CMD+=(--api-key "$API_KEY")
@@ -71,7 +76,7 @@ if [ "$EAGER" = "1" ]; then
 fi
 
 echo "Serving $MODEL_PATH as '$SERVED_NAME' on 0.0.0.0:$PORT"
-echo "CORS origins: $ALLOWED_ORIGINS"
+echo "CORS origins: $ORIGINS_JSON"
 echo "Once it is up, verify locally:"
 echo "  curl -s http://127.0.0.1:$PORT/v1/models | head"
 echo
