@@ -4,8 +4,10 @@ __pycache__/
 *.egg-info/
 .pytest_cache/
 
-# Training outputs (not committed; weights go to GitHub Release / HF)
-output/
+# Training outputs: weights and optimizer checkpoints stay out of git (they ship
+# via GitHub Release / HF). The small per-run run_config.json and train_log.json
+# are committed as reproducibility evidence.
+output/**/final/
 *.safetensors
 *.bin
 *.pt

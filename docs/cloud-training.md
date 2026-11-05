@@ -248,20 +248,32 @@ python3 -m http.server 8765 --directory web
 
 ## 7. 回传 evidence
 
-训练/评测完成后，把以下内容回传并更新 `private/feature_list.json`：
+训练/评测完成后回传以下内容。
 
-- 训练终端输出（最终 loss / 最终 reward）
-- `run_config.json` 与 `train_log.json`（SFT 与 GRPO 各一份）
-- `eval_report_hf.json` / `eval_report_hf.md`
-- 错误案例数量与类型分布
+**提交进仓库（小、公开、可复核）**
 
-同时把 `web/data/traces.json` 换成真实模型轨迹（`--mode hf --web-out ...`），并在网页上确认三模型可切换、统计一致。
+- `output/full_sft/run_config.json`、`output/full_sft/train_log.json`
+- `output/grpo/run_config.json`、`output/grpo/train_log.json`（reward 曲线是 GRPO 收敛的唯一证据）
+- `data/eval/eval_report_hf.json` / `eval_report_hf.md`、`data/eval/errors_hf.jsonl`
+- `web/data/traces.json`（用 `--mode hf --web-out ...` 生成的真实轨迹）
+
+**不入库（体积大或不可公开）**
+
+- `output/**/final/` 权重与 `output/**/checkpoints/` 优化器状态（发 GitHub Release / HuggingFace）
+- 训练终端原始输出（只把最终 loss / reward 的几行贴进 `private/` 记录）
+
+同时把 `web/data/traces.json` 里的三模型轨迹与网页统计对一遍，确认切换与统计一致。
 
 ## 8. 下载产物到本地
 
 ```bash
-# 在 AutoDL 控制台或通过 scp 下载 output/*/final/
-# 权重不入代码仓库。
+# 权重：走 AutoDL 控制台或 scp，不入代码仓库
+
+# 可入库的训练配置与日志
+scp -P <端口> root@<host>:~/experiment/when-to-speak/output/full_sft/run_config.json output/full_sft/
+scp -P <端口> root@<host>:~/experiment/when-to-speak/output/full_sft/train_log.json  output/full_sft/
+scp -P <端口> root@<host>:~/experiment/when-to-speak/output/grpo/run_config.json  output/grpo/
+scp -P <端口> root@<host>:~/experiment/when-to-speak/output/grpo/train_log.json  output/grpo/
 ```
 
 ## 9. 常见问题
