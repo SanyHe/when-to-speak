@@ -26,20 +26,32 @@ jobs:
         run: python -m pip install jsonschema pytest
       - name: Run harness verification
         run: python -m pytest training/tests/ -q
-      - name: Regenerate traces and check they match the committed ones
+      - name: Check the committed traces match their eval report
         run: |
-          python training/src/evaluate.py \
-            --eval data/synthetic/eval_set.jsonl \
-            --models base,sft,sft_grpo \
-            --out /tmp/eval_report.json \
-            --web-out /tmp/traces.json
           python - <<'PY'
           import json
+          import subprocess
+          import sys
+
           committed = json.load(open("web/data/traces.json"))
-          fresh = json.load(open("/tmp/traces.json"))
-          assert committed["events"] == fresh["events"], "traces.json is stale; rebuild it"
-          assert committed["metrics"] == fresh["metrics"], "metrics are stale; rebuild them"
-          print("traces.json is up to date")
+          mode = committed.get("_meta", {}).get("mode", "mock")
+
+          if mode == "mock":
+              subprocess.run([
+                  sys.executable, "training/src/evaluate.py",
+                  "--eval", "data/synthetic/eval_set.jsonl",
+                  "--models", "base,sft,sft_grpo",
+                  "--out", "/tmp/eval_report.json",
+                  "--web-out", "/tmp/traces.json",
+              ], check=True)
+              fresh = json.load(open("/tmp/traces.json"))
+              assert committed["events"] == fresh["events"], "traces.json is stale; rebuild it"
+              assert committed["metrics"] == fresh["metrics"], "metrics are stale; rebuild them"
+              print("traces.json is up to date (mock mode)")
+          else:
+              # Real-checkpoint traces are produced on a GPU and cannot be regenerated
+              # here; their metric formulas are still cross-checked in the next step.
+              print(f"traces.json holds {mode}-mode traces; skipping regeneration")
           PY
       - name: Verify web metric formulas match the eval report
         run: node training/tests/verify_web_metrics.js

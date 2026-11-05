@@ -11,7 +11,12 @@ const root = path.resolve(__dirname, "..", "..");
 
 const metricsLib = require(path.join(root, "web", "js", "metrics.js"));
 const traces = require(path.join(root, "web", "data", "traces.json"));
-const report = require(path.join(root, "data", "eval", "eval_report.json"));
+
+// The committed traces may come from deterministic mocks or from real
+// checkpoints (mode "hf"); each mode has its own report to match against.
+const mode = (traces._meta && traces._meta.mode) || "mock";
+const reportFile = mode === "hf" ? "eval_report_hf.json" : "eval_report.json";
+const report = require(path.join(root, "data", "eval", reportFile));
 
 let failed = false;
 
@@ -43,4 +48,4 @@ for (const model of traces.models) {
 if (failed) {
   process.exit(1);
 }
-console.log("OK: web metrics match data/eval/eval_report.json for all models.");
+console.log("OK: web metrics match data/eval/" + reportFile + " for all models.");

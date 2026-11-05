@@ -63,8 +63,8 @@ M1 的 base vs SFT 小集对比（100 条种子事件）见
 
 网页（`web/`）读取 `web/data/traces.json`，用与 `compute_metrics()` 相同的公式在前端累计统计。
 
-- 单步回放到最后一条时，面板数值应与 `data/eval/eval_report.json` 完全一致。
-- `web/data/traces.json` 是生成物，CI 会重新生成并逐字段比对，防止网页与评测口径漂移。
+- 单步回放到最后一条时，面板数值应与对应评测报告完全一致：mock 轨迹对 `data/eval/eval_report.json`，真实模型轨迹对 `data/eval/eval_report_hf.json`。
+- `web/data/traces.json` 是生成物。CI 读取其 `_meta.mode`：mock 模式下重新生成并逐字段比对；真实模型（hf）模式下无法在 CPU runner 上复现，改为校验网页指标公式与 `eval_report_hf.json` 一致。
 
 ## 5. 真实模型评测协议（AutoDL）
 

@@ -21,15 +21,16 @@ python3 training/src/evaluate.py \
   --out data/eval/eval_report.json \
   --md-out data/eval/eval_report.md \
   --errors-out data/eval/errors.jsonl \
-  --web-out web/data/traces.json
+  --web-out /tmp/traces.json
 
 # 2. 启动静态站点
 python3 -m http.server 8765 --directory web
 # 打开 http://localhost:8765
 ```
 
-> 当前网页展示的是确定性 **mock 决策轨迹**（base / SFT / SFT+GRPO 行为模型，UI 中明确标注），
-> 用于验证完整链路；真实权重在云端全参 SFT + GRPO 训练后由 vLLM 服务提供（见下节）。
+> 仓库里的 `web/data/traces.json` 是云端训练后由真实权重生成的轨迹（UI 标注 `REAL TRACES`，
+> 指标见 `data/eval/eval_report_hf.json`）。上面的 mock 命令写到 `/tmp`，只用于校验链路，
+> 不会覆盖真实轨迹；想用 mock 轨迹预览，把 `--web-out` 改成 `web/data/traces.json` 即可。
 
 ### 云端训练（国内 GPU，如 AutoDL）
 
@@ -66,9 +67,9 @@ pip install -r training/requirements.txt
 
 | 里程碑 | 状态 | 说明 |
 |---|---|---|
-| M1 最小闭环 | 代码完成（mock 验收通过） | 数据契约 / 种子集 / 规则专家就绪；SFT 训练待云 GPU |
-| M2 数据 + 训练 + 评测 | 数据与评测链路完成 | 800/300/200 合成数据集、GRPO prompts、评测报告均已生成；训练待 GPU |
-| M3 网页 Demo | 网页完成 | 播放器 / 模型切换 / 实时统计 / 远程 vLLM 直连已实现 |
+| M1 最小闭环 | 完成 | 数据契约 / 种子集 / 规则专家就绪；Qwen3-0.6B 全参 SFT 已在云 GPU 跑通 |
+| M2 数据 + 训练 + 评测 | 完成 | 800/300/200 合成数据集、SFT + GRPO 训练、三模型真实评测（macro-F1 0.899 / 0.897） |
+| M3 网页 Demo | 完成 | 播放器 / 模型切换 / 实时统计 / 远程 vLLM 直连；已装载真实模型轨迹 |
 
 ## 范围边界
 
