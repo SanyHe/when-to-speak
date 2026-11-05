@@ -38,7 +38,9 @@ datasets, accelerate).
 from __future__ import annotations
 
 import argparse
+import inspect
 import json
+import math
 import os
 import random
 import sys
@@ -198,7 +200,7 @@ def main() -> None:
     )
 
     bf16_supported = torch.cuda.is_bf16_supported()
-    training_args = TrainingArguments(
+    training_kwargs = dict(
         output_dir=os.path.join(cfg.output_dir, "checkpoints"),
         num_train_epochs=cfg.epochs,
         per_device_train_batch_size=cfg.batch_size,
@@ -218,6 +220,19 @@ def main() -> None:
         max_grad_norm=1.0,
         remove_unused_columns=False,
     )
+
+    # Newer transformers releases removed `warmup_ratio`; derive warmup_steps
+    # from the known dataset size instead of failing on the keyword.
+    if "warmup_ratio" not in inspect.signature(
+            TrainingArguments.__init__).parameters:
+        steps_per_epoch = math.ceil(
+            len(tokenized) / max(1, cfg.batch_size * cfg.grad_accum_steps))
+        total_steps = max(1, steps_per_epoch * cfg.epochs)
+        training_kwargs.pop("warmup_ratio")
+        training_kwargs["warmup_steps"] = max(
+            1, int(round(total_steps * cfg.warmup_ratio)))
+
+    training_args = TrainingArguments(**training_kwargs)
 
     trainer = Trainer(
         model=model,

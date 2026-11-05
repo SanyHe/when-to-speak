@@ -37,6 +37,7 @@ from __future__ import annotations
 import argparse
 import inspect
 import json
+import math
 import os
 import random
 import sys
@@ -105,7 +106,7 @@ def build_trainer(model, tokenizer, dataset, cfg: GRPOExperimentConfig):
     from trl import GRPOTrainer
 
     bf16_supported = torch.cuda.is_bf16_supported()
-    grpo_config = TRLGRPOConfig(
+    grpo_kwargs = dict(
         output_dir=os.path.join(cfg.output_dir, "checkpoints"),
         num_train_epochs=cfg.epochs,
         per_device_train_batch_size=cfg.batch_size,
@@ -126,9 +127,25 @@ def build_trainer(model, tokenizer, dataset, cfg: GRPOExperimentConfig):
         max_prompt_length=cfg.max_prompt_length,
         max_completion_length=cfg.max_completion_length,
         num_generations=cfg.num_generations,
-        temperature=cfg.temperature,
         beta=cfg.beta,
+        temperature=cfg.temperature,
     )
+
+    # TRL tracks transformers' TrainingArguments, whose newer releases removed
+    # `warmup_ratio`. Derive warmup_steps, and drop any other keyword this
+    # installed version no longer understands (e.g. max_prompt_length).
+    params = inspect.signature(TRLGRPOConfig.__init__).parameters
+    if "warmup_ratio" not in params:
+        steps_per_epoch = math.ceil(
+            len(dataset) / max(1, cfg.batch_size * cfg.grad_accum_steps))
+        total_steps = max(1, steps_per_epoch * cfg.epochs)
+        grpo_kwargs.pop("warmup_ratio")
+        grpo_kwargs["warmup_steps"] = max(1, int(round(total_steps * 0.03)))
+    for key in [k for k in grpo_kwargs if k not in params]:
+        print(f"[grpo] dropping unsupported config key: {key}")
+        grpo_kwargs.pop(key)
+
+    grpo_config = TRLGRPOConfig(**grpo_kwargs)
 
     trainer_kwargs = {
         "model": model,
