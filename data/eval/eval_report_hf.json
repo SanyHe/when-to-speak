@@ -1,0 +1,5139 @@
+{
+  "_meta": {
+    "mode": "hf",
+    "eval_file": "data/synthetic/eval_set.jsonl",
+    "total": 200,
+    "model_ids": [
+      "base",
+      "sft",
+      "sft_grpo"
+    ],
+    "note": "REAL VALUES: measured on cloud GPU checkpoints."
+  },
+  "metrics": {
+    "base": {
+      "total": 200,
+      "json_valid_rate": 0.0,
+      "accuracy": 0.19,
+      "macro_f1": 0.1064,
+      "notify_precision": 0.19,
+      "notify_recall": 1.0,
+      "noise_rate": 0.81,
+      "miss_rate": 0.0,
+      "counts": {
+        "should_notify": 38,
+        "predicted_notify": 200,
+        "true_notify": 38,
+        "noisy_notify": 162,
+        "missed_notify": 0,
+        "invalid_json": 200
+      },
+      "per_class": {
+        "notify": {
+          "precision": 0.19,
+          "recall": 1.0,
+          "f1": 0.3193,
+          "support": 38,
+          "predicted": 200
+        },
+        "digest": {
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0,
+          "support": 88,
+          "predicted": 0
+        },
+        "silence": {
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0,
+          "support": 74,
+          "predicted": 0
+        }
+      },
+      "confusion": {
+        "notify->notify": 38,
+        "digest->notify": 88,
+        "silence->notify": 74
+      }
+    },
+    "sft": {
+      "total": 200,
+      "json_valid_rate": 0.995,
+      "accuracy": 0.915,
+      "macro_f1": 0.8995,
+      "notify_precision": 0.8158,
+      "notify_recall": 0.8158,
+      "noise_rate": 0.035,
+      "miss_rate": 0.1842,
+      "counts": {
+        "should_notify": 38,
+        "predicted_notify": 38,
+        "true_notify": 31,
+        "noisy_notify": 7,
+        "missed_notify": 7,
+        "invalid_json": 1
+      },
+      "per_class": {
+        "notify": {
+          "precision": 0.8158,
+          "recall": 0.8158,
+          "f1": 0.8158,
+          "support": 38,
+          "predicted": 38
+        },
+        "digest": {
+          "precision": 0.908,
+          "recall": 0.8977,
+          "f1": 0.9029,
+          "support": 88,
+          "predicted": 87
+        },
+        "silence": {
+          "precision": 0.9733,
+          "recall": 0.9865,
+          "f1": 0.9799,
+          "support": 74,
+          "predicted": 75
+        }
+      },
+      "confusion": {
+        "notify->notify": 31,
+        "notify->digest": 7,
+        "digest->notify": 7,
+        "digest->digest": 79,
+        "digest->silence": 2,
+        "silence->digest": 1,
+        "silence->silence": 73
+      }
+    },
+    "sft_grpo": {
+      "total": 200,
+      "json_valid_rate": 0.995,
+      "accuracy": 0.91,
+      "macro_f1": 0.8975,
+      "notify_precision": 0.8205,
+      "notify_recall": 0.8421,
+      "noise_rate": 0.035,
+      "miss_rate": 0.1579,
+      "counts": {
+        "should_notify": 38,
+        "predicted_notify": 39,
+        "true_notify": 32,
+        "noisy_notify": 7,
+        "missed_notify": 6,
+        "invalid_json": 1
+      },
+      "per_class": {
+        "notify": {
+          "precision": 0.8205,
+          "recall": 0.8421,
+          "f1": 0.8312,
+          "support": 38,
+          "predicted": 39
+        },
+        "digest": {
+          "precision": 0.9268,
+          "recall": 0.8636,
+          "f1": 0.8941,
+          "support": 88,
+          "predicted": 82
+        },
+        "silence": {
+          "precision": 0.9367,
+          "recall": 1.0,
+          "f1": 0.9673,
+          "support": 74,
+          "predicted": 79
+        }
+      },
+      "confusion": {
+        "notify->notify": 32,
+        "notify->digest": 6,
+        "digest->notify": 7,
+        "digest->digest": 76,
+        "digest->silence": 5,
+        "silence->silence": 74
+      }
+    }
+  },
+  "error_cases": [
+    {
+      "model": "base",
+      "event_id": "evt_e0100",
+      "error_type": "invalid_json",
+      "gold": {
+        "action": "digest",
+        "channel": "im",
+        "urgency": "normal",
+        "reason": "时效信息但非直接发给用户，进入汇总",
+        "message": "告警在群里刷屏：页面加载时间明显变长。"
+      },
+      "predicted": {
+        "action": "notify",
+        "channel": "im",
+        "urgency": "normal",
+        "reason": "模型输出无法解析，回退为通知",
+        "message": "告警在群里刷屏：页面加载时间明显变长。"
+      },
+      "json_valid": false,
+      "raw": "```json\n{\n  \"action\": \"notify\",\n  \"channel\": \"im\",\n  \"urgency\": \"urgent\",\n  \"reason\": \"页面加载时间明显变长\",\n  \"message\": \"\"\n}\n```"
+    },
+    {
+      "model": "base",
+      "event_id": "evt_e0152",
+      "error_type": "invalid_json",
+      "gold": {
+        "action": "digest",
+        "channel": "email",
+        "urgency": "low",
+        "reason": "默认进入汇总",
+        "message": "FYI：组织架构调整通知：架构调整下周生效，细节见附件。"
+      },
+      "predicted": {
+        "action": "notify",
+        "channel": "email",
+        "urgency": "normal",
+        "reason": "模型输出无法解析，回退为通知",
+        "message": "FYI：组织架构调整通知：架构调整下周生效，细节见附件。"
+      },
+      "json_valid": false,
+      "raw": "```json\n{\n  \"action\": \"notify\",\n  \"channel\": \"email\",\n  \"urgency\": \"urgent\",\n  \"reason\": \"organization-structure-announcement\",\n  \"message\": \"\"\n}\n```"
+    },
+    {
+      "model": "base",
+      "event_id": "evt_e0055",
+      "error_type": "invalid_json",
+      "gold": {
+        "action": "silence",
+        "channel": "none",
+        "urgency": "low",
+        "reason": "例行自动化通知，无需打扰",
+        "message": ""
+      },
+      "predicted": {
+        "action": "notify",
+        "channel": "push",
+        "urgency": "normal",
+        "reason": "模型输出无法解析，回退为通知",
+        "message": "每日系统健康检查报告：本月无重大故障，SLA 达标。"
+      },
+      "json_valid": false,
+      "raw": "```json\n{\n  \"action\": \"notify\",\n  \"channel\": \"im\",\n  \"urgency\": \"urgent\",\n  \"reason\": \"daily system health check report with no major issues and SLA achieved\",\n  \"message\": \"\"\n}\n```"
+    },
+    {
+      "model": "base",
+      "event_id": "evt_e0043",
+      "error_type": "invalid_json",
+      "gold": {
+        "action": "notify",
+        "channel": "push",
+        "urgency": "normal",
+        "reason": "直接发给用户的消息",
+        "message": "数据导出已就绪：任务已完成，结果需要你确认。"
+      },
+      "predicted": {
+        "action": "notify",
+        "channel": "push",
+        "urgency": "normal",
+        "reason": "模型输出无法解析，回退为通知",
+        "message": "数据导出已就绪：任务已完成，结果需要你确认。"
+      },
+      "json_valid": false,
+      "raw": "```json\n{\n  \"action\": \"notify\",\n  \"channel\": \"im\",\n  \"urgency\": \"urgent\",\n  \"reason\": \"任务已完成，结果需要你确认。\",\n  \"message\": \"\"\n}\n```"
+    },
+    {
+      "model": "base",
+      "event_id": "evt_e0149",
+      "error_type": "invalid_json",
+      "gold": {
+        "action": "silence",
+        "channel": "none",
+        "urgency": "low",
+        "reason": "营销类群发，无需打扰",
+        "message": ""
+      },
+      "predicted": {
+        "action": "notify",
+        "channel": "push",
+        "urgency": "normal",
+        "reason": "模型输出无法解析，回退为通知",
+        "message": "促销活动最后一天：升级套餐限时 8 折。"
+      },
+      "json_valid": false,
+      "raw": "{\n  \"action\": \"notify\",\n  \"channel\": \"im\",\n  \"urgency\": \"urgent\",\n  \"reason\": \"促销活动最后一天\",\n  \"message\": \"\"\n}"
+    },
+    {
+      "model": "base",
+      "event_id": "evt_e0114",
+      "error_type": "invalid_json",
+      "gold": {
+        "action": "digest",
+        "channel": "im",
+        "urgency": "low",
+        "reason": "非直接消息，进入汇总",
+        "message": "今日天气提醒：今日晴，气温 22°C。"
+      },
+      "predicted": {
+        "action": "notify",
+        "channel": "im",
+        "urgency": "normal",
+        "reason": "模型输出无法解析，回退为通知",
+        "message": "今日天气提醒：今日晴，气温 22°C。"
+      },
+      "json_valid": false,
+      "raw": "```json\n{\n  \"action\": \"notify\",\n  \"channel\": \"im\",\n  \"urgency\": \"urgent\",\n  \"reason\": \"今日晴，气温 22°C。\",\n  \"message\": \"\"\n}\n```"
+    },
+    {
+      "model": "base",
+      "event_id": "evt_e0122",
+      "error_type": "invalid_json",
+      "gold": {
+        "action": "digest",
+        "channel": "push",
+        "urgency": "normal",
+        "reason": "时效信息但非直接发给用户，进入汇总",
+        "message": "内部 CA 证书轮换提醒：有 3 张证书将在两周内到期。"
+      },
+      "predicted": {
+        "action": "notify",
+        "channel": "push",
+        "urgency": "normal",
+        "reason": "模型输出无法解析，回退为通知",
+        "message": "内部 CA 证书轮换提醒：有 3 张证书将在两周内到期。"
+      },
+      "json_valid": false,
+      "raw": "{\n  \"action\": \"notify\",\n  \"channel\": \"im\",\n  \"urgency\": \"urgent\",\n  \"reason\": \"内部 CA 证书轮换提醒\",\n  \"message\": \"\"\n}"
+    },
+    {
+      "model": "base",
+      "event_id": "evt_e0008",
+      "error_type": "invalid_json",
+      "gold": {
+        "action": "digest",
+        "channel": "im",
+        "urgency": "normal",
+        "reason": "直接发给用户的消息；用户处于 deep_work，降级为汇总",
+        "message": "麻烦你回复一下群里：@你 刚才的结论需要你确认。"
+      },
+      "predicted": {
+        "action": "notify",
+        "channel": "im",
+        "urgency": "normal",
+        "reason": "模型输出无法解析，回退为通知",
+        "message": "麻烦你回复一下群里：@你 刚才的结论需要你确认。"
+      },
+      "json_valid": false,
+      "raw": "```json\n{\n  \"action\": \"notify\",\n  \"channel\": \"im\",\n  \"urgency\": \"urgent\",\n  \"reason\": \"需要确认用户回复\",\n  \"message\": \"\"\n}\n```"
+    },
+    {
+      "model": "base",
+      "event_id": "evt_e0008_dup08",
+      "error_type": "invalid_json",
+      "gold": {
+        "action": "silence",
+        "channel": "none",
+        "urgency": "low",
+        "reason": "重复事件，不重复打扰",
+        "message": ""
+      },
+      "predicted": {
+        "action": "notify",
+        "channel": "im",
+        "urgency": "normal",
+        "reason": "模型输出无法解析，回退为通知",
+        "message": "麻烦你回复一下群里：@你 刚才的结论需要你确认。"
+      },
+      "json_valid": false,
+      "raw": "```json\n{\n  \"action\": \"notify\",\n  \"channel\": \"im\",\n  \"urgency\": \"urgent\",\n  \"reason\": \"需要确认用户回复\",\n  \"message\": \"\"\n}\n```"
+    },
+    {
+      "model": "base",
+      "event_id": "evt_e0103",
+      "error_type": "invalid_json",
+      "gold": {
+        "action": "digest",
+        "channel": "push",
+        "urgency": "normal",
+        "reason": "时效信息但非直接发给用户，进入汇总",
+        "message": "证书 7 天后过期：CA 证书需要在本月完成轮换。"
+      },
+      "predicted": {
+        "action": "notify",
+        "channel": "push",
+        "urgency": "normal",
+        "reason": "模型输出无法解析，回退为通知",
+        "message": "证书 7 天后过期：CA 证书需要在本月完成轮换。"
+      },
+      "json_valid": false,
+      "raw": "{\n  \"action\": \"notify\",\n  \"channel\": \"im\",\n  \"urgency\": \"urgent\",\n  \"reason\": \"CA证书需要在本月完成轮换\",\n  \"message\": \"\"\n}"
+    },
+    {
+      "model": "base",
+      "event_id": "evt_e0034",
+      "error_type": "invalid_json",
+      "gold": {
+        "action": "silence",
+        "channel": "none",
+        "urgency": "low",
+        "reason": "营销类群发，无需打扰",
+        "message": ""
+      },
+      "predicted": {
+        "action": "notify",
+        "channel": "im",
+        "urgency": "normal",
+        "reason": "模型输出无法解析，回退为通知",
+        "message": "优惠券快来领：促销团购价很划算。"
+      },
+      "json_valid": false,
+      "raw": "```json\n{\n  \"action\": \"notify\",\n  \"channel\": \"im\",\n  \"urgency\": \"urgent\",\n  \"reason\": \"促销团购价很划算\",\n  \"message\": \"\"\n}\n```"
+    },
+    {
+      "model": "base",
+      "event_id": "evt_e0175",
+      "error_type": "invalid_json",
+      "gold": {
+        "action": "silence",
+        "channel": "none",
+        "urgency": "low",
+        "reason": "营销类群发，无需打扰",
+        "message": ""
+      },
+      "predicted": {
+        "action": "notify",
+        "channel": "push",
+        "urgency": "normal",
+        "reason": "模型输出无法解析，回退为通知",
+        "message": "免费试用即将结束：升级套餐限时 8 折。"
+      },
+      "json_valid": false,
+      "raw": "{\n  \"action\": \"notify\",\n  \"channel\": \"im\",\n  \"urgency\": \"urgent\",\n  \"reason\": \"免费试用即将结束，限时8折，建议尽快升级套餐\",\n  \"message\": \"\"\n}"
+    },
+    {
+      "model": "base",
+      "event_id": "evt_e0028",
+      "error_type": "invalid_json",
+      "gold": {
+        "action": "silence",
+        "channel": "none",
+        "urgency": "low",
+        "reason": "营销类群发，无需打扰",
+        "message": ""
+      },
+      "predicted": {
+        "action": "notify",
+        "channel": "im",
+        "urgency": "normal",
+        "reason": "模型输出无法解析，回退为通知",
+        "message": "限时优惠只给你们团队：促销期签约有额外折扣。"
+      },
+      "json_valid": false,
+      "raw": "{\n  \"action\": \"notify\",\n  \"channel\": \"im\",\n  \"urgency\": \"urgent\",\n  \"reason\": \"限时优惠只给你们团队\",\n  \"message\": \"\"\n}"
+    },
+    {
+      "model": "base",
+      "event_id": "evt_e0000",
+      "error_type": "invalid_json",
+      "gold": {
+        "action": "digest",
+        "channel": "email",
+        "urgency": "low",
+        "reason": "非直接消息，进入汇总",
+        "message": "Q4 第 4 周运营数据：运营数据环比增长 8%，详情见附件。"
+      },
+      "predicted": {
+        "action": "notify",
+        "channel": "email",
+        "urgency": "normal",
+        "reason": "模型输出无法解析，回退为通知",
+        "message": "Q4 第 4 周运营数据：运营数据环比增长 8%，详情见附件。"
+      },
+      "json_valid": false,
+      "raw": "```json\n{\n  \"action\": \"notify\",\n  \"channel\": \"email\",\n  \"urgency\": \"urgent\",\n  \"reason\": \"Q4 第 4 周运营数据环比增长 8%，详情见附件。\",\n  \"message\": \"\"\n}\n```"
+    },
+    {
+      "model": "base",
+      "event_id": "evt_e0000_dup00",
+      "error_type": "invalid_json",
+      "gold": {
+        "action": "silence",
+        "channel": "none",
+        "urgency": "low",
+        "reason": "重复事件，不重复打扰",
+        "message": ""
+      },
+      "predicted": {
+        "action": "notify",
+        "channel": "email",
+        "urgency": "normal",
+        "reason": "模型输出无法解析，回退为通知",
+        "message": "Q4 第 4 周运营数据：运营数据环比增长 8%，详情见附件。"
+      },
+      "json_valid": false,
+      "raw": "```json\n{\n  \"action\": \"notify\",\n  \"channel\": \"email\",\n  \"urgency\": \"urgent\",\n  \"reason\": \"operational data update with a 8%环比 growth\",\n  \"message\": \"\"\n}\n```"
+    },
+    {
+      "model": "base",
+      "event_id": "evt_e0098",
+      "error_type": "invalid_json",
+      "gold": {
+        "action": "digest",
+        "channel": "email",
+        "urgency": "low",
+        "reason": "默认进入汇总",
+        "message": "例会纪要请查收：季度目标有微调，供你参考。"
+      },
+      "predicted": {
+        "action": "notify",
+        "channel": "email",
+        "urgency": "normal",
+        "reason": "模型输出无法解析，回退为通知",
+        "message": "例会纪要请查收：季度目标有微调，供你参考。"
+      },
+      "json_valid": false,
+      "raw": "```json\n{\n  \"action\": \"notify\",\n  \"channel\": \"email\",\n  \"urgency\": \"urgent\",\n  \"reason\": \"example\",\n  \"message\": \"\"\n}\n```"
+    },
+    {
+      "model": "base",
+      "event_id": "evt_e0053",
+      "error_type": "invalid_json",
+      "gold": {
+        "action": "digest",
+        "channel": "email",
+        "urgency": "low",
+        "reason": "默认进入汇总",
+        "message": "付款流程待审批：付款流程停留在你这一环。"
+      },
+      "predicted": {
+        "action": "notify",
+        "channel": "email",
+        "urgency": "normal",
+        "reason": "模型输出无法解析，回退为通知",
+        "message": "付款流程待审批：付款流程停留在你这一环。"
+      },
+      "json_valid": false,
+      "raw": "```json\n{\n  \"action\": \"notify\",\n  \"channel\": \"email\",\n  \"urgency\": \"urgent\",\n  \"reason\": \"付款流程停留在你这一环\",\n  \"message\": \"\"\n}\n```"
+    },
+    {
+      "model": "base",
+      "event_id": "evt_e0130",
+      "error_type": "invalid_json",
+      "gold": {
+        "action": "notify",
+        "channel": "push",
+        "urgency": "urgent",
+        "reason": "时效性强且直接关联用户",
+        "message": "夜间备份异常，请确认：归档失败可能影响审计，请处理。"
+      },
+      "predicted": {
+        "action": "notify",
+        "channel": "push",
+        "urgency": "normal",
+        "reason": "模型输出无法解析，回退为通知",
+        "message": "夜间备份异常，请确认：归档失败可能影响审计，请处理。"
+      },
+      "json_valid": false,
+      "raw": "{\n  \"action\": \"notify\",\n  \"channel\": \"im\",\n  \"urgency\": \"urgent\",\n  \"reason\": \"归档失败可能影响审计，请处理。\",\n  \"message\": \"\"\n}"
+    },
+    {
+      "model": "base",
+      "event_id": "evt_e0151",
+      "error_type": "invalid_json",
+      "gold": {
+        "action": "notify",
+        "channel": "im",
+        "urgency": "normal",
+        "reason": "直接发给用户的消息",
+        "message": "同步一个需要你拍板的点：需要你拍板后我们继续推进。"
+      },
+      "predicted": {
+        "action": "notify",
+        "channel": "im",
+        "urgency": "normal",
+        "reason": "模型输出无法解析，回退为通知",
+        "message": "同步一个需要你拍板的点：需要你拍板后我们继续推进。"
+      },
+      "json_valid": false,
+      "raw": "```json\n{\n  \"action\": \"notify\",\n  \"channel\": \"im\",\n  \"urgency\": \"urgent\",\n  \"reason\": \"需要你拍板后我们继续推进\",\n  \"message\": \"\"\n}\n```"
+    },
+    {
+      "model": "base",
+      "event_id": "evt_e0074",
+      "error_type": "invalid_json",
+      "gold": {
+        "action": "notify",
+        "channel": "push",
+        "urgency": "urgent",
+        "reason": "时效性强且直接关联用户",
+        "message": "夜间备份异常，请确认：归档失败可能影响审计，请处理。"
+      },
+      "predicted": {
+        "action": "notify",
+        "channel": "push",
+        "urgency": "normal",
+        "reason": "模型输出无法解析，回退为通知",
+        "message": "夜间备份异常，请确认：归档失败可能影响审计，请处理。"
+      },
+      "json_valid": false,
+      "raw": "```json\n{\n  \"action\": \"notify\",\n  \"channel\": \"im\",\n  \"urgency\": \"urgent\",\n  \"reason\": \"归档失败可能影响审计，请处理。\",\n  \"message\": \"\"\n}\n```"
+    },
+    {
+      "model": "base",
+      "event_id": "evt_e0003",
+      "error_type": "invalid_json",
+      "gold": {
+        "action": "digest",
+        "channel": "email",
+        "urgency": "low",
+        "reason": "默认进入汇总",
+        "message": "本月账单待确认：发票已开具，请查收附件。"
+      },
+      "predicted": {
+        "action": "notify",
+        "channel": "email",
+        "urgency": "normal",
+        "reason": "模型输出无法解析，回退为通知",
+        "message": "本月账单待确认：发票已开具，请查收附件。"
+      },
+      "json_valid": false,
+      "raw": "```json\n{\n  \"action\": \"notify\",\n  \"channel\": \"email\",\n  \"urgency\": \"urgent\",\n  \"reason\": \"invoice has been confirmed and needs to be reviewed\",\n  \"message\": \"\"\n}\n```"
+    },
+    {
+      "model": "base",
+      "event_id": "evt_e0003_dup03",
+      "error_type": "invalid_json",
+      "gold": {
+        "action": "silence",
+        "channel": "none",
+        "urgency": "low",
+        "reason": "重复事件，不重复打扰",
+        "message": ""
+      },
+      "predicted": {
+        "action": "notify",
+        "channel": "email",
+        "urgency": "normal",
+        "reason": "模型输出无法解析，回退为通知",
+        "message": "本月账单待确认：发票已开具，请查收附件。"
+      },
+      "json_valid": false,
+      "raw": "```json\n{\n  \"action\": \"notify\",\n  \"channel\": \"email\",\n  \"urgency\": \"urgent\",\n  \"reason\": \"invoice has been confirmed and needs to be reviewed\",\n  \"message\": \"\"\n}\n```"
+    },
+    {
+      "model": "base",
+      "event_id": "evt_e0084",
+      "error_type": "invalid_json",
+      "gold": {
+        "action": "digest",
+        "channel": "im",
+        "urgency": "normal",
+        "reason": "时效信息但非直接发给用户，进入汇总",
+        "message": "群里在讨论延迟上升：页面加载时间明显变长。"
+      },
+      "predicted": {
+        "action": "notify",
+        "channel": "im",
+        "urgency": "normal",
+        "reason": "模型输出无法解析，回退为通知",
+        "message": "群里在讨论延迟上升：页面加载时间明显变长。"
+      },
+      "json_valid": false,
+      "raw": "{\n  \"action\": \"notify\",\n  \"channel\": \"im\",\n  \"urgency\": \"urgent\",\n  \"reason\": \"页面加载时间明显变长\",\n  \"message\": \"\"\n}"
+    },
+    {
+      "model": "base",
+      "event_id": "evt_e0135",
+      "error_type": "invalid_json",
+      "gold": {
+        "action": "notify",
+        "channel": "im",
+        "urgency": "urgent",
+        "reason": "时效性强且直接关联用户",
+        "message": "在吗？客户在等回复：@你 刚才部署的版本有问题，麻烦看一下。"
+      },
+      "predicted": {
+        "action": "notify",
+        "channel": "im",
+        "urgency": "normal",
+        "reason": "模型输出无法解析，回退为通知",
+        "message": "在吗？客户在等回复：@你 刚才部署的版本有问题，麻烦看一下。"
+      },
+      "json_valid": false,
+      "raw": "```json\n{\n  \"action\": \"notify\",\n  \"channel\": \"im\",\n  \"urgency\": \"urgent\",\n  \"reason\": \"客户在等回复\",\n  \"message\": \"\"\n}\n```"
+    },
+    {
+      "model": "base",
+      "event_id": "evt_e0121",
+      "error_type": "invalid_json",
+      "gold": {
+        "action": "digest",
+        "channel": "push",
+        "urgency": "normal",
+        "reason": "时效信息但非直接发给用户，进入汇总",
+        "message": "本月算力预算告警：任务队列积压超过 500 条。"
+      },
+      "predicted": {
+        "action": "notify",
+        "channel": "push",
+        "urgency": "normal",
+        "reason": "模型输出无法解析，回退为通知",
+        "message": "本月算力预算告警：任务队列积压超过 500 条。"
+      },
+      "json_valid": false,
+      "raw": "```json\n{\n  \"action\": \"notify\",\n  \"channel\": \"im\",\n  \"urgency\": \"urgent\",\n  \"reason\": \"任务队列积压超过 500 条\",\n  \"message\": \"\"\n}\n```"
+    },
+    {
+      "model": "base",
+      "event_id": "evt_e0089",
+      "error_type": "invalid_json",
+      "gold": {
+        "action": "silence",
+        "channel": "none",
+        "urgency": "low",
+        "reason": "例行自动化通知，无需打扰",
+        "message": ""
+      },
+      "predicted": {
+        "action": "notify",
+        "channel": "push",
+        "urgency": "normal",
+        "reason": "模型输出无法解析，回退为通知",
+        "message": "灰度发布完成：v1.4.2 已部署到生产环境。"
+      },
+      "json_valid": false,
+      "raw": "```json\n{\n  \"action\": \"notify\",\n  \"channel\": \"im\",\n  \"urgency\": \"urgent\",\n  \"reason\": \"灰度发布完成\",\n  \"message\": \"\"\n}\n```"
+    },
+    {
+      "model": "base",
+      "event_id": "evt_e0038",
+      "error_type": "invalid_json",
+      "gold": {
+        "action": "digest",
+        "channel": "im",
+        "urgency": "normal",
+        "reason": "时效信息但非直接发给用户，进入汇总",
+        "message": "群里在讨论延迟上升：页面加载时间明显变长。"
+      },
+      "predicted": {
+        "action": "notify",
+        "channel": "im",
+        "urgency": "normal",
+        "reason": "模型输出无法解析，回退为通知",
+        "message": "群里在讨论延迟上升：页面加载时间明显变长。"
+      },
+      "json_valid": false,
+      "raw": "```json\n{\n  \"action\": \"notify\",\n  \"channel\": \"im\",\n  \"urgency\": \"urgent\",\n  \"reason\": \"页面加载时间明显变长\",\n  \"message\": \"\"\n}\n```"
+    },
+    {
+      "model": "base",
+      "event_id": "evt_e0132",
+      "error_type": "invalid_json",
+      "gold": {
+        "action": "digest",
+        "channel": "im",
+        "urgency": "normal",
+        "reason": "时效信息但非直接发给用户，进入汇总",
+        "message": "群里在讨论延迟上升：页面加载时间明显变长。"
+      },
+      "predicted": {
+        "action": "notify",
+        "channel": "im",
+        "urgency": "normal",
+        "reason": "模型输出无法解析，回退为通知",
+        "message": "群里在讨论延迟上升：页面加载时间明显变长。"
+      },
+      "json_valid": false,
+      "raw": "{\n  \"action\": \"notify\",\n  \"channel\": \"im\",\n  \"urgency\": \"urgent\",\n  \"reason\": \"页面加载时间明显变长\",\n  \"message\": \"\"\n}"
+    },
+    {
+      "model": "base",
+      "event_id": "evt_e0174",
+      "error_type": "invalid_json",
+      "gold": {
+        "action": "notify",
+        "channel": "email",
+        "urgency": "normal",
+        "reason": "直接发给用户的消息",
+        "message": "需要你回复客户的方案确认：客户反馈交付延期，请确认新的排期。"
+      },
+      "predicted": {
+        "action": "notify",
+        "channel": "email",
+        "urgency": "normal",
+        "reason": "模型输出无法解析，回退为通知",
+        "message": "需要你回复客户的方案确认：客户反馈交付延期，请确认新的排期。"
+      },
+      "json_valid": false,
+      "raw": "```json\n{\n  \"action\": \"notify\",\n  \"channel\": \"email\",\n  \"urgency\": \"urgent\",\n  \"reason\": \"客户反馈交付延期，请确认新的排期\",\n  \"message\": \"\"\n}\n```"
+    },
+    {
+      "model": "base",
+      "event_id": "evt_e0177",
+      "error_type": "invalid_json",
+      "gold": {
+        "action": "silence",
+        "channel": "none",
+        "urgency": "low",
+        "reason": "例行自动化通知，无需打扰",
+        "message": ""
+      },
+      "predicted": {
+        "action": "notify",
+        "channel": "push",
+        "urgency": "normal",
+        "reason": "模型输出无法解析，回退为通知",
+        "message": "部署成功：灰度批次 10% 发布完成。"
+      },
+      "json_valid": false,
+      "raw": "{\n  \"action\": \"notify\",\n  \"channel\": \"im\",\n  \"urgency\": \"urgent\",\n  \"reason\": \"部署成功\",\n  \"message\": \"\"\n}"
+    },
+    {
+      "model": "base",
+      "event_id": "evt_e0178",
+      "error_type": "invalid_json",
+      "gold": {
+        "action": "digest",
+        "channel": "push",
+        "urgency": "low",
+        "reason": "默认进入汇总",
+        "message": "机房网络调整说明：维护窗口为 2 小时，请知悉。"
+      },
+      "predicted": {
+        "action": "notify",
+        "channel": "push",
+        "urgency": "normal",
+        "reason": "模型输出无法解析，回退为通知",
+        "message": "机房网络调整说明：维护窗口为 2 小时，请知悉。"
+      },
+      "json_valid": false,
+      "raw": "```json\n{\n  \"action\": \"notify\",\n  \"channel\": \"im\",\n  \"urgency\": \"urgent\",\n  \"reason\": \"机房网络调整说明，维护窗口为2小时，请知悉。\",\n  \"message\": \"\"\n}\n```"
+    },
+    {
+      "model": "base",
+      "event_id": "evt_e0011",
+      "error_type": "invalid_json",
+      "gold": {
+        "action": "digest",
+        "channel": "push",
+        "urgency": "low",
+        "reason": "默认进入汇总",
+        "message": "权限申请等待审批：审批流停留在你这一环。"
+      },
+      "predicted": {
+        "action": "notify",
+        "channel": "push",
+        "urgency": "normal",
+        "reason": "模型输出无法解析，回退为通知",
+        "message": "权限申请等待审批：审批流停留在你这一环。"
+      },
+      "json_valid": false,
+      "raw": "```json\n{\n  \"action\": \"notify\",\n  \"channel\": \"im\",\n  \"urgency\": \"urgent\",\n  \"reason\": \"审批流停留在你这一环\",\n  \"message\": \"\"\n}\n```"
+    },
+    {
+      "model": "base",
+      "event_id": "evt_e0025",
+      "error_type": "invalid_json",
+      "gold": {
+        "action": "digest",
+        "channel": "im",
+        "urgency": "normal",
+        "reason": "时效信息但非直接发给用户，进入汇总",
+        "message": "有人反馈页面变慢：错误率从 0.2% 升到 1.1%。"
+      },
+      "predicted": {
+        "action": "notify",
+        "channel": "im",
+        "urgency": "normal",
+        "reason": "模型输出无法解析，回退为通知",
+        "message": "有人反馈页面变慢：错误率从 0.2% 升到 1.1%。"
+      },
+      "json_valid": false,
+      "raw": "{\n  \"action\": \"notify\",\n  \"channel\": \"im\",\n  \"urgency\": \"urgent\",\n  \"reason\": \"页面变慢导致错误率上升\",\n  \"message\": \"\"\n}"
+    },
+    {
+      "model": "base",
+      "event_id": "evt_e0060",
+      "error_type": "invalid_json",
+      "gold": {
+        "action": "silence",
+        "channel": "none",
+        "urgency": "low",
+        "reason": "营销类群发，无需打扰",
+        "message": ""
+      },
+      "predicted": {
+        "action": "notify",
+        "channel": "im",
+        "urgency": "normal",
+        "reason": "模型输出无法解析，回退为通知",
+        "message": "方便约个时间介绍吗：促销期签约有额外折扣。"
+      },
+      "json_valid": false,
+      "raw": "```json\n{\n  \"action\": \"notify\",\n  \"channel\": \"im\",\n  \"urgency\": \"urgent\",\n  \"reason\": \"促销期签约有额外折扣\",\n  \"message\": \"\"\n}\n```"
+    },
+    {
+      "model": "base",
+      "event_id": "evt_e0011_dup11",
+      "error_type": "invalid_json",
+      "gold": {
+        "action": "silence",
+        "channel": "none",
+        "urgency": "low",
+        "reason": "重复事件，不重复打扰",
+        "message": ""
+      },
+      "predicted": {
+        "action": "notify",
+        "channel": "push",
+        "urgency": "normal",
+        "reason": "模型输出无法解析，回退为通知",
+        "message": "权限申请等待审批：审批流停留在你这一环。"
+      },
+      "json_valid": false,
+      "raw": "```json\n{\n  \"action\": \"notify\",\n  \"channel\": \"im\",\n  \"urgency\": \"urgent\",\n  \"reason\": \"审批流停留在你这一环\",\n  \"message\": \"\"\n}\n```"
+    },
+    {
+      "model": "base",
+      "event_id": "evt_e0015",
+      "error_type": "invalid_json",
+      "gold": {
+        "action": "notify",
+        "channel": "email",
+        "urgency": "normal",
+        "reason": "直接发给用户的消息",
+        "message": "客户升级问题需要你介入：客户反馈交付延期，请确认新的排期。"
+      },
+      "predicted": {
+        "action": "notify",
+        "channel": "email",
+        "urgency": "normal",
+        "reason": "模型输出无法解析，回退为通知",
+        "message": "客户升级问题需要你介入：客户反馈交付延期，请确认新的排期。"
+      },
+      "json_valid": false,
+      "raw": "```json\n{\n  \"action\": \"notify\",\n  \"channel\": \"email\",\n  \"urgency\": \"urgent\",\n  \"reason\": \"客户反馈交付延期，请确认新的排期\",\n  \"message\": \"\"\n}\n```"
+    },
+    {
+      "model": "base",
+      "event_id": "evt_e0015_dup15",
+      "error_type": "invalid_json",
+      "gold": {
+        "action": "silence",
+        "channel": "none",
+        "urgency": "low",
+        "reason": "重复事件，不重复打扰",
+        "message": ""
+      },
+      "predicted": {
+        "action": "notify",
+        "channel": "email",
+        "urgency": "normal",
+        "reason": "模型输出无法解析，回退为通知",
+        "message": "客户升级问题需要你介入：客户反馈交付延期，请确认新的排期。"
+      },
+      "json_valid": false,
+      "raw": "```json\n{\n  \"action\": \"notify\",\n  \"channel\": \"email\",\n  \"urgency\": \"urgent\",\n  \"reason\": \"客户反馈交付延期，请确认新的排期\",\n  \"message\": \"\"\n}\n```"
+    },
+    {
+      "model": "base",
+      "event_id": "evt_e0116",
+      "error_type": "invalid_json",
+      "gold": {
+        "action": "notify",
+        "channel": "im",
+        "urgency": "normal",
+        "reason": "直接发给用户的消息",
+        "message": "有个问题想请教你：这块只有你熟悉，麻烦看一下。"
+      },
+      "predicted": {
+        "action": "notify",
+        "channel": "im",
+        "urgency": "normal",
+        "reason": "模型输出无法解析，回退为通知",
+        "message": "有个问题想请教你：这块只有你熟悉，麻烦看一下。"
+      },
+      "json_valid": false,
+      "raw": "```json\n{\n  \"action\": \"notify\",\n  \"channel\": \"im\",\n  \"urgency\": \"urgent\",\n  \"reason\": \"有用户关注问题，需要尽快处理\",\n  \"message\": \"\"\n}\n```"
+    },
+    {
+      "model": "base",
+      "event_id": "evt_e0154",
+      "error_type": "invalid_json",
+      "gold": {
+        "action": "digest",
+        "channel": "email",
+        "urgency": "low",
+        "reason": "默认进入汇总",
+        "message": "本月账单待确认：付款流程停留在你这一环。"
+      },
+      "predicted": {
+        "action": "notify",
+        "channel": "email",
+        "urgency": "normal",
+        "reason": "模型输出无法解析，回退为通知",
+        "message": "本月账单待确认：付款流程停留在你这一环。"
+      },
+      "json_valid": false,
+      "raw": "{\n  \"action\": \"notify\",\n  \"channel\": \"email\",\n  \"urgency\": \"urgent\",\n  \"reason\": \"付款流程停留在你这一环\",\n  \"message\": \"\"\n}"
+    },
+    {
+      "model": "base",
+      "event_id": "evt_e0045",
+      "error_type": "invalid_json",
+      "gold": {
+        "action": "silence",
+        "channel": "none",
+        "urgency": "low",
+        "reason": "营销类群发，无需打扰",
+        "message": ""
+      },
+      "predicted": {
+        "action": "notify",
+        "channel": "im",
+        "urgency": "normal",
+        "reason": "模型输出无法解析，回退为通知",
+        "message": "限时折扣拼单：折扣名额只剩最后几个。"
+      },
+      "json_valid": false,
+      "raw": "```json\n{\n  \"action\": \"notify\",\n  \"channel\": \"im\",\n  \"urgency\": \"urgent\",\n  \"reason\": \"限时折扣拼单\",\n  \"message\": \"\"\n}\n```"
+    },
+    {
+      "model": "base",
+      "event_id": "evt_e0099",
+      "error_type": "invalid_json",
+      "gold": {
+        "action": "notify",
+        "channel": "push",
+        "urgency": "urgent",
+        "reason": "时效性强且直接关联用户",
+        "message": "数据同步失败，需要介入：昨晚备份失败，需要你确认重跑方案。"
+      },
+      "predicted": {
+        "action": "notify",
+        "channel": "push",
+        "urgency": "normal",
+        "reason": "模型输出无法解析，回退为通知",
+        "message": "数据同步失败，需要介入：昨晚备份失败，需要你确认重跑方案。"
+      },
+      "json_valid": false,
+      "raw": "```json\n{\n  \"action\": \"notify\",\n  \"channel\": \"im\",\n  \"urgency\": \"urgent\",\n  \"reason\": \"数据同步失败，需要介入\",\n  \"message\": \"\"\n}\n```"
+    },
+    {
+      "model": "base",
+      "event_id": "evt_e0081",
+      "error_type": "invalid_json",
+      "gold": {
+        "action": "silence",
+        "channel": "none",
+        "urgency": "low",
+        "reason": "营销类群发，无需打扰",
+        "message": ""
+      },
+      "predicted": {
+        "action": "notify",
+        "channel": "im",
+        "urgency": "normal",
+        "reason": "模型输出无法解析，回退为通知",
+        "message": "限时折扣拼单：免费试用限时开放。"
+      },
+      "json_valid": false,
+      "raw": "```json\n{\n  \"action\": \"notify\",\n  \"channel\": \"im\",\n  \"urgency\": \"urgent\",\n  \"reason\": \"限时折扣拼单\",\n  \"message\": \"\"\n}\n```"
+    },
+    {
+      "model": "base",
+      "event_id": "evt_e0069",
+      "error_type": "invalid_json",
+      "gold": {
+        "action": "silence",
+        "channel": "none",
+        "urgency": "low",
+        "reason": "例行自动化通知，无需打扰",
+        "message": ""
+      },
+      "predicted": {
+        "action": "notify",
+        "channel": "push",
+        "urgency": "normal",
+        "reason": "模型输出无法解析，回退为通知",
+        "message": "灰度发布完成：新镜像已推送到仓库。"
+      },
+      "json_valid": false,
+      "raw": "{\n  \"action\": \"notify\",\n  \"channel\": \"im\",\n  \"urgency\": \"urgent\",\n  \"reason\": \"新镜像已推送到仓库。\",\n  \"message\": \"\"\n}"
+    },
+    {
+      "model": "base",
+      "event_id": "evt_e0125",
+      "error_type": "invalid_json",
+      "gold": {
+        "action": "silence",
+        "channel": "none",
+        "urgency": "low",
+        "reason": "营销类群发，无需打扰",
+        "message": ""
+      },
+      "predicted": {
+        "action": "notify",
+        "channel": "push",
+        "urgency": "normal",
+        "reason": "模型输出无法解析，回退为通知",
+        "message": "促销活动最后一天：免费试用还剩 3 天，续费享折扣。"
+      },
+      "json_valid": false,
+      "raw": "```json\n{\n  \"action\": \"notify\",\n  \"channel\": \"im\",\n  \"urgency\": \"urgent\",\n  \"reason\": \"促销活动最后一天\",\n  \"message\": \"\"\n}\n```"
+    },
+    {
+      "model": "base",
+      "event_id": "evt_e0155",
+      "error_type": "invalid_json",
+      "gold": {
+        "action": "digest",
+        "channel": "push",
+        "urgency": "normal",
+        "reason": "时效信息但非直接发给用户，进入汇总",
+        "message": "内存使用率持续偏高：prod-node-2 磁盘使用率 93%。"
+      },
+      "predicted": {
+        "action": "notify",
+        "channel": "push",
+        "urgency": "normal",
+        "reason": "模型输出无法解析，回退为通知",
+        "message": "内存使用率持续偏高：prod-node-2 磁盘使用率 93%。"
+      },
+      "json_valid": false,
+      "raw": "{\n  \"action\": \"notify\",\n  \"channel\": \"im\",\n  \"urgency\": \"urgent\",\n  \"reason\": \"内存使用率持续偏高\",\n  \"message\": \"\"\n}"
+    },
+    {
+      "model": "base",
+      "event_id": "evt_e0146",
+      "error_type": "invalid_json",
+      "gold": {
+        "action": "silence",
+        "channel": "none",
+        "urgency": "low",
+        "reason": "营销类群发，无需打扰",
+        "message": ""
+      },
+      "predicted": {
+        "action": "notify",
+        "channel": "email",
+        "urgency": "normal",
+        "reason": "模型输出无法解析，回退为通知",
+        "message": "免费试用延长 30 天：升级套餐立享折扣，仅限本周。"
+      },
+      "json_valid": false,
+      "raw": "{\n  \"action\": \"notify\",\n  \"channel\": \"email\",\n  \"urgency\": \"urgent\",\n  \"reason\": \"free trial extension for 30 days\",\n  \"message\": \"\"\n}"
+    },
+    {
+      "model": "base",
+      "event_id": "evt_e0080",
+      "error_type": "invalid_json",
+      "gold": {
+        "action": "digest",
+        "channel": "email",
+        "urgency": "low",
+        "reason": "默认进入汇总",
+        "message": "FYI：组织架构调整通知：架构调整下周生效，细节见附件。"
+      },
+      "predicted": {
+        "action": "notify",
+        "channel": "email",
+        "urgency": "normal",
+        "reason": "模型输出无法解析，回退为通知",
+        "message": "FYI：组织架构调整通知：架构调整下周生效，细节见附件。"
+      },
+      "json_valid": false,
+      "raw": "```json\n{\n  \"action\": \"notify\",\n  \"channel\": \"email\",\n  \"urgency\": \"urgent\",\n  \"reason\": \"organization_structure_adjustment_notification\",\n  \"message\": \"\"\n}\n```"
+    },
+    {
+      "model": "base",
+      "event_id": "evt_e0042",
+      "error_type": "invalid_json",
+      "gold": {
+        "action": "notify",
+        "channel": "push",
+        "urgency": "urgent",
+        "reason": "时效性强且直接关联用户",
+        "message": "备份任务失败，需要你处理：昨晚备份失败，需要你确认重跑方案。"
+      },
+      "predicted": {
+        "action": "notify",
+        "channel": "push",
+        "urgency": "normal",
+        "reason": "模型输出无法解析，回退为通知",
+        "message": "备份任务失败，需要你处理：昨晚备份失败，需要你确认重跑方案。"
+      },
+      "json_valid": false,
+      "raw": "```json\n{\n  \"action\": \"notify\",\n  \"channel\": \"im\",\n  \"urgency\": \"urgent\",\n  \"reason\": \"备份任务失败，需要你处理\",\n  \"message\": \"\"\n}\n```"
+    },
+    {
+      "model": "base",
+      "event_id": "evt_e0024",
+      "error_type": "invalid_json",
+      "gold": {
+        "action": "notify",
+        "channel": "push",
+        "urgency": "urgent",
+        "reason": "时效性强且直接关联用户",
+        "message": "构建 #987 失败：合并请求的测试未通过，请修复。"
+      },
+      "predicted": {
+        "action": "notify",
+        "channel": "push",
+        "urgency": "normal",
+        "reason": "模型输出无法解析，回退为通知",
+        "message": "构建 #987 失败：合并请求的测试未通过，请修复。"
+      },
+      "json_valid": false,
+      "raw": "{\n  \"action\": \"notify\",\n  \"channel\": \"im\",\n  \"urgency\": \"urgent\",\n  \"reason\": \"合并请求的测试未通过，请修复。\",\n  \"message\": \"\"\n}"
+    },
+    {
+      "model": "base",
+      "event_id": "evt_e0153",
+      "error_type": "invalid_json",
+      "gold": {
+        "action": "silence",
+        "channel": "none",
+        "urgency": "low",
+        "reason": "营销类群发，无需打扰",
+        "message": ""
+      },
+      "predicted": {
+        "action": "notify",
+        "channel": "email",
+        "urgency": "normal",
+        "reason": "模型输出无法解析，回退为通知",
+        "message": "新功能上线，免费试用 30 天：点击链接立即抢购，数量有限。"
+      },
+      "json_valid": false,
+      "raw": "```json\n{\n  \"action\": \"notify\",\n  \"channel\": \"email\",\n  \"urgency\": \"urgent\",\n  \"reason\": \"new feature available with free 30-day trial\",\n  \"message\": \"\"\n}\n```"
+    },
+    {
+      "model": "base",
+      "event_id": "evt_e0062",
+      "error_type": "invalid_json",
+      "gold": {
+        "action": "digest",
+        "channel": "email",
+        "urgency": "low",
+        "reason": "默认进入汇总",
+        "message": "季度目标更新说明：本周进展已同步，无需回复。"
+      },
+      "predicted": {
+        "action": "notify",
+        "channel": "email",
+        "urgency": "normal",
+        "reason": "模型输出无法解析，回退为通知",
+        "message": "季度目标更新说明：本周进展已同步，无需回复。"
+      },
+      "json_valid": false,
+      "raw": "```json\n{\n  \"action\": \"notify\",\n  \"channel\": \"email\",\n  \"urgency\": \"normal\",\n  \"reason\": \"本周进展已同步，无需回复。\",\n  \"message\": \"\"\n}\n```"
+    },
+    {
+      "model": "base",
+      "event_id": "evt_e0021",
+      "error_type": "invalid_json",
+      "gold": {
+        "action": "digest",
+        "channel": "email",
+        "urgency": "low",
+        "reason": "非直接消息，进入汇总",
+        "message": "异常附件下载提醒：如非本人操作请及时改密。"
+      },
+      "predicted": {
+        "action": "notify",
+        "channel": "email",
+        "urgency": "normal",
+        "reason": "模型输出无法解析，回退为通知",
+        "message": "异常附件下载提醒：如非本人操作请及时改密。"
+      },
+      "json_valid": false,
+      "raw": "```json\n{\n  \"action\": \"notify\",\n  \"channel\": \"email\",\n  \"urgency\": \"urgent\",\n  \"reason\": \"异常附件下载提醒\",\n  \"message\": \"\"\n}\n```"
+    },
+    {
+      "model": "base",
+      "event_id": "evt_e0096",
+      "error_type": "invalid_json",
+      "gold": {
+        "action": "digest",
+        "channel": "email",
+        "urgency": "low",
+        "reason": "默认进入汇总",
+        "message": "评审会邀请：客户沟通会定在下周二。"
+      },
+      "predicted": {
+        "action": "notify",
+        "channel": "email",
+        "urgency": "normal",
+        "reason": "模型输出无法解析，回退为通知",
+        "message": "评审会邀请：客户沟通会定在下周二。"
+      },
+      "json_valid": false,
+      "raw": "```json\n{\n  \"action\": \"notify\",\n  \"channel\": \"im\",\n  \"urgency\": \"urgent\",\n  \"reason\": \"评审会邀请\",\n  \"message\": \"\"\n}\n```"
+    },
+    {
+      "model": "base",
+      "event_id": "evt_e0111",
+      "error_type": "invalid_json",
+      "gold": {
+        "action": "digest",
+        "channel": "push",
+        "urgency": "low",
+        "reason": "默认进入汇总",
+        "message": "计划维护窗口通知：旧版依赖服务将在月底下线。"
+      },
+      "predicted": {
+        "action": "notify",
+        "channel": "push",
+        "urgency": "normal",
+        "reason": "模型输出无法解析，回退为通知",
+        "message": "计划维护窗口通知：旧版依赖服务将在月底下线。"
+      },
+      "json_valid": false,
+      "raw": "{\n  \"action\": \"notify\",\n  \"channel\": \"im\",\n  \"urgency\": \"urgent\",\n  \"reason\": \"旧版依赖服务将在月底下线\",\n  \"message\": \"\"\n}"
+    },
+    {
+      "model": "base",
+      "event_id": "evt_e0067",
+      "error_type": "invalid_json",
+      "gold": {
+        "action": "digest",
+        "channel": "push",
+        "urgency": "normal",
+        "reason": "时效信息但非直接发给用户，进入汇总",
+        "message": "节点负载超过阈值：节点负载达到 85%，请关注。"
+      },
+      "predicted": {
+        "action": "notify",
+        "channel": "push",
+        "urgency": "normal",
+        "reason": "模型输出无法解析，回退为通知",
+        "message": "节点负载超过阈值：节点负载达到 85%，请关注。"
+      },
+      "json_valid": false,
+      "raw": "{\n  \"action\": \"notify\",\n  \"channel\": \"im\",\n  \"urgency\": \"urgent\",\n  \"reason\": \"节点负载达到 85%，请关注。\",\n  \"message\": \"\"\n}"
+    },
+    {
+      "model": "base",
+      "event_id": "evt_e0082",
+      "error_type": "invalid_json",
+      "gold": {
+        "action": "silence",
+        "channel": "none",
+        "urgency": "low",
+        "reason": "例行自动化通知，无需打扰",
+        "message": ""
+      },
+      "predicted": {
+        "action": "notify",
+        "channel": "push",
+        "urgency": "normal",
+        "reason": "模型输出无法解析，回退为通知",
+        "message": "CI 构建失败：main 分支构建失败，日志已归档。"
+      },
+      "json_valid": false,
+      "raw": "```json\n{\n  \"action\": \"notify\",\n  \"channel\": \"im\",\n  \"urgency\": \"urgent\",\n  \"reason\": \"CI 构建失败，main 分支构建失败，日志已归档。\",\n  \"message\": \"\"\n}\n```"
+    },
+    {
+      "model": "base",
+      "event_id": "evt_e0148",
+      "error_type": "invalid_json",
+      "gold": {
+        "action": "digest",
+        "channel": "push",
+        "urgency": "normal",
+        "reason": "时效信息但非直接发给用户，进入汇总",
+        "message": "内存使用率持续偏高：连接数已用到 90%，可能影响新请求。"
+      },
+      "predicted": {
+        "action": "notify",
+        "channel": "push",
+        "urgency": "normal",
+        "reason": "模型输出无法解析，回退为通知",
+        "message": "内存使用率持续偏高：连接数已用到 90%，可能影响新请求。"
+      },
+      "json_valid": false,
+      "raw": "{\n  \"action\": \"notify\",\n  \"channel\": \"im\",\n  \"urgency\": \"urgent\",\n  \"reason\": \"内存使用率持续偏高，连接数已用到 90%，可能影响新请求\",\n  \"message\": \"\"\n}"
+    },
+    {
+      "model": "base",
+      "event_id": "evt_e0059",
+      "error_type": "invalid_json",
+      "gold": {
+        "action": "silence",
+        "channel": "none",
+        "urgency": "low",
+        "reason": "例行自动化通知，无需打扰",
+        "message": ""
+      },
+      "predicted": {
+        "action": "notify",
+        "channel": "push",
+        "urgency": "normal",
+        "reason": "模型输出无法解析，回退为通知",
+        "message": "灰度发布完成：回滚到上一个稳定版本完成。"
+      },
+      "json_valid": false,
+      "raw": "```json\n{\n  \"action\": \"notify\",\n  \"channel\": \"im\",\n  \"urgency\": \"urgent\",\n  \"reason\": \"灰度发布已成功完成，回滚到上一个稳定版本\",\n  \"message\": \"\"\n}\n```"
+    },
+    {
+      "model": "base",
+      "event_id": "evt_e0077",
+      "error_type": "invalid_json",
+      "gold": {
+        "action": "silence",
+        "channel": "none",
+        "urgency": "low",
+        "reason": "例行自动化通知，无需打扰",
+        "message": ""
+      },
+      "predicted": {
+        "action": "notify",
+        "channel": "push",
+        "urgency": "normal",
+        "reason": "模型输出无法解析，回退为通知",
+        "message": "夜间构建报警：pipeline #221 执行失败。"
+      },
+      "json_valid": false,
+      "raw": "```json\n{\n  \"action\": \"notify\",\n  \"channel\": \"im\",\n  \"urgency\": \"urgent\",\n  \"reason\": \"pipeline #221 执行失败\",\n  \"message\": \"\"\n}\n```"
+    },
+    {
+      "model": "base",
+      "event_id": "evt_e0032",
+      "error_type": "invalid_json",
+      "gold": {
+        "action": "digest",
+        "channel": "email",
+        "urgency": "low",
+        "reason": "非直接消息，进入汇总",
+        "message": "办公区搬迁通知：新的差旅政策下月生效。"
+      },
+      "predicted": {
+        "action": "notify",
+        "channel": "email",
+        "urgency": "normal",
+        "reason": "模型输出无法解析，回退为通知",
+        "message": "办公区搬迁通知：新的差旅政策下月生效。"
+      },
+      "json_valid": false,
+      "raw": "{\n  \"action\": \"notify\",\n  \"channel\": \"email\",\n  \"urgency\": \"urgent\",\n  \"reason\": \"new office relocation policy effective next month\",\n  \"message\": \"\"\n}"
+    },
+    {
+      "model": "base",
+      "event_id": "evt_e0129",
+      "error_type": "invalid_json",
+      "gold": {
+        "action": "digest",
+        "channel": "im",
+        "urgency": "normal",
+        "reason": "时效信息但非直接发给用户，进入汇总",
+        "message": "告警在群里刷屏：页面加载时间明显变长。"
+      },
+      "predicted": {
+        "action": "notify",
+        "channel": "im",
+        "urgency": "normal",
+        "reason": "模型输出无法解析，回退为通知",
+        "message": "告警在群里刷屏：页面加载时间明显变长。"
+      },
+      "json_valid": false,
+      "raw": "```json\n{\n  \"action\": \"notify\",\n  \"channel\": \"im\",\n  \"urgency\": \"urgent\",\n  \"reason\": \"页面加载时间明显变长\",\n  \"message\": \"\"\n}\n```"
+    },
+    {
+      "model": "base",
+      "event_id": "evt_e0163",
+      "error_type": "invalid_json",
+      "gold": {
+        "action": "notify",
+        "channel": "im",
+        "urgency": "normal",
+        "reason": "直接发给用户的消息",
+        "message": "这份文档你能看一下吗：文档里的结论需要你确认。"
+      },
+      "predicted": {
+        "action": "notify",
+        "channel": "im",
+        "urgency": "normal",
+        "reason": "模型输出无法解析，回退为通知",
+        "message": "这份文档你能看一下吗：文档里的结论需要你确认。"
+      },
+      "json_valid": false,
+      "raw": "```json\n{\n  \"action\": \"notify\",\n  \"channel\": \"im\",\n  \"urgency\": \"urgent\",\n  \"reason\": \"文档里的结论需要你确认\",\n  \"message\": \"\"\n}\n```"
+    },
+    {
+      "model": "base",
+      "event_id": "evt_e0039",
+      "error_type": "invalid_json",
+      "gold": {
+        "action": "digest",
+        "channel": "im",
+        "urgency": "low",
+        "reason": "非直接消息，进入汇总",
+        "message": "想和你聊聊合作：要不要安排一次产品介绍？"
+      },
+      "predicted": {
+        "action": "notify",
+        "channel": "im",
+        "urgency": "normal",
+        "reason": "模型输出无法解析，回退为通知",
+        "message": "想和你聊聊合作：要不要安排一次产品介绍？"
+      },
+      "json_valid": false,
+      "raw": "```json\n{\n  \"action\": \"notify\",\n  \"channel\": \"im\",\n  \"urgency\": \"urgent\",\n  \"reason\": \"想和你聊聊合作\",\n  \"message\": \"\"\n}\n```"
+    },
+    {
+      "model": "base",
+      "event_id": "evt_e0140",
+      "error_type": "invalid_json",
+      "gold": {
+        "action": "digest",
+        "channel": "push",
+        "urgency": "normal",
+        "reason": "时效信息但非直接发给用户，进入汇总",
+        "message": "过期证书清单：有 3 张证书将在两周内到期。"
+      },
+      "predicted": {
+        "action": "notify",
+        "channel": "push",
+        "urgency": "normal",
+        "reason": "模型输出无法解析，回退为通知",
+        "message": "过期证书清单：有 3 张证书将在两周内到期。"
+      },
+      "json_valid": false,
+      "raw": "{\n  \"action\": \"notify\",\n  \"channel\": \"im\",\n  \"urgency\": \"urgent\",\n  \"reason\": \"证书将在两周内到期\",\n  \"message\": \"\"\n}"
+    },
+    {
+      "model": "base",
+      "event_id": "evt_e0050",
+      "error_type": "invalid_json",
+      "gold": {
+        "action": "silence",
+        "channel": "none",
+        "urgency": "low",
+        "reason": "营销类群发，无需打扰",
+        "message": ""
+      },
+      "predicted": {
+        "action": "notify",
+        "channel": "im",
+        "urgency": "normal",
+        "reason": "模型输出无法解析，回退为通知",
+        "message": "限时折扣拼单：优惠券今晚过期，速领。"
+      },
+      "json_valid": false,
+      "raw": "```json\n{\n  \"action\": \"notify\",\n  \"channel\": \"im\",\n  \"urgency\": \"urgent\",\n  \"reason\": \"限时折扣拼单优惠券已过期，需立即领取\",\n  \"message\": \"\"\n}\n```"
+    },
+    {
+      "model": "base",
+      "event_id": "evt_e0087",
+      "error_type": "invalid_json",
+      "gold": {
+        "action": "digest",
+        "channel": "email",
+        "urgency": "low",
+        "reason": "默认进入汇总",
+        "message": "复盘会材料准备：周会调整到周四下午。"
+      },
+      "predicted": {
+        "action": "notify",
+        "channel": "email",
+        "urgency": "normal",
+        "reason": "模型输出无法解析，回退为通知",
+        "message": "复盘会材料准备：周会调整到周四下午。"
+      },
+      "json_valid": false,
+      "raw": "```json\n{\n  \"action\": \"notify\",\n  \"channel\": \"email\",\n  \"urgency\": \"urgent\",\n  \"reason\": \"Revised schedule for the meeting\",\n  \"message\": \"\"\n}\n```"
+    },
+    {
+      "model": "base",
+      "event_id": "evt_e0056",
+      "error_type": "invalid_json",
+      "gold": {
+        "action": "notify",
+        "channel": "email",
+        "urgency": "urgent",
+        "reason": "时效性强且直接关联用户",
+        "message": "线上故障需要你确认：主数据库连接池打满，影响所有写请求。"
+      },
+      "predicted": {
+        "action": "notify",
+        "channel": "email",
+        "urgency": "normal",
+        "reason": "模型输出无法解析，回退为通知",
+        "message": "线上故障需要你确认：主数据库连接池打满，影响所有写请求。"
+      },
+      "json_valid": false,
+      "raw": "{\n  \"action\": \"notify\",\n  \"channel\": \"email\",\n  \"urgency\": \"urgent\",\n  \"reason\": \"主数据库连接池打满，影响所有写请求\",\n  \"message\": \"\"\n}"
+    },
+    {
+      "model": "base",
+      "event_id": "evt_e0058",
+      "error_type": "invalid_json",
+      "gold": {
+        "action": "digest",
+        "channel": "email",
+        "urgency": "low",
+        "reason": "非直接消息，进入汇总",
+        "message": "办公区搬迁通知：体检预约通道已开放。"
+      },
+      "predicted": {
+        "action": "notify",
+        "channel": "email",
+        "urgency": "normal",
+        "reason": "模型输出无法解析，回退为通知",
+        "message": "办公区搬迁通知：体检预约通道已开放。"
+      },
+      "json_valid": false,
+      "raw": "```json\n{\n  \"action\": \"notify\",\n  \"channel\": \"email\",\n  \"urgency\": \"urgent\",\n  \"reason\": \"office搬迁通知\",\n  \"message\": \"\"\n}\n```"
+    },
+    {
+      "model": "base",
+      "event_id": "evt_e0107",
+      "error_type": "invalid_json",
+      "gold": {
+        "action": "notify",
+        "channel": "im",
+        "urgency": "normal",
+        "reason": "直接发给用户的消息",
+        "message": "麻烦你回复一下群里：需要你拍板后我们继续推进。"
+      },
+      "predicted": {
+        "action": "notify",
+        "channel": "im",
+        "urgency": "normal",
+        "reason": "模型输出无法解析，回退为通知",
+        "message": "麻烦你回复一下群里：需要你拍板后我们继续推进。"
+      },
+      "json_valid": false,
+      "raw": "{\n  \"action\": \"notify\",\n  \"channel\": \"im\",\n  \"urgency\": \"urgent\",\n  \"reason\": \"需要你拍板后我们继续推进\",\n  \"message\": \"\"\n}"
+    },
+    {
+      "model": "base",
+      "event_id": "evt_e0176",
+      "error_type": "invalid_json",
+      "gold": {
+        "action": "notify",
+        "channel": "email",
+        "urgency": "normal",
+        "reason": "直接发给用户的消息",
+        "message": "需要你回复客户的方案确认：客户反馈交付延期，请确认新的排期。"
+      },
+      "predicted": {
+        "action": "notify",
+        "channel": "email",
+        "urgency": "normal",
+        "reason": "模型输出无法解析，回退为通知",
+        "message": "需要你回复客户的方案确认：客户反馈交付延期，请确认新的排期。"
+      },
+      "json_valid": false,
+      "raw": "```json\n{\n  \"action\": \"notify\",\n  \"channel\": \"email\",\n  \"urgency\": \"urgent\",\n  \"reason\": \"客户反馈交付延期，请确认新的排期\",\n  \"message\": \"\"\n}\n```"
+    },
+    {
+      "model": "base",
+      "event_id": "evt_e0097",
+      "error_type": "invalid_json",
+      "gold": {
+        "action": "digest",
+        "channel": "push",
+        "urgency": "normal",
+        "reason": "直接发给用户的消息；用户处于 deep_work，降级为汇总",
+        "message": "批处理结果需要你确认：训练已完成，指标等待你验收。"
+      },
+      "predicted": {
+        "action": "notify",
+        "channel": "push",
+        "urgency": "normal",
+        "reason": "模型输出无法解析，回退为通知",
+        "message": "批处理结果需要你确认：训练已完成，指标等待你验收。"
+      },
+      "json_valid": false,
+      "raw": "```json\n{\n  \"action\": \"notify\",\n  \"channel\": \"im\",\n  \"urgency\": \"urgent\",\n  \"reason\": \"训练已完成，指标等待你验收\",\n  \"message\": \"\"\n}\n```"
+    },
+    {
+      "model": "base",
+      "event_id": "evt_e0115",
+      "error_type": "invalid_json",
+      "gold": {
+        "action": "digest",
+        "channel": "im",
+        "urgency": "normal",
+        "reason": "时效信息但非直接发给用户，进入汇总",
+        "message": "有人反馈页面变慢：监控机器人连续发出告警。"
+      },
+      "predicted": {
+        "action": "notify",
+        "channel": "im",
+        "urgency": "normal",
+        "reason": "模型输出无法解析，回退为通知",
+        "message": "有人反馈页面变慢：监控机器人连续发出告警。"
+      },
+      "json_valid": false,
+      "raw": "{\n  \"action\": \"notify\",\n  \"channel\": \"im\",\n  \"urgency\": \"urgent\",\n  \"reason\": \"监控机器人连续发出告警\",\n  \"message\": \"\"\n}"
+    },
+    {
+      "model": "base",
+      "event_id": "evt_e0018",
+      "error_type": "invalid_json",
+      "gold": {
+        "action": "silence",
+        "channel": "none",
+        "urgency": "low",
+        "reason": "例行自动化通知，无需打扰",
+        "message": ""
+      },
+      "predicted": {
+        "action": "notify",
+        "channel": "push",
+        "urgency": "normal",
+        "reason": "模型输出无法解析，回退为通知",
+        "message": "依赖安装失败：main 分支构建失败，日志已归档。"
+      },
+      "json_valid": false,
+      "raw": "```json\n{\n  \"action\": \"notify\",\n  \"channel\": \"im\",\n  \"urgency\": \"urgent\",\n  \"reason\": \"依赖安装失败\",\n  \"message\": \"\"\n}\n```"
+    },
+    {
+      "model": "base",
+      "event_id": "evt_e0018_dup18",
+      "error_type": "invalid_json",
+      "gold": {
+        "action": "silence",
+        "channel": "none",
+        "urgency": "low",
+        "reason": "重复事件，不重复打扰",
+        "message": ""
+      },
+      "predicted": {
+        "action": "notify",
+        "channel": "push",
+        "urgency": "normal",
+        "reason": "模型输出无法解析，回退为通知",
+        "message": "依赖安装失败：main 分支构建失败，日志已归档。"
+      },
+      "json_valid": false,
+      "raw": "```json\n{\n  \"action\": \"notify\",\n  \"channel\": \"im\",\n  \"urgency\": \"urgent\",\n  \"reason\": \"依赖安装失败，日志已归档\",\n  \"message\": \"\"\n}\n```"
+    },
+    {
+      "model": "base",
+      "event_id": "evt_e0172",
+      "error_type": "invalid_json",
+      "gold": {
+        "action": "digest",
+        "channel": "im",
+        "urgency": "normal",
+        "reason": "直接发给用户的消息；用户处于 deep_work，降级为汇总",
+        "message": "群里 @你 需要确认：需要你拍板后我们继续推进。"
+      },
+      "predicted": {
+        "action": "notify",
+        "channel": "im",
+        "urgency": "normal",
+        "reason": "模型输出无法解析，回退为通知",
+        "message": "群里 @你 需要确认：需要你拍板后我们继续推进。"
+      },
+      "json_valid": false,
+      "raw": "{\n  \"action\": \"notify\",\n  \"channel\": \"im\",\n  \"urgency\": \"urgent\",\n  \"reason\": \"需要确认\",\n  \"message\": \"\"\n}"
+    },
+    {
+      "model": "base",
+      "event_id": "evt_e0166",
+      "error_type": "invalid_json",
+      "gold": {
+        "action": "digest",
+        "channel": "push",
+        "urgency": "low",
+        "reason": "默认进入汇总",
+        "message": "有一条审批待你处理：发布审批单已提交，等待处理。"
+      },
+      "predicted": {
+        "action": "notify",
+        "channel": "push",
+        "urgency": "normal",
+        "reason": "模型输出无法解析，回退为通知",
+        "message": "有一条审批待你处理：发布审批单已提交，等待处理。"
+      },
+      "json_valid": false,
+      "raw": "```json\n{\n  \"action\": \"notify\",\n  \"channel\": \"im\",\n  \"urgency\": \"urgent\",\n  \"reason\": \"审批待处理\",\n  \"message\": \"\"\n}\n```"
+    },
+    {
+      "model": "base",
+      "event_id": "evt_e0160",
+      "error_type": "invalid_json",
+      "gold": {
+        "action": "digest",
+        "channel": "email",
+        "urgency": "low",
+        "reason": "默认进入汇总",
+        "message": "本月账单待确认：发票已开具，请查收附件。"
+      },
+      "predicted": {
+        "action": "notify",
+        "channel": "email",
+        "urgency": "normal",
+        "reason": "模型输出无法解析，回退为通知",
+        "message": "本月账单待确认：发票已开具，请查收附件。"
+      },
+      "json_valid": false,
+      "raw": "{\n  \"action\": \"notify\",\n  \"channel\": \"email\",\n  \"urgency\": \"urgent\",\n  \"reason\": \"invoice@vendor.com has sent a subject indicating that the invoice is pending confirmation.\",\n  \"message\": \"\"\n}"
+    },
+    {
+      "model": "base",
+      "event_id": "evt_e0144",
+      "error_type": "invalid_json",
+      "gold": {
+        "action": "notify",
+        "channel": "im",
+        "urgency": "normal",
+        "reason": "直接发给用户的消息",
+        "message": "麻烦你回复一下群里：@你 刚才的结论需要你确认。"
+      },
+      "predicted": {
+        "action": "notify",
+        "channel": "im",
+        "urgency": "normal",
+        "reason": "模型输出无法解析，回退为通知",
+        "message": "麻烦你回复一下群里：@你 刚才的结论需要你确认。"
+      },
+      "json_valid": false,
+      "raw": "```json\n{\n  \"action\": \"notify\",\n  \"channel\": \"im\",\n  \"urgency\": \"urgent\",\n  \"reason\": \"需要确认用户回复\",\n  \"message\": \"\"\n}\n```"
+    },
+    {
+      "model": "base",
+      "event_id": "evt_e0117",
+      "error_type": "invalid_json",
+      "gold": {
+        "action": "digest",
+        "channel": "email",
+        "urgency": "low",
+        "reason": "默认进入汇总",
+        "message": "例会纪要请查收：架构调整下周生效，细节见附件。"
+      },
+      "predicted": {
+        "action": "notify",
+        "channel": "email",
+        "urgency": "normal",
+        "reason": "模型输出无法解析，回退为通知",
+        "message": "例会纪要请查收：架构调整下周生效，细节见附件。"
+      },
+      "json_valid": false,
+      "raw": "```json\n{\n  \"action\": \"notify\",\n  \"channel\": \"email\",\n  \"urgency\": \"urgent\",\n  \"reason\": \"example\",\n  \"message\": \"\"\n}\n```"
+    },
+    {
+      "model": "base",
+      "event_id": "evt_e0002",
+      "error_type": "invalid_json",
+      "gold": {
+        "action": "digest",
+        "channel": "im",
+        "urgency": "normal",
+        "reason": "时效信息但非直接发给用户，进入汇总",
+        "message": "告警在群里刷屏：错误率从 0.2% 升到 1.1%。"
+      },
+      "predicted": {
+        "action": "notify",
+        "channel": "im",
+        "urgency": "normal",
+        "reason": "模型输出无法解析，回退为通知",
+        "message": "告警在群里刷屏：错误率从 0.2% 升到 1.1%。"
+      },
+      "json_valid": false,
+      "raw": "```json\n{\n  \"action\": \"notify\",\n  \"channel\": \"im\",\n  \"urgency\": \"urgent\",\n  \"reason\": \"错误率从 0.2% 升到 1.1%，需及时关注\",\n  \"message\": \"\"\n}\n```"
+    },
+    {
+      "model": "base",
+      "event_id": "evt_e0002_dup02",
+      "error_type": "invalid_json",
+      "gold": {
+        "action": "silence",
+        "channel": "none",
+        "urgency": "low",
+        "reason": "重复事件，不重复打扰",
+        "message": ""
+      },
+      "predicted": {
+        "action": "notify",
+        "channel": "im",
+        "urgency": "normal",
+        "reason": "模型输出无法解析，回退为通知",
+        "message": "告警在群里刷屏：错误率从 0.2% 升到 1.1%。"
+      },
+      "json_valid": false,
+      "raw": "```json\n{\n  \"action\": \"notify\",\n  \"channel\": \"im\",\n  \"urgency\": \"urgent\",\n  \"reason\": \"错误率从 0.2% 升到 1.1%\",\n  \"message\": \"\"\n}\n```"
+    },
+    {
+      "model": "base",
+      "event_id": "evt_e0085",
+      "error_type": "invalid_json",
+      "gold": {
+        "action": "digest",
+        "channel": "push",
+        "urgency": "normal",
+        "reason": "时效信息但非直接发给用户，进入汇总",
+        "message": "域名证书即将到期：有 3 张证书将在两周内到期。"
+      },
+      "predicted": {
+        "action": "notify",
+        "channel": "push",
+        "urgency": "normal",
+        "reason": "模型输出无法解析，回退为通知",
+        "message": "域名证书即将到期：有 3 张证书将在两周内到期。"
+      },
+      "json_valid": false,
+      "raw": "{\n  \"action\": \"notify\",\n  \"channel\": \"im\",\n  \"urgency\": \"urgent\",\n  \"reason\": \"域名证书即将到期\",\n  \"message\": \"\"\n}"
+    },
+    {
+      "model": "base",
+      "event_id": "evt_e0164",
+      "error_type": "invalid_json",
+      "gold": {
+        "action": "silence",
+        "channel": "none",
+        "urgency": "low",
+        "reason": "例行自动化通知，无需打扰",
+        "message": ""
+      },
+      "predicted": {
+        "action": "notify",
+        "channel": "push",
+        "urgency": "normal",
+        "reason": "模型输出无法解析，回退为通知",
+        "message": "资源使用率周报：本月无重大故障，SLA 达标。"
+      },
+      "json_valid": false,
+      "raw": "```json\n{\n  \"action\": \"notify\",\n  \"channel\": \"im\",\n  \"urgency\": \"urgent\",\n  \"reason\": \"SLA 达标，本月无重大故障\",\n  \"message\": \"\"\n}\n```"
+    },
+    {
+      "model": "base",
+      "event_id": "evt_e0023",
+      "error_type": "invalid_json",
+      "gold": {
+        "action": "digest",
+        "channel": "email",
+        "urgency": "low",
+        "reason": "非直接消息，进入汇总",
+        "message": "钓鱼邮件预警：本周拦截可疑邮件 32 封。"
+      },
+      "predicted": {
+        "action": "notify",
+        "channel": "email",
+        "urgency": "normal",
+        "reason": "模型输出无法解析，回退为通知",
+        "message": "钓鱼邮件预警：本周拦截可疑邮件 32 封。"
+      },
+      "json_valid": false,
+      "raw": "```json\n{\n  \"action\": \"notify\",\n  \"channel\": \"email\",\n  \"urgency\": \"urgent\",\n  \"reason\": \"钓鱼邮件预警\",\n  \"message\": \"\"\n}\n```"
+    },
+    {
+      "model": "base",
+      "event_id": "evt_e0052",
+      "error_type": "invalid_json",
+      "gold": {
+        "action": "digest",
+        "channel": "email",
+        "urgency": "low",
+        "reason": "默认进入汇总",
+        "message": "同步一下本周进展：季度目标有微调，供你参考。"
+      },
+      "predicted": {
+        "action": "notify",
+        "channel": "email",
+        "urgency": "normal",
+        "reason": "模型输出无法解析，回退为通知",
+        "message": "同步一下本周进展：季度目标有微调，供你参考。"
+      },
+      "json_valid": false,
+      "raw": "{\n  \"action\": \"notify\",\n  \"channel\": \"email\",\n  \"urgency\": \"urgent\",\n  \"reason\": \"同步本周进展，供参考\",\n  \"message\": \"\"\n}"
+    },
+    {
+      "model": "base",
+      "event_id": "evt_e0108",
+      "error_type": "invalid_json",
+      "gold": {
+        "action": "digest",
+        "channel": "email",
+        "urgency": "low",
+        "reason": "默认进入汇总",
+        "message": "评审会邀请：复盘会前请准备材料。"
+      },
+      "predicted": {
+        "action": "notify",
+        "channel": "email",
+        "urgency": "normal",
+        "reason": "模型输出无法解析，回退为通知",
+        "message": "评审会邀请：复盘会前请准备材料。"
+      },
+      "json_valid": false,
+      "raw": "```json\n{\n  \"action\": \"notify\",\n  \"channel\": \"email\",\n  \"urgency\": \"urgent\",\n  \"reason\": \"评审会邀请\",\n  \"message\": \"\"\n}\n```"
+    },
+    {
+      "model": "base",
+      "event_id": "evt_e0016",
+      "error_type": "invalid_json",
+      "gold": {
+        "action": "digest",
+        "channel": "push",
+        "urgency": "low",
+        "reason": "默认进入汇总",
+        "message": "采购申请待审批：发布审批单已提交，等待处理。"
+      },
+      "predicted": {
+        "action": "notify",
+        "channel": "push",
+        "urgency": "normal",
+        "reason": "模型输出无法解析，回退为通知",
+        "message": "采购申请待审批：发布审批单已提交，等待处理。"
+      },
+      "json_valid": false,
+      "raw": "{\n  \"action\": \"notify\",\n  \"channel\": \"im\",\n  \"urgency\": \"urgent\",\n  \"reason\": \"采购申请待审批，等待处理\",\n  \"message\": \"\"\n}"
+    },
+    {
+      "model": "base",
+      "event_id": "evt_e0016_dup16",
+      "error_type": "invalid_json",
+      "gold": {
+        "action": "silence",
+        "channel": "none",
+        "urgency": "low",
+        "reason": "重复事件，不重复打扰",
+        "message": ""
+      },
+      "predicted": {
+        "action": "notify",
+        "channel": "push",
+        "urgency": "normal",
+        "reason": "模型输出无法解析，回退为通知",
+        "message": "采购申请待审批：发布审批单已提交，等待处理。"
+      },
+      "json_valid": false,
+      "raw": "```json\n{\n  \"action\": \"notify\",\n  \"channel\": \"im\",\n  \"urgency\": \"urgent\",\n  \"reason\": \"采购申请待审批，已提交，等待处理\",\n  \"message\": \"\"\n}\n```"
+    },
+    {
+      "model": "base",
+      "event_id": "evt_e0001",
+      "error_type": "invalid_json",
+      "gold": {
+        "action": "digest",
+        "channel": "im",
+        "urgency": "normal",
+        "reason": "直接发给用户的消息；用户处于 deep_work，降级为汇总",
+        "message": "群里 @你 需要确认：客户在群里等你答复。"
+      },
+      "predicted": {
+        "action": "notify",
+        "channel": "im",
+        "urgency": "normal",
+        "reason": "模型输出无法解析，回退为通知",
+        "message": "群里 @你 需要确认：客户在群里等你答复。"
+      },
+      "json_valid": false,
+      "raw": "{\n  \"action\": \"notify\",\n  \"channel\": \"im\",\n  \"urgency\": \"urgent\",\n  \"reason\": \"客户在群里等你答复\",\n  \"message\": \"\"\n}"
+    },
+    {
+      "model": "base",
+      "event_id": "evt_e0001_dup01",
+      "error_type": "invalid_json",
+      "gold": {
+        "action": "silence",
+        "channel": "none",
+        "urgency": "low",
+        "reason": "重复事件，不重复打扰",
+        "message": ""
+      },
+      "predicted": {
+        "action": "notify",
+        "channel": "im",
+        "urgency": "normal",
+        "reason": "模型输出无法解析，回退为通知",
+        "message": "群里 @你 需要确认：客户在群里等你答复。"
+      },
+      "json_valid": false,
+      "raw": "```json\n{\n  \"action\": \"notify\",\n  \"channel\": \"im\",\n  \"urgency\": \"urgent\",\n  \"reason\": \"客户在群里等你答复\",\n  \"message\": \"\"\n}\n```"
+    },
+    {
+      "model": "base",
+      "event_id": "evt_e0150",
+      "error_type": "invalid_json",
+      "gold": {
+        "action": "silence",
+        "channel": "none",
+        "urgency": "low",
+        "reason": "营销类群发，无需打扰",
+        "message": ""
+      },
+      "predicted": {
+        "action": "notify",
+        "channel": "email",
+        "urgency": "normal",
+        "reason": "模型输出无法解析，回退为通知",
+        "message": "免费试用延长 30 天：免费试用名额开放，立即领取。"
+      },
+      "json_valid": false,
+      "raw": "```json\n{\n  \"action\": \"notify\",\n  \"channel\": \"email\",\n  \"urgency\": \"urgent\",\n  \"reason\": \"Free trial extension available for immediate use\",\n  \"message\": \"\"\n}\n```"
+    },
+    {
+      "model": "base",
+      "event_id": "evt_e0037",
+      "error_type": "invalid_json",
+      "gold": {
+        "action": "digest",
+        "channel": "push",
+        "urgency": "normal",
+        "reason": "时效信息但非直接发给用户，进入汇总",
+        "message": "本月算力预算告警：对象存储已使用 92%，本周可能触顶。"
+      },
+      "predicted": {
+        "action": "notify",
+        "channel": "push",
+        "urgency": "normal",
+        "reason": "模型输出无法解析，回退为通知",
+        "message": "本月算力预算告警：对象存储已使用 92%，本周可能触顶。"
+      },
+      "json_valid": false,
+      "raw": "{\n  \"action\": \"notify\",\n  \"channel\": \"im\",\n  \"urgency\": \"urgent\",\n  \"reason\": \"对象存储已使用 92%，本周可能触顶。\",\n  \"message\": \"\"\n}"
+    },
+    {
+      "model": "base",
+      "event_id": "evt_e0134",
+      "error_type": "invalid_json",
+      "gold": {
+        "action": "silence",
+        "channel": "none",
+        "urgency": "low",
+        "reason": "例行自动化通知，无需打扰",
+        "message": ""
+      },
+      "predicted": {
+        "action": "notify",
+        "channel": "push",
+        "urgency": "normal",
+        "reason": "模型输出无法解析，回退为通知",
+        "message": "服务可用性月报：所有服务运行正常，可用性 99.98%。"
+      },
+      "json_valid": false,
+      "raw": "{\n  \"action\": \"notify\",\n  \"channel\": \"im\",\n  \"urgency\": \"urgent\",\n  \"reason\": \"服务可用性月报，所有服务运行正常，可用性 99.98%\",\n  \"message\": \"\"\n}"
+    },
+    {
+      "model": "base",
+      "event_id": "evt_e0143",
+      "error_type": "invalid_json",
+      "gold": {
+        "action": "silence",
+        "channel": "none",
+        "urgency": "low",
+        "reason": "营销类群发，无需打扰",
+        "message": ""
+      },
+      "predicted": {
+        "action": "notify",
+        "channel": "push",
+        "urgency": "normal",
+        "reason": "模型输出无法解析，回退为通知",
+        "message": "免费试用即将结束：你的专属优惠券已到账。"
+      },
+      "json_valid": false,
+      "raw": "{\n  \"action\": \"notify\",\n  \"channel\": \"im\",\n  \"urgency\": \"urgent\",\n  \"reason\": \"免费试用即将结束，优惠券已到账\",\n  \"message\": \"\"\n}"
+    },
+    {
+      "model": "base",
+      "event_id": "evt_e0079",
+      "error_type": "invalid_json",
+      "gold": {
+        "action": "silence",
+        "channel": "none",
+        "urgency": "low",
+        "reason": "例行自动化通知，无需打扰",
+        "message": ""
+      },
+      "predicted": {
+        "action": "notify",
+        "channel": "push",
+        "urgency": "normal",
+        "reason": "模型输出无法解析，回退为通知",
+        "message": "每日备份已完成：跨区域数据同步完成，无差异。"
+      },
+      "json_valid": false,
+      "raw": "```json\n{\n  \"action\": \"notify\",\n  \"channel\": \"im\",\n  \"urgency\": \"urgent\",\n  \"reason\": \"跨区域数据同步完成，无差异\",\n  \"message\": \"\"\n}\n```"
+    },
+    {
+      "model": "base",
+      "event_id": "evt_e0064",
+      "error_type": "invalid_json",
+      "gold": {
+        "action": "silence",
+        "channel": "none",
+        "urgency": "low",
+        "reason": "营销类群发，无需打扰",
+        "message": ""
+      },
+      "predicted": {
+        "action": "notify",
+        "channel": "im",
+        "urgency": "normal",
+        "reason": "模型输出无法解析，回退为通知",
+        "message": "免费试用名额：促销团购价很划算。"
+      },
+      "json_valid": false,
+      "raw": "```json\n{\n  \"action\": \"notify\",\n  \"channel\": \"im\",\n  \"urgency\": \"urgent\",\n  \"reason\": \"免费试用名额促销团购价很划算\",\n  \"message\": \"\"\n}\n```"
+    },
+    {
+      "model": "base",
+      "event_id": "evt_e0179",
+      "error_type": "invalid_json",
+      "gold": {
+        "action": "notify",
+        "channel": "push",
+        "urgency": "normal",
+        "reason": "直接发给用户的消息",
+        "message": "批处理结果需要你确认：任务已完成，结果需要你确认。"
+      },
+      "predicted": {
+        "action": "notify",
+        "channel": "push",
+        "urgency": "normal",
+        "reason": "模型输出无法解析，回退为通知",
+        "message": "批处理结果需要你确认：任务已完成，结果需要你确认。"
+      },
+      "json_valid": false,
+      "raw": "```json\n{\n  \"action\": \"notify\",\n  \"channel\": \"im\",\n  \"urgency\": \"urgent\",\n  \"reason\": \"任务已完成，结果需要你确认\",\n  \"message\": \"\"\n}\n```"
+    },
+    {
+      "model": "base",
+      "event_id": "evt_e0139",
+      "error_type": "invalid_json",
+      "gold": {
+        "action": "digest",
+        "channel": "push",
+        "urgency": "normal",
+        "reason": "时效信息但非直接发给用户，进入汇总",
+        "message": "内存使用率持续偏高：内存使用率连续 10 分钟超过 90%。"
+      },
+      "predicted": {
+        "action": "notify",
+        "channel": "push",
+        "urgency": "normal",
+        "reason": "模型输出无法解析，回退为通知",
+        "message": "内存使用率持续偏高：内存使用率连续 10 分钟超过 90%。"
+      },
+      "json_valid": false,
+      "raw": "{\n  \"action\": \"notify\",\n  \"channel\": \"im\",\n  \"urgency\": \"urgent\",\n  \"reason\": \"内存使用率连续 10 分钟超过 90%\",\n  \"message\": \"\"\n}"
+    },
+    {
+      "model": "base",
+      "event_id": "evt_e0112",
+      "error_type": "invalid_json",
+      "gold": {
+        "action": "digest",
+        "channel": "push",
+        "urgency": "normal",
+        "reason": "时效信息但非直接发给用户，进入汇总",
+        "message": "API 调用量异常增长：对象存储已使用 92%，本周可能触顶。"
+      },
+      "predicted": {
+        "action": "notify",
+        "channel": "push",
+        "urgency": "normal",
+        "reason": "模型输出无法解析，回退为通知",
+        "message": "API 调用量异常增长：对象存储已使用 92%，本周可能触顶。"
+      },
+      "json_valid": false,
+      "raw": "{\n  \"action\": \"notify\",\n  \"channel\": \"im\",\n  \"urgency\": \"urgent\",\n  \"reason\": \"API 调用量异常增长，对象存储已使用 92%，可能触顶\",\n  \"message\": \"\"\n}"
+    },
+    {
+      "model": "base",
+      "event_id": "evt_e0167",
+      "error_type": "invalid_json",
+      "gold": {
+        "action": "digest",
+        "channel": "email",
+        "urgency": "low",
+        "reason": "非直接消息，进入汇总",
+        "message": "年度体检安排通知：内训课程可自由报名。"
+      },
+      "predicted": {
+        "action": "notify",
+        "channel": "email",
+        "urgency": "normal",
+        "reason": "模型输出无法解析，回退为通知",
+        "message": "年度体检安排通知：内训课程可自由报名。"
+      },
+      "json_valid": false,
+      "raw": "{\n  \"action\": \"notify\",\n  \"channel\": \"email\",\n  \"urgency\": \"urgent\",\n  \"reason\": \"Annual health check-up schedule\",\n  \"message\": \"\"\n}"
+    },
+    {
+      "model": "base",
+      "event_id": "evt_e0054",
+      "error_type": "invalid_json",
+      "gold": {
+        "action": "digest",
+        "channel": "im",
+        "urgency": "normal",
+        "reason": "时效信息但非直接发给用户，进入汇总",
+        "message": "群里在讨论延迟上升：多个同学反馈接口响应变慢。"
+      },
+      "predicted": {
+        "action": "notify",
+        "channel": "im",
+        "urgency": "normal",
+        "reason": "模型输出无法解析，回退为通知",
+        "message": "群里在讨论延迟上升：多个同学反馈接口响应变慢。"
+      },
+      "json_valid": false,
+      "raw": "```json\n{\n  \"action\": \"notify\",\n  \"channel\": \"im\",\n  \"urgency\": \"urgent\",\n  \"reason\": \"多个同学反馈接口响应变慢\",\n  \"message\": \"\"\n}\n```"
+    },
+    {
+      "model": "base",
+      "event_id": "evt_e0076",
+      "error_type": "invalid_json",
+      "gold": {
+        "action": "silence",
+        "channel": "none",
+        "urgency": "low",
+        "reason": "营销类群发，无需打扰",
+        "message": ""
+      },
+      "predicted": {
+        "action": "notify",
+        "channel": "email",
+        "urgency": "normal",
+        "reason": "模型输出无法解析，回退为通知",
+        "message": "免费试用延长 30 天：优惠券数量有限，先到先得。"
+      },
+      "json_valid": false,
+      "raw": "```json\n{\n  \"action\": \"notify\",\n  \"channel\": \"email\",\n  \"urgency\": \"urgent\",\n  \"reason\": \"优惠券数量有限，先到先得。\",\n  \"message\": \"\"\n}\n```"
+    },
+    {
+      "model": "base",
+      "event_id": "evt_e0157",
+      "error_type": "invalid_json",
+      "gold": {
+        "action": "silence",
+        "channel": "none",
+        "urgency": "low",
+        "reason": "营销类群发，无需打扰",
+        "message": ""
+      },
+      "predicted": {
+        "action": "notify",
+        "channel": "email",
+        "urgency": "normal",
+        "reason": "模型输出无法解析，回退为通知",
+        "message": "会员专享折扣来了：免费试用名额开放，立即领取。"
+      },
+      "json_valid": false,
+      "raw": "```json\n{\n  \"action\": \"notify\",\n  \"channel\": \"email\",\n  \"urgency\": \"urgent\",\n  \"reason\": \"会员专享折扣活动即将开始，立即领取免费试用名额\",\n  \"message\": \"\"\n}\n```"
+    },
+    {
+      "model": "base",
+      "event_id": "evt_e0110",
+      "error_type": "invalid_json",
+      "gold": {
+        "action": "digest",
+        "channel": "email",
+        "urgency": "low",
+        "reason": "默认进入汇总",
+        "message": "评审会邀请：周会调整到周四下午。"
+      },
+      "predicted": {
+        "action": "notify",
+        "channel": "email",
+        "urgency": "normal",
+        "reason": "模型输出无法解析，回退为通知",
+        "message": "评审会邀请：周会调整到周四下午。"
+      },
+      "json_valid": false,
+      "raw": "```json\n{\n  \"action\": \"notify\",\n  \"channel\": \"email\",\n  \"urgency\": \"urgent\",\n  \"reason\": \"评审会调整到周四下午\",\n  \"message\": \"\"\n}\n```"
+    },
+    {
+      "model": "base",
+      "event_id": "evt_e0005",
+      "error_type": "invalid_json",
+      "gold": {
+        "action": "digest",
+        "channel": "im",
+        "urgency": "normal",
+        "reason": "直接发给用户的消息；用户处于 deep_work，降级为汇总",
+        "message": "麻烦你回复一下群里：这个问题在群里等你回复。"
+      },
+      "predicted": {
+        "action": "notify",
+        "channel": "im",
+        "urgency": "normal",
+        "reason": "模型输出无法解析，回退为通知",
+        "message": "麻烦你回复一下群里：这个问题在群里等你回复。"
+      },
+      "json_valid": false,
+      "raw": "```json\n{\n  \"action\": \"notify\",\n  \"channel\": \"im\",\n  \"urgency\": \"urgent\",\n  \"reason\": \"需要回复群内问题\",\n  \"message\": \"\"\n}\n```"
+    },
+    {
+      "model": "base",
+      "event_id": "evt_e0005_dup05",
+      "error_type": "invalid_json",
+      "gold": {
+        "action": "silence",
+        "channel": "none",
+        "urgency": "low",
+        "reason": "重复事件，不重复打扰",
+        "message": ""
+      },
+      "predicted": {
+        "action": "notify",
+        "channel": "im",
+        "urgency": "normal",
+        "reason": "模型输出无法解析，回退为通知",
+        "message": "麻烦你回复一下群里：这个问题在群里等你回复。"
+      },
+      "json_valid": false,
+      "raw": "```json\n{\n  \"action\": \"notify\",\n  \"channel\": \"im\",\n  \"urgency\": \"urgent\",\n  \"reason\": \"需要回复群内问题\",\n  \"message\": \"\"\n}\n```"
+    },
+    {
+      "model": "base",
+      "event_id": "evt_e0162",
+      "error_type": "invalid_json",
+      "gold": {
+        "action": "notify",
+        "channel": "im",
+        "urgency": "urgent",
+        "reason": "时效性强且直接关联用户",
+        "message": "在吗？客户在等回复：客户反馈支付失败，需要你马上确认。"
+      },
+      "predicted": {
+        "action": "notify",
+        "channel": "im",
+        "urgency": "normal",
+        "reason": "模型输出无法解析，回退为通知",
+        "message": "在吗？客户在等回复：客户反馈支付失败，需要你马上确认。"
+      },
+      "json_valid": false,
+      "raw": "{\n  \"action\": \"notify\",\n  \"channel\": \"im\",\n  \"urgency\": \"urgent\",\n  \"reason\": \"客户在等回复\",\n  \"message\": \"\"\n}"
+    },
+    {
+      "model": "base",
+      "event_id": "evt_e0020",
+      "error_type": "invalid_json",
+      "gold": {
+        "action": "silence",
+        "channel": "none",
+        "urgency": "low",
+        "reason": "营销类群发，无需打扰",
+        "message": ""
+      },
+      "predicted": {
+        "action": "notify",
+        "channel": "email",
+        "urgency": "normal",
+        "reason": "模型输出无法解析，回退为通知",
+        "message": "免费试用延长 30 天：升级套餐立享折扣，仅限本周。"
+      },
+      "json_valid": false,
+      "raw": "```json\n{\n  \"action\": \"notify\",\n  \"channel\": \"email\",\n  \"urgency\": \"urgent\",\n  \"reason\": \"free trial extension for 30 days\",\n  \"message\": \"\"\n}\n```"
+    },
+    {
+      "model": "base",
+      "event_id": "evt_e0170",
+      "error_type": "invalid_json",
+      "gold": {
+        "action": "digest",
+        "channel": "email",
+        "urgency": "low",
+        "reason": "默认进入汇总",
+        "message": "季度目标更新说明：架构调整下周生效，细节见附件。"
+      },
+      "predicted": {
+        "action": "notify",
+        "channel": "email",
+        "urgency": "normal",
+        "reason": "模型输出无法解析，回退为通知",
+        "message": "季度目标更新说明：架构调整下周生效，细节见附件。"
+      },
+      "json_valid": false,
+      "raw": "{\n  \"action\": \"notify\",\n  \"channel\": \"email\",\n  \"urgency\": \"urgent\",\n  \"reason\": \"quarterly target update\",\n  \"message\": \"\"\n}"
+    },
+    {
+      "model": "base",
+      "event_id": "evt_e0013",
+      "error_type": "invalid_json",
+      "gold": {
+        "action": "digest",
+        "channel": "im",
+        "urgency": "normal",
+        "reason": "直接发给用户的消息；用户处于 deep_work，降级为汇总",
+        "message": "这份文档你能看一下吗：两个方案你更倾向哪个？"
+      },
+      "predicted": {
+        "action": "notify",
+        "channel": "im",
+        "urgency": "normal",
+        "reason": "模型输出无法解析，回退为通知",
+        "message": "这份文档你能看一下吗：两个方案你更倾向哪个？"
+      },
+      "json_valid": false,
+      "raw": "{\n  \"action\": \"notify\",\n  \"channel\": \"im\",\n  \"urgency\": \"urgent\",\n  \"reason\": \"用户关注深度工作，需要进一步了解方案选择\",\n  \"message\": \"\"\n}"
+    },
+    {
+      "model": "base",
+      "event_id": "evt_e0048",
+      "error_type": "invalid_json",
+      "gold": {
+        "action": "digest",
+        "channel": "push",
+        "urgency": "normal",
+        "reason": "直接发给用户的消息；用户处于 deep_work，降级为汇总",
+        "message": "模型训练任务完成：训练已完成，指标等待你验收。"
+      },
+      "predicted": {
+        "action": "notify",
+        "channel": "push",
+        "urgency": "normal",
+        "reason": "模型输出无法解析，回退为通知",
+        "message": "模型训练任务完成：训练已完成，指标等待你验收。"
+      },
+      "json_valid": false,
+      "raw": "```json\n{\n  \"action\": \"notify\",\n  \"channel\": \"im\",\n  \"urgency\": \"urgent\",\n  \"reason\": \"训练已完成，指标等待你验收。\",\n  \"message\": \"\"\n}\n```"
+    },
+    {
+      "model": "base",
+      "event_id": "evt_e0013_dup13",
+      "error_type": "invalid_json",
+      "gold": {
+        "action": "silence",
+        "channel": "none",
+        "urgency": "low",
+        "reason": "重复事件，不重复打扰",
+        "message": ""
+      },
+      "predicted": {
+        "action": "notify",
+        "channel": "im",
+        "urgency": "normal",
+        "reason": "模型输出无法解析，回退为通知",
+        "message": "这份文档你能看一下吗：两个方案你更倾向哪个？"
+      },
+      "json_valid": false,
+      "raw": "{\n  \"action\": \"notify\",\n  \"channel\": \"im\",\n  \"urgency\": \"urgent\",\n  \"reason\": \"用户正在专注深度工作，需要查看文档\",\n  \"message\": \"\"\n}"
+    },
+    {
+      "model": "base",
+      "event_id": "evt_e0102",
+      "error_type": "invalid_json",
+      "gold": {
+        "action": "digest",
+        "channel": "push",
+        "urgency": "low",
+        "reason": "默认进入汇总",
+        "message": "权限变更通知：您的访问权限已更新。"
+      },
+      "predicted": {
+        "action": "notify",
+        "channel": "push",
+        "urgency": "normal",
+        "reason": "模型输出无法解析，回退为通知",
+        "message": "权限变更通知：您的访问权限已更新。"
+      },
+      "json_valid": false,
+      "raw": "```json\n{\n  \"action\": \"notify\",\n  \"channel\": \"im\",\n  \"urgency\": \"urgent\",\n  \"reason\": \"您的访问权限已更新。\",\n  \"message\": \"\"\n}\n```"
+    },
+    {
+      "model": "base",
+      "event_id": "evt_e0136",
+      "error_type": "invalid_json",
+      "gold": {
+        "action": "notify",
+        "channel": "push",
+        "urgency": "urgent",
+        "reason": "时效性强且直接关联用户",
+        "message": "检测到高危攻击，需要你确认：WAF 拦截到针对你的定向攻击。"
+      },
+      "predicted": {
+        "action": "notify",
+        "channel": "push",
+        "urgency": "normal",
+        "reason": "模型输出无法解析，回退为通知",
+        "message": "检测到高危攻击，需要你确认：WAF 拦截到针对你的定向攻击。"
+      },
+      "json_valid": false,
+      "raw": "{\n  \"action\": \"notify\",\n  \"channel\": \"im\",\n  \"urgency\": \"urgent\",\n  \"reason\": \"检测到高危攻击，需要你确认\",\n  \"message\": \"\"\n}"
+    },
+    {
+      "model": "base",
+      "event_id": "evt_e0159",
+      "error_type": "invalid_json",
+      "gold": {
+        "action": "digest",
+        "channel": "email",
+        "urgency": "low",
+        "reason": "默认进入汇总",
+        "message": "本月账单待确认：付款流程停留在你这一环。"
+      },
+      "predicted": {
+        "action": "notify",
+        "channel": "email",
+        "urgency": "normal",
+        "reason": "模型输出无法解析，回退为通知",
+        "message": "本月账单待确认：付款流程停留在你这一环。"
+      },
+      "json_valid": false,
+      "raw": "{\n  \"action\": \"notify\",\n  \"channel\": \"email\",\n  \"urgency\": \"urgent\",\n  \"reason\": \"付款流程停留在你这一环\",\n  \"message\": \"\"\n}"
+    },
+    {
+      "model": "base",
+      "event_id": "evt_e0119",
+      "error_type": "invalid_json",
+      "gold": {
+        "action": "silence",
+        "channel": "none",
+        "urgency": "low",
+        "reason": "例行自动化通知，无需打扰",
+        "message": ""
+      },
+      "predicted": {
+        "action": "notify",
+        "channel": "push",
+        "urgency": "normal",
+        "reason": "模型输出无法解析，回退为通知",
+        "message": "CI 构建失败：夜间构建出现 3 个失败用例。"
+      },
+      "json_valid": false,
+      "raw": "```json\n{\n  \"action\": \"notify\",\n  \"channel\": \"im\",\n  \"urgency\": \"urgent\",\n  \"reason\": \"CI 构建失败，夜间出现 3 个失败用例\",\n  \"message\": \"\"\n}\n```"
+    },
+    {
+      "model": "base",
+      "event_id": "evt_e0171",
+      "error_type": "invalid_json",
+      "gold": {
+        "action": "silence",
+        "channel": "none",
+        "urgency": "low",
+        "reason": "营销类群发，无需打扰",
+        "message": ""
+      },
+      "predicted": {
+        "action": "notify",
+        "channel": "email",
+        "urgency": "normal",
+        "reason": "模型输出无法解析，回退为通知",
+        "message": "新功能上线，免费试用 30 天：有效期至本月底，不要错过。"
+      },
+      "json_valid": false,
+      "raw": "```json\n{\n  \"action\": \"notify\",\n  \"channel\": \"email\",\n  \"urgency\": \"urgent\",\n  \"reason\": \"新功能上线，免费试用 30 天\",\n  \"message\": \"\"\n}\n```"
+    },
+    {
+      "model": "base",
+      "event_id": "evt_e0145",
+      "error_type": "invalid_json",
+      "gold": {
+        "action": "digest",
+        "channel": "push",
+        "urgency": "low",
+        "reason": "默认进入汇总",
+        "message": "采购申请待审批：有一条权限申请等待你审批。"
+      },
+      "predicted": {
+        "action": "notify",
+        "channel": "push",
+        "urgency": "normal",
+        "reason": "模型输出无法解析，回退为通知",
+        "message": "采购申请待审批：有一条权限申请等待你审批。"
+      },
+      "json_valid": false,
+      "raw": "```json\n{\n  \"action\": \"notify\",\n  \"channel\": \"im\",\n  \"urgency\": \"urgent\",\n  \"reason\": \"有一条权限申请等待你审批\",\n  \"message\": \"\"\n}\n```"
+    },
+    {
+      "model": "base",
+      "event_id": "evt_e0036",
+      "error_type": "invalid_json",
+      "gold": {
+        "action": "digest",
+        "channel": "im",
+        "urgency": "normal",
+        "reason": "时效信息但非直接发给用户，进入汇总",
+        "message": "服务错误率波动：页面加载时间明显变长。"
+      },
+      "predicted": {
+        "action": "notify",
+        "channel": "im",
+        "urgency": "normal",
+        "reason": "模型输出无法解析，回退为通知",
+        "message": "服务错误率波动：页面加载时间明显变长。"
+      },
+      "json_valid": false,
+      "raw": "{\n  \"action\": \"notify\",\n  \"channel\": \"im\",\n  \"urgency\": \"urgent\",\n  \"reason\": \"页面加载时间明显变长\",\n  \"message\": \"\"\n}"
+    },
+    {
+      "model": "base",
+      "event_id": "evt_e0127",
+      "error_type": "invalid_json",
+      "gold": {
+        "action": "silence",
+        "channel": "none",
+        "urgency": "low",
+        "reason": "例行自动化通知，无需打扰",
+        "message": ""
+      },
+      "predicted": {
+        "action": "notify",
+        "channel": "push",
+        "urgency": "normal",
+        "reason": "模型输出无法解析，回退为通知",
+        "message": "部署成功：回滚到上一个稳定版本完成。"
+      },
+      "json_valid": false,
+      "raw": "{\n  \"action\": \"notify\",\n  \"channel\": \"im\",\n  \"urgency\": \"urgent\",\n  \"reason\": \"部署成功，回滚到上一个稳定版本完成\",\n  \"message\": \"\"\n}"
+    },
+    {
+      "model": "base",
+      "event_id": "evt_e0158",
+      "error_type": "invalid_json",
+      "gold": {
+        "action": "silence",
+        "channel": "none",
+        "urgency": "low",
+        "reason": "营销类群发，无需打扰",
+        "message": ""
+      },
+      "predicted": {
+        "action": "notify",
+        "channel": "im",
+        "urgency": "normal",
+        "reason": "模型输出无法解析，回退为通知",
+        "message": "团购促销开团：折扣名额只剩最后几个。"
+      },
+      "json_valid": false,
+      "raw": "```json\n{\n  \"action\": \"notify\",\n  \"channel\": \"im\",\n  \"urgency\": \"urgent\",\n  \"reason\": \"团购促销开团，折扣名额只剩最后几个\",\n  \"message\": \"\"\n}\n```"
+    },
+    {
+      "model": "base",
+      "event_id": "evt_e0046",
+      "error_type": "invalid_json",
+      "gold": {
+        "action": "notify",
+        "channel": "push",
+        "urgency": "urgent",
+        "reason": "时效性强且直接关联用户",
+        "message": "【严重】服务器宕机：磁盘使用率 95%，请尽快清理。"
+      },
+      "predicted": {
+        "action": "notify",
+        "channel": "push",
+        "urgency": "normal",
+        "reason": "模型输出无法解析，回退为通知",
+        "message": "【严重】服务器宕机：磁盘使用率 95%，请尽快清理。"
+      },
+      "json_valid": false,
+      "raw": "```json\n{\n  \"action\": \"notify\",\n  \"channel\": \"im\",\n  \"urgency\": \"urgent\",\n  \"reason\": \"磁盘使用率 95%，请尽快清理。\",\n  \"message\": \"\"\n}\n```"
+    },
+    {
+      "model": "base",
+      "event_id": "evt_e0049",
+      "error_type": "invalid_json",
+      "gold": {
+        "action": "digest",
+        "channel": "push",
+        "urgency": "normal",
+        "reason": "时效信息但非直接发给用户，进入汇总",
+        "message": "磁盘空间不足告警：内存使用率连续 10 分钟超过 90%。"
+      },
+      "predicted": {
+        "action": "notify",
+        "channel": "push",
+        "urgency": "normal",
+        "reason": "模型输出无法解析，回退为通知",
+        "message": "磁盘空间不足告警：内存使用率连续 10 分钟超过 90%。"
+      },
+      "json_valid": false,
+      "raw": "{\n  \"action\": \"notify\",\n  \"channel\": \"im\",\n  \"urgency\": \"urgent\",\n  \"reason\": \"磁盘空间不足告警\",\n  \"message\": \"\"\n}"
+    },
+    {
+      "model": "base",
+      "event_id": "evt_e0113",
+      "error_type": "invalid_json",
+      "gold": {
+        "action": "silence",
+        "channel": "none",
+        "urgency": "low",
+        "reason": "营销类群发，无需打扰",
+        "message": ""
+      },
+      "predicted": {
+        "action": "notify",
+        "channel": "push",
+        "urgency": "normal",
+        "reason": "模型输出无法解析，回退为通知",
+        "message": "限时升级优惠：促销今晚 24 点结束。"
+      },
+      "json_valid": false,
+      "raw": "```json\n{\n  \"action\": \"notify\",\n  \"channel\": \"im\",\n  \"urgency\": \"urgent\",\n  \"reason\": \"限时升级优惠活动即将结束，促销今晚24点结束\",\n  \"message\": \"\"\n}\n```"
+    },
+    {
+      "model": "base",
+      "event_id": "evt_e0133",
+      "error_type": "invalid_json",
+      "gold": {
+        "action": "digest",
+        "channel": "push",
+        "urgency": "low",
+        "reason": "默认进入汇总",
+        "message": "有一条审批待你处理：发布审批单已提交，等待处理。"
+      },
+      "predicted": {
+        "action": "notify",
+        "channel": "push",
+        "urgency": "normal",
+        "reason": "模型输出无法解析，回退为通知",
+        "message": "有一条审批待你处理：发布审批单已提交，等待处理。"
+      },
+      "json_valid": false,
+      "raw": "```json\n{\n  \"action\": \"notify\",\n  \"channel\": \"im\",\n  \"urgency\": \"urgent\",\n  \"reason\": \"审批待处理\",\n  \"message\": \"\"\n}\n```"
+    },
+    {
+      "model": "base",
+      "event_id": "evt_e0141",
+      "error_type": "invalid_json",
+      "gold": {
+        "action": "silence",
+        "channel": "none",
+        "urgency": "low",
+        "reason": "营销类群发，无需打扰",
+        "message": ""
+      },
+      "predicted": {
+        "action": "notify",
+        "channel": "email",
+        "urgency": "normal",
+        "reason": "模型输出无法解析，回退为通知",
+        "message": "【限时】全场 5 折：有效期至本月底，不要错过。"
+      },
+      "json_valid": false,
+      "raw": "```json\n{\n  \"action\": \"notify\",\n  \"channel\": \"email\",\n  \"urgency\": \"urgent\",\n  \"reason\": \"【限时】全场 5 折\",\n  \"message\": \"\"\n}\n```"
+    },
+    {
+      "model": "base",
+      "event_id": "evt_e0169",
+      "error_type": "invalid_json",
+      "gold": {
+        "action": "silence",
+        "channel": "none",
+        "urgency": "low",
+        "reason": "营销类群发，无需打扰",
+        "message": ""
+      },
+      "predicted": {
+        "action": "notify",
+        "channel": "email",
+        "urgency": "normal",
+        "reason": "模型输出无法解析，回退为通知",
+        "message": "限时优惠：全场 6 折：免费试用名额开放，立即领取。"
+      },
+      "json_valid": false,
+      "raw": "```json\n{\n  \"action\": \"notify\",\n  \"channel\": \"email\",\n  \"urgency\": \"urgent\",\n  \"reason\": \"限时优惠：全场 6 折\",\n  \"message\": \"\"\n}\n```"
+    },
+    {
+      "model": "base",
+      "event_id": "evt_e0010",
+      "error_type": "invalid_json",
+      "gold": {
+        "action": "notify",
+        "channel": "push",
+        "urgency": "urgent",
+        "reason": "时效性强且直接关联用户",
+        "message": "安全策略拦截异常流量：网关拦截了大量异常请求。"
+      },
+      "predicted": {
+        "action": "notify",
+        "channel": "push",
+        "urgency": "normal",
+        "reason": "模型输出无法解析，回退为通知",
+        "message": "安全策略拦截异常流量：网关拦截了大量异常请求。"
+      },
+      "json_valid": false,
+      "raw": "{\n  \"action\": \"notify\",\n  \"channel\": \"im\",\n  \"urgency\": \"urgent\",\n  \"reason\": \"网关拦截了大量异常请求\",\n  \"message\": \"\"\n}"
+    },
+    {
+      "model": "base",
+      "event_id": "evt_e0010_dup10",
+      "error_type": "invalid_json",
+      "gold": {
+        "action": "silence",
+        "channel": "none",
+        "urgency": "low",
+        "reason": "重复事件，不重复打扰",
+        "message": ""
+      },
+      "predicted": {
+        "action": "notify",
+        "channel": "push",
+        "urgency": "normal",
+        "reason": "模型输出无法解析，回退为通知",
+        "message": "安全策略拦截异常流量：网关拦截了大量异常请求。"
+      },
+      "json_valid": false,
+      "raw": "```json\n{\n  \"action\": \"notify\",\n  \"channel\": \"im\",\n  \"urgency\": \"urgent\",\n  \"reason\": \"网关拦截了大量异常请求\",\n  \"message\": \"\"\n}\n```"
+    },
+    {
+      "model": "base",
+      "event_id": "evt_e0168",
+      "error_type": "invalid_json",
+      "gold": {
+        "action": "notify",
+        "channel": "im",
+        "urgency": "normal",
+        "reason": "直接发给用户的消息",
+        "message": "群里 @你 需要确认：这个问题在群里等你回复。"
+      },
+      "predicted": {
+        "action": "notify",
+        "channel": "im",
+        "urgency": "normal",
+        "reason": "模型输出无法解析，回退为通知",
+        "message": "群里 @你 需要确认：这个问题在群里等你回复。"
+      },
+      "json_valid": false,
+      "raw": "{\n  \"action\": \"notify\",\n  \"channel\": \"im\",\n  \"urgency\": \"urgent\",\n  \"reason\": \"需要确认群内消息\",\n  \"message\": \"\"\n}"
+    },
+    {
+      "model": "base",
+      "event_id": "evt_e0104",
+      "error_type": "invalid_json",
+      "gold": {
+        "action": "digest",
+        "channel": "email",
+        "urgency": "low",
+        "reason": "默认进入汇总",
+        "message": "周会改期通知：复盘会前请准备材料。"
+      },
+      "predicted": {
+        "action": "notify",
+        "channel": "email",
+        "urgency": "normal",
+        "reason": "模型输出无法解析，回退为通知",
+        "message": "周会改期通知：复盘会前请准备材料。"
+      },
+      "json_valid": false,
+      "raw": "```json\n{\n  \"action\": \"notify\",\n  \"channel\": \"email\",\n  \"urgency\": \"urgent\",\n  \"reason\": \"周会改期通知\",\n  \"message\": \"\"\n}\n```"
+    },
+    {
+      "model": "base",
+      "event_id": "evt_e0065",
+      "error_type": "invalid_json",
+      "gold": {
+        "action": "digest",
+        "channel": "im",
+        "urgency": "low",
+        "reason": "非直接消息，进入汇总",
+        "message": "CI 构建成功：今日晴，气温 22°C。"
+      },
+      "predicted": {
+        "action": "notify",
+        "channel": "im",
+        "urgency": "normal",
+        "reason": "模型输出无法解析，回退为通知",
+        "message": "CI 构建成功：今日晴，气温 22°C。"
+      },
+      "json_valid": false,
+      "raw": "```json\n{\n  \"action\": \"notify\",\n  \"channel\": \"im\",\n  \"urgency\": \"urgent\",\n  \"reason\": \"CI 构建成功\",\n  \"message\": \"\"\n}\n```"
+    },
+    {
+      "model": "base",
+      "event_id": "evt_e0004",
+      "error_type": "invalid_json",
+      "gold": {
+        "action": "digest",
+        "channel": "im",
+        "urgency": "low",
+        "reason": "非直接消息，进入汇总",
+        "message": "部署已完成：构建 #1234 成功，耗时 3 分钟。"
+      },
+      "predicted": {
+        "action": "notify",
+        "channel": "im",
+        "urgency": "normal",
+        "reason": "模型输出无法解析，回退为通知",
+        "message": "部署已完成：构建 #1234 成功，耗时 3 分钟。"
+      },
+      "json_valid": false,
+      "raw": "```json\n{\n  \"action\": \"notify\",\n  \"channel\": \"im\",\n  \"urgency\": \"urgent\",\n  \"reason\": \"部署已完成\",\n  \"message\": \"\"\n}\n```"
+    },
+    {
+      "model": "base",
+      "event_id": "evt_e0004_dup04",
+      "error_type": "invalid_json",
+      "gold": {
+        "action": "silence",
+        "channel": "none",
+        "urgency": "low",
+        "reason": "重复事件，不重复打扰",
+        "message": ""
+      },
+      "predicted": {
+        "action": "notify",
+        "channel": "im",
+        "urgency": "normal",
+        "reason": "模型输出无法解析，回退为通知",
+        "message": "部署已完成：构建 #1234 成功，耗时 3 分钟。"
+      },
+      "json_valid": false,
+      "raw": "{\n  \"action\": \"notify\",\n  \"channel\": \"im\",\n  \"urgency\": \"urgent\",\n  \"reason\": \"部署已完成\",\n  \"message\": \"\"\n}"
+    },
+    {
+      "model": "base",
+      "event_id": "evt_e0083",
+      "error_type": "invalid_json",
+      "gold": {
+        "action": "notify",
+        "channel": "push",
+        "urgency": "urgent",
+        "reason": "时效性强且直接关联用户",
+        "message": "归档任务连续失败：昨晚备份失败，需要你确认重跑方案。"
+      },
+      "predicted": {
+        "action": "notify",
+        "channel": "push",
+        "urgency": "normal",
+        "reason": "模型输出无法解析，回退为通知",
+        "message": "归档任务连续失败：昨晚备份失败，需要你确认重跑方案。"
+      },
+      "json_valid": false,
+      "raw": "```json\n{\n  \"action\": \"notify\",\n  \"channel\": \"im\",\n  \"urgency\": \"urgent\",\n  \"reason\": \"归档任务连续失败，需确认重跑方案\",\n  \"message\": \"\"\n}\n```"
+    },
+    {
+      "model": "base",
+      "event_id": "evt_e0006",
+      "error_type": "invalid_json",
+      "gold": {
+        "action": "silence",
+        "channel": "none",
+        "urgency": "low",
+        "reason": "营销类群发，无需打扰",
+        "message": ""
+      },
+      "predicted": {
+        "action": "notify",
+        "channel": "im",
+        "urgency": "normal",
+        "reason": "模型输出无法解析，回退为通知",
+        "message": "优惠券快来领：折扣名额只剩最后几个。"
+      },
+      "json_valid": false,
+      "raw": "```json\n{\n  \"action\": \"notify\",\n  \"channel\": \"im\",\n  \"urgency\": \"urgent\",\n  \"reason\": \"优惠券已发放，折扣名额只剩最后几个\",\n  \"message\": \"\"\n}\n```"
+    },
+    {
+      "model": "base",
+      "event_id": "evt_e0006_dup06",
+      "error_type": "invalid_json",
+      "gold": {
+        "action": "silence",
+        "channel": "none",
+        "urgency": "low",
+        "reason": "重复事件，不重复打扰",
+        "message": ""
+      },
+      "predicted": {
+        "action": "notify",
+        "channel": "im",
+        "urgency": "normal",
+        "reason": "模型输出无法解析，回退为通知",
+        "message": "优惠券快来领：折扣名额只剩最后几个。"
+      },
+      "json_valid": false,
+      "raw": "```json\n{\n  \"action\": \"notify\",\n  \"channel\": \"im\",\n  \"urgency\": \"urgent\",\n  \"reason\": \"优惠券已发放，折扣名额只剩最后几个\",\n  \"message\": \"\"\n}\n```"
+    },
+    {
+      "model": "base",
+      "event_id": "evt_e0165",
+      "error_type": "invalid_json",
+      "gold": {
+        "action": "silence",
+        "channel": "none",
+        "urgency": "low",
+        "reason": "营销类群发，无需打扰",
+        "message": ""
+      },
+      "predicted": {
+        "action": "notify",
+        "channel": "push",
+        "urgency": "normal",
+        "reason": "模型输出无法解析，回退为通知",
+        "message": "版本升级公告：周六凌晨将进行网络调整，可能有短暂抖动。"
+      },
+      "json_valid": false,
+      "raw": "{\n  \"action\": \"notify\",\n  \"channel\": \"im\",\n  \"urgency\": \"urgent\",\n  \"reason\": \"版本升级公告\",\n  \"message\": \"\"\n}"
+    },
+    {
+      "model": "base",
+      "event_id": "evt_e0091",
+      "error_type": "invalid_json",
+      "gold": {
+        "action": "digest",
+        "channel": "email",
+        "urgency": "low",
+        "reason": "非直接消息，进入汇总",
+        "message": "异常附件下载提醒：有员工下载了可疑附件，请留意。"
+      },
+      "predicted": {
+        "action": "notify",
+        "channel": "email",
+        "urgency": "normal",
+        "reason": "模型输出无法解析，回退为通知",
+        "message": "异常附件下载提醒：有员工下载了可疑附件，请留意。"
+      },
+      "json_valid": false,
+      "raw": "```json\n{\n  \"action\": \"notify\",\n  \"channel\": \"im\",\n  \"urgency\": \"urgent\",\n  \"reason\": \"有员工下载了可疑附件，请留意。\",\n  \"message\": \"\"\n}\n```"
+    },
+    {
+      "model": "base",
+      "event_id": "evt_e0026",
+      "error_type": "invalid_json",
+      "gold": {
+        "action": "digest",
+        "channel": "email",
+        "urgency": "low",
+        "reason": "非直接消息，进入汇总",
+        "message": "安全周报：近期出现仿冒登录页，请注意识别。"
+      },
+      "predicted": {
+        "action": "notify",
+        "channel": "email",
+        "urgency": "normal",
+        "reason": "模型输出无法解析，回退为通知",
+        "message": "安全周报：近期出现仿冒登录页，请注意识别。"
+      },
+      "json_valid": false,
+      "raw": "{\n  \"action\": \"notify\",\n  \"channel\": \"email\",\n  \"urgency\": \"urgent\",\n  \"reason\": \"近期出现仿冒登录页，请注意识别。\",\n  \"message\": \"\"\n}"
+    },
+    {
+      "model": "base",
+      "event_id": "evt_e0019",
+      "error_type": "invalid_json",
+      "gold": {
+        "action": "digest",
+        "channel": "email",
+        "urgency": "low",
+        "reason": "默认进入汇总",
+        "message": "客户沟通会安排：明天 10:00 评审会，请确认参加。"
+      },
+      "predicted": {
+        "action": "notify",
+        "channel": "email",
+        "urgency": "normal",
+        "reason": "模型输出无法解析，回退为通知",
+        "message": "客户沟通会安排：明天 10:00 评审会，请确认参加。"
+      },
+      "json_valid": false,
+      "raw": "{\n  \"action\": \"notify\",\n  \"channel\": \"email\",\n  \"urgency\": \"urgent\",\n  \"reason\": \"客户沟通会安排\",\n  \"message\": \"\"\n}"
+    },
+    {
+      "model": "base",
+      "event_id": "evt_e0019_dup19",
+      "error_type": "invalid_json",
+      "gold": {
+        "action": "silence",
+        "channel": "none",
+        "urgency": "low",
+        "reason": "重复事件，不重复打扰",
+        "message": ""
+      },
+      "predicted": {
+        "action": "notify",
+        "channel": "email",
+        "urgency": "normal",
+        "reason": "模型输出无法解析，回退为通知",
+        "message": "客户沟通会安排：明天 10:00 评审会，请确认参加。"
+      },
+      "json_valid": false,
+      "raw": "{\n  \"action\": \"notify\",\n  \"channel\": \"email\",\n  \"urgency\": \"urgent\",\n  \"reason\": \"客户沟通会安排，请确认参加\",\n  \"message\": \"\"\n}"
+    },
+    {
+      "model": "base",
+      "event_id": "evt_e0041",
+      "error_type": "invalid_json",
+      "gold": {
+        "action": "digest",
+        "channel": "email",
+        "urgency": "low",
+        "reason": "默认进入汇总",
+        "message": "评审会邀请：复盘会前请准备材料。"
+      },
+      "predicted": {
+        "action": "notify",
+        "channel": "email",
+        "urgency": "normal",
+        "reason": "模型输出无法解析，回退为通知",
+        "message": "评审会邀请：复盘会前请准备材料。"
+      },
+      "json_valid": false,
+      "raw": "```json\n{\n  \"action\": \"notify\",\n  \"channel\": \"email\",\n  \"urgency\": \"urgent\",\n  \"reason\": \"评审会邀请\",\n  \"message\": \"\"\n}\n```"
+    },
+    {
+      "model": "base",
+      "event_id": "evt_e0120",
+      "error_type": "invalid_json",
+      "gold": {
+        "action": "notify",
+        "channel": "email",
+        "urgency": "urgent",
+        "reason": "时效性强且直接关联用户",
+        "message": "P0 告警 - 订单服务不可用：生产环境 P0 告警，需要你 10 分钟内确认处理方案。"
+      },
+      "predicted": {
+        "action": "notify",
+        "channel": "email",
+        "urgency": "normal",
+        "reason": "模型输出无法解析，回退为通知",
+        "message": "P0 告警 - 订单服务不可用：生产环境 P0 告警，需要你 10 分钟内确认处理方案。"
+      },
+      "json_valid": false,
+      "raw": "```json\n{\n  \"action\": \"notify\",\n  \"channel\": \"email\",\n  \"urgency\": \"urgent\",\n  \"reason\": \"P0 告警 - 订单服务不可用\",\n  \"message\": \"\"\n}\n```"
+    },
+    {
+      "model": "base",
+      "event_id": "evt_e0070",
+      "error_type": "invalid_json",
+      "gold": {
+        "action": "notify",
+        "channel": "email",
+        "urgency": "normal",
+        "reason": "直接发给用户的消息",
+        "message": "需要你回复客户的方案确认：客户的问题升级到你这层，需要你回复。"
+      },
+      "predicted": {
+        "action": "notify",
+        "channel": "email",
+        "urgency": "normal",
+        "reason": "模型输出无法解析，回退为通知",
+        "message": "需要你回复客户的方案确认：客户的问题升级到你这层，需要你回复。"
+      },
+      "json_valid": false,
+      "raw": "```json\n{\n  \"action\": \"notify\",\n  \"channel\": \"email\",\n  \"urgency\": \"urgent\",\n  \"reason\": \"客户的问题升级到你这层，需要你回复。\",\n  \"message\": \"\"\n}\n```"
+    },
+    {
+      "model": "base",
+      "event_id": "evt_e0073",
+      "error_type": "invalid_json",
+      "gold": {
+        "action": "digest",
+        "channel": "email",
+        "urgency": "low",
+        "reason": "默认进入汇总",
+        "message": "周会改期通知：周会调整到周四下午。"
+      },
+      "predicted": {
+        "action": "notify",
+        "channel": "email",
+        "urgency": "normal",
+        "reason": "模型输出无法解析，回退为通知",
+        "message": "周会改期通知：周会调整到周四下午。"
+      },
+      "json_valid": false,
+      "raw": "{\n  \"action\": \"notify\",\n  \"channel\": \"email\",\n  \"urgency\": \"urgent\",\n  \"reason\": \"周会调整到周四下午\",\n  \"message\": \"\"\n}"
+    },
+    {
+      "model": "base",
+      "event_id": "evt_e0017",
+      "error_type": "invalid_json",
+      "gold": {
+        "action": "notify",
+        "channel": "push",
+        "urgency": "urgent",
+        "reason": "时效性强且直接关联用户",
+        "message": "构建 #987 失败：main 分支 CI 构建失败，有 5 个测试未通过。"
+      },
+      "predicted": {
+        "action": "notify",
+        "channel": "push",
+        "urgency": "normal",
+        "reason": "模型输出无法解析，回退为通知",
+        "message": "构建 #987 失败：main 分支 CI 构建失败，有 5 个测试未通过。"
+      },
+      "json_valid": false,
+      "raw": "```json\n{\n  \"action\": \"notify\",\n  \"channel\": \"im\",\n  \"urgency\": \"urgent\",\n  \"reason\": \"CI 构建失败，有 5 个测试未通过\",\n  \"message\": \"\"\n}\n```"
+    },
+    {
+      "model": "base",
+      "event_id": "evt_e0017_dup17",
+      "error_type": "invalid_json",
+      "gold": {
+        "action": "silence",
+        "channel": "none",
+        "urgency": "low",
+        "reason": "重复事件，不重复打扰",
+        "message": ""
+      },
+      "predicted": {
+        "action": "notify",
+        "channel": "push",
+        "urgency": "normal",
+        "reason": "模型输出无法解析，回退为通知",
+        "message": "构建 #987 失败：main 分支 CI 构建失败，有 5 个测试未通过。"
+      },
+      "json_valid": false,
+      "raw": "{\n  \"action\": \"notify\",\n  \"channel\": \"im\",\n  \"urgency\": \"urgent\",\n  \"reason\": \"CI 构建失败，有 5 个测试未通过\",\n  \"message\": \"\"\n}"
+    },
+    {
+      "model": "base",
+      "event_id": "evt_e0090",
+      "error_type": "invalid_json",
+      "gold": {
+        "action": "silence",
+        "channel": "none",
+        "urgency": "low",
+        "reason": "例行自动化通知，无需打扰",
+        "message": ""
+      },
+      "predicted": {
+        "action": "notify",
+        "channel": "push",
+        "urgency": "normal",
+        "reason": "模型输出无法解析，回退为通知",
+        "message": "镜像已推送：灰度批次 10% 发布完成。"
+      },
+      "json_valid": false,
+      "raw": "```json\n{\n  \"action\": \"notify\",\n  \"channel\": \"im\",\n  \"urgency\": \"urgent\",\n  \"reason\": \"镜像已推送\",\n  \"message\": \"\"\n}\n```"
+    },
+    {
+      "model": "base",
+      "event_id": "evt_e0035",
+      "error_type": "invalid_json",
+      "gold": {
+        "action": "notify",
+        "channel": "email",
+        "urgency": "normal",
+        "reason": "直接发给用户的消息",
+        "message": "客户升级问题需要你介入：客户的问题升级到你这层，需要你回复。"
+      },
+      "predicted": {
+        "action": "notify",
+        "channel": "email",
+        "urgency": "normal",
+        "reason": "模型输出无法解析，回退为通知",
+        "message": "客户升级问题需要你介入：客户的问题升级到你这层，需要你回复。"
+      },
+      "json_valid": false,
+      "raw": "{\n  \"action\": \"notify\",\n  \"channel\": \"email\",\n  \"urgency\": \"urgent\",\n  \"reason\": \"客户的问题需要你介入\",\n  \"message\": \"\"\n}"
+    },
+    {
+      "model": "base",
+      "event_id": "evt_e0075",
+      "error_type": "invalid_json",
+      "gold": {
+        "action": "silence",
+        "channel": "none",
+        "urgency": "low",
+        "reason": "营销类群发，无需打扰",
+        "message": ""
+      },
+      "predicted": {
+        "action": "notify",
+        "channel": "push",
+        "urgency": "normal",
+        "reason": "模型输出无法解析，回退为通知",
+        "message": "免费试用即将结束：你的专属优惠券已到账。"
+      },
+      "json_valid": false,
+      "raw": "{\n  \"action\": \"notify\",\n  \"channel\": \"im\",\n  \"urgency\": \"urgent\",\n  \"reason\": \"免费试用即将结束，优惠券已到账\",\n  \"message\": \"\"\n}"
+    },
+    {
+      "model": "base",
+      "event_id": "evt_e0044",
+      "error_type": "invalid_json",
+      "gold": {
+        "action": "digest",
+        "channel": "push",
+        "urgency": "low",
+        "reason": "默认进入汇总",
+        "message": "账号安全提醒：建议开启两步验证以提升账号安全。"
+      },
+      "predicted": {
+        "action": "notify",
+        "channel": "push",
+        "urgency": "normal",
+        "reason": "模型输出无法解析，回退为通知",
+        "message": "账号安全提醒：建议开启两步验证以提升账号安全。"
+      },
+      "json_valid": false,
+      "raw": "```json\n{\n  \"action\": \"notify\",\n  \"channel\": \"im\",\n  \"urgency\": \"urgent\",\n  \"reason\": \"建议开启两步验证以提升账号安全。\",\n  \"message\": \"\"\n}\n```"
+    },
+    {
+      "model": "base",
+      "event_id": "evt_e0118",
+      "error_type": "invalid_json",
+      "gold": {
+        "action": "silence",
+        "channel": "none",
+        "urgency": "low",
+        "reason": "例行自动化通知，无需打扰",
+        "message": ""
+      },
+      "predicted": {
+        "action": "notify",
+        "channel": "push",
+        "urgency": "normal",
+        "reason": "模型输出无法解析，回退为通知",
+        "message": "夜间构建报警：main 分支构建失败，日志已归档。"
+      },
+      "json_valid": false,
+      "raw": "```json\n{\n  \"action\": \"notify\",\n  \"channel\": \"im\",\n  \"urgency\": \"urgent\",\n  \"reason\": \"main 分支构建失败，日志已归档。\",\n  \"message\": \"\"\n}\n```"
+    },
+    {
+      "model": "base",
+      "event_id": "evt_e0022",
+      "error_type": "invalid_json",
+      "gold": {
+        "action": "digest",
+        "channel": "email",
+        "urgency": "low",
+        "reason": "非直接消息，进入汇总",
+        "message": "培训课程报名开放：内训课程可自由报名。"
+      },
+      "predicted": {
+        "action": "notify",
+        "channel": "email",
+        "urgency": "normal",
+        "reason": "模型输出无法解析，回退为通知",
+        "message": "培训课程报名开放：内训课程可自由报名。"
+      },
+      "json_valid": false,
+      "raw": "```json\n{\n  \"action\": \"notify\",\n  \"channel\": \"email\",\n  \"urgency\": \"urgent\",\n  \"reason\": \"Training course registration is open for all users.\",\n  \"message\": \"\"\n}\n```"
+    },
+    {
+      "model": "base",
+      "event_id": "evt_e0101",
+      "error_type": "invalid_json",
+      "gold": {
+        "action": "silence",
+        "channel": "none",
+        "urgency": "low",
+        "reason": "营销类群发，无需打扰",
+        "message": ""
+      },
+      "predicted": {
+        "action": "notify",
+        "channel": "push",
+        "urgency": "normal",
+        "reason": "模型输出无法解析，回退为通知",
+        "message": "限时升级优惠：免费试用还剩 3 天，续费享折扣。"
+      },
+      "json_valid": false,
+      "raw": "```json\n{\n  \"action\": \"notify\",\n  \"channel\": \"im\",\n  \"urgency\": \"urgent\",\n  \"reason\": \"限时升级优惠\",\n  \"message\": \"\"\n}\n```"
+    },
+    {
+      "model": "base",
+      "event_id": "evt_e0094",
+      "error_type": "invalid_json",
+      "gold": {
+        "action": "notify",
+        "channel": "push",
+        "urgency": "normal",
+        "reason": "直接发给用户的消息",
+        "message": "模型训练任务完成：任务已完成，结果需要你确认。"
+      },
+      "predicted": {
+        "action": "notify",
+        "channel": "push",
+        "urgency": "normal",
+        "reason": "模型输出无法解析，回退为通知",
+        "message": "模型训练任务完成：任务已完成，结果需要你确认。"
+      },
+      "json_valid": false,
+      "raw": "{\n  \"action\": \"notify\",\n  \"channel\": \"im\",\n  \"urgency\": \"urgent\",\n  \"reason\": \"任务已完成，结果需要你确认。\",\n  \"message\": \"\"\n}"
+    },
+    {
+      "model": "base",
+      "event_id": "evt_e0012",
+      "error_type": "invalid_json",
+      "gold": {
+        "action": "notify",
+        "channel": "email",
+        "urgency": "normal",
+        "reason": "直接发给用户的消息",
+        "message": "客户咨询订单问题，需要你确认：客户反馈交付延期，请确认新的排期。"
+      },
+      "predicted": {
+        "action": "notify",
+        "channel": "email",
+        "urgency": "normal",
+        "reason": "模型输出无法解析，回退为通知",
+        "message": "客户咨询订单问题，需要你确认：客户反馈交付延期，请确认新的排期。"
+      },
+      "json_valid": false,
+      "raw": "```json\n{\n  \"action\": \"notify\",\n  \"channel\": \"email\",\n  \"urgency\": \"urgent\",\n  \"reason\": \"客户反馈交付延期，请确认新的排期\",\n  \"message\": \"\"\n}\n```"
+    },
+    {
+      "model": "base",
+      "event_id": "evt_e0072",
+      "error_type": "invalid_json",
+      "gold": {
+        "action": "notify",
+        "channel": "push",
+        "urgency": "urgent",
+        "reason": "时效性强且直接关联用户",
+        "message": "生产密钥疑似泄露：WAF 拦截到针对你的定向攻击。"
+      },
+      "predicted": {
+        "action": "notify",
+        "channel": "push",
+        "urgency": "normal",
+        "reason": "模型输出无法解析，回退为通知",
+        "message": "生产密钥疑似泄露：WAF 拦截到针对你的定向攻击。"
+      },
+      "json_valid": false,
+      "raw": "```json\n{\n  \"action\": \"notify\",\n  \"channel\": \"im\",\n  \"urgency\": \"urgent\",\n  \"reason\": \"WAF detected a potential security threat to the user's system\",\n  \"message\": \"\"\n}\n```"
+    },
+    {
+      "model": "base",
+      "event_id": "evt_e0012_dup12",
+      "error_type": "invalid_json",
+      "gold": {
+        "action": "silence",
+        "channel": "none",
+        "urgency": "low",
+        "reason": "重复事件，不重复打扰",
+        "message": ""
+      },
+      "predicted": {
+        "action": "notify",
+        "channel": "email",
+        "urgency": "normal",
+        "reason": "模型输出无法解析，回退为通知",
+        "message": "客户咨询订单问题，需要你确认：客户反馈交付延期，请确认新的排期。"
+      },
+      "json_valid": false,
+      "raw": "```json\n{\n  \"action\": \"notify\",\n  \"channel\": \"email\",\n  \"urgency\": \"urgent\",\n  \"reason\": \"客户反馈交付延期，请确认新的排期\",\n  \"message\": \"\"\n}\n```"
+    },
+    {
+      "model": "base",
+      "event_id": "evt_e0173",
+      "error_type": "invalid_json",
+      "gold": {
+        "action": "digest",
+        "channel": "email",
+        "urgency": "low",
+        "reason": "默认进入汇总",
+        "message": "FYI：组织架构调整通知：本周进展已同步，无需回复。"
+      },
+      "predicted": {
+        "action": "notify",
+        "channel": "email",
+        "urgency": "normal",
+        "reason": "模型输出无法解析，回退为通知",
+        "message": "FYI：组织架构调整通知：本周进展已同步，无需回复。"
+      },
+      "json_valid": false,
+      "raw": "```json\n{\n  \"action\": \"notify\",\n  \"channel\": \"email\",\n  \"urgency\": \"normal\",\n  \"reason\": \"组织架构调整通知已同步，无需回复\",\n  \"message\": \"\"\n}\n```"
+    },
+    {
+      "model": "base",
+      "event_id": "evt_e0066",
+      "error_type": "invalid_json",
+      "gold": {
+        "action": "digest",
+        "channel": "push",
+        "urgency": "low",
+        "reason": "默认进入汇总",
+        "message": "发布审批单待确认：有一条权限申请等待你审批。"
+      },
+      "predicted": {
+        "action": "notify",
+        "channel": "push",
+        "urgency": "normal",
+        "reason": "模型输出无法解析，回退为通知",
+        "message": "发布审批单待确认：有一条权限申请等待你审批。"
+      },
+      "json_valid": false,
+      "raw": "```json\n{\n  \"action\": \"notify\",\n  \"channel\": \"im\",\n  \"urgency\": \"urgent\",\n  \"reason\": \"有一条权限申请等待你审批。\",\n  \"message\": \"\"\n}\n```"
+    },
+    {
+      "model": "base",
+      "event_id": "evt_e0106",
+      "error_type": "invalid_json",
+      "gold": {
+        "action": "silence",
+        "channel": "none",
+        "urgency": "low",
+        "reason": "营销类群发，无需打扰",
+        "message": ""
+      },
+      "predicted": {
+        "action": "notify",
+        "channel": "email",
+        "urgency": "normal",
+        "reason": "模型输出无法解析，回退为通知",
+        "message": "会员专享折扣来了：免费试用名额开放，立即领取。"
+      },
+      "json_valid": false,
+      "raw": "```json\n{\n  \"action\": \"notify\",\n  \"channel\": \"email\",\n  \"urgency\": \"urgent\",\n  \"reason\": \"会员专享折扣活动即将开始，立即领取免费试用名额\",\n  \"message\": \"\"\n}\n```"
+    },
+    {
+      "model": "base",
+      "event_id": "evt_e0093",
+      "error_type": "invalid_json",
+      "gold": {
+        "action": "notify",
+        "channel": "email",
+        "urgency": "urgent",
+        "reason": "时效性强且直接关联用户",
+        "message": "线上故障需要你确认：生产环境 P0 告警，需要你 10 分钟内确认处理方案。"
+      },
+      "predicted": {
+        "action": "notify",
+        "channel": "email",
+        "urgency": "normal",
+        "reason": "模型输出无法解析，回退为通知",
+        "message": "线上故障需要你确认：生产环境 P0 告警，需要你 10 分钟内确认处理方案。"
+      },
+      "json_valid": false,
+      "raw": "```json\n{\n  \"action\": \"notify\",\n  \"channel\": \"email\",\n  \"urgency\": \"urgent\",\n  \"reason\": \"线上故障需要你确认\",\n  \"message\": \"\"\n}\n```"
+    },
+    {
+      "model": "base",
+      "event_id": "evt_e0068",
+      "error_type": "invalid_json",
+      "gold": {
+        "action": "notify",
+        "channel": "im",
+        "urgency": "urgent",
+        "reason": "时效性强且直接关联用户",
+        "message": "@你 线上有个 bug：客户反馈支付失败，需要你马上确认。"
+      },
+      "predicted": {
+        "action": "notify",
+        "channel": "im",
+        "urgency": "normal",
+        "reason": "模型输出无法解析，回退为通知",
+        "message": "@你 线上有个 bug：客户反馈支付失败，需要你马上确认。"
+      },
+      "json_valid": false,
+      "raw": "```json\n{\n  \"action\": \"notify\",\n  \"channel\": \"im\",\n  \"urgency\": \"urgent\",\n  \"reason\": \"customer feedback about a payment issue\",\n  \"message\": \"\"\n}\n```"
+    },
+    {
+      "model": "base",
+      "event_id": "evt_e0109",
+      "error_type": "invalid_json",
+      "gold": {
+        "action": "silence",
+        "channel": "none",
+        "urgency": "low",
+        "reason": "营销类群发，无需打扰",
+        "message": ""
+      },
+      "predicted": {
+        "action": "notify",
+        "channel": "im",
+        "urgency": "normal",
+        "reason": "模型输出无法解析，回退为通知",
+        "message": "限时优惠只给你们团队：我们的方案可以打 7 折，限时优惠。"
+      },
+      "json_valid": false,
+      "raw": "```json\n{\n  \"action\": \"notify\",\n  \"channel\": \"im\",\n  \"urgency\": \"urgent\",\n  \"reason\": \"限时优惠只给你们团队\",\n  \"message\": \"\"\n}\n```"
+    },
+    {
+      "model": "base",
+      "event_id": "evt_e0126",
+      "error_type": "invalid_json",
+      "gold": {
+        "action": "digest",
+        "channel": "push",
+        "urgency": "normal",
+        "reason": "时效信息但非直接发给用户，进入汇总",
+        "message": "数据库连接数接近上限：节点负载达到 85%，请关注。"
+      },
+      "predicted": {
+        "action": "notify",
+        "channel": "push",
+        "urgency": "normal",
+        "reason": "模型输出无法解析，回退为通知",
+        "message": "数据库连接数接近上限：节点负载达到 85%，请关注。"
+      },
+      "json_valid": false,
+      "raw": "{\n  \"action\": \"notify\",\n  \"channel\": \"im\",\n  \"urgency\": \"urgent\",\n  \"reason\": \"数据库连接数接近上限\",\n  \"message\": \"\"\n}"
+    },
+    {
+      "model": "base",
+      "event_id": "evt_e0027",
+      "error_type": "invalid_json",
+      "gold": {
+        "action": "digest",
+        "channel": "email",
+        "urgency": "low",
+        "reason": "非直接消息，进入汇总",
+        "message": "差旅政策更新说明：下月办公区将调整。"
+      },
+      "predicted": {
+        "action": "notify",
+        "channel": "email",
+        "urgency": "normal",
+        "reason": "模型输出无法解析，回退为通知",
+        "message": "差旅政策更新说明：下月办公区将调整。"
+      },
+      "json_valid": false,
+      "raw": "```json\n{\n  \"action\": \"notify\",\n  \"channel\": \"email\",\n  \"urgency\": \"urgent\",\n  \"reason\": \"差旅政策更新说明\",\n  \"message\": \"\"\n}\n```"
+    },
+    {
+      "model": "base",
+      "event_id": "evt_e0057",
+      "error_type": "invalid_json",
+      "gold": {
+        "action": "notify",
+        "channel": "email",
+        "urgency": "normal",
+        "reason": "直接发给用户的消息",
+        "message": "客户在等你确认交付时间：客户在等回复，希望今天内给出确认。"
+      },
+      "predicted": {
+        "action": "notify",
+        "channel": "email",
+        "urgency": "normal",
+        "reason": "模型输出无法解析，回退为通知",
+        "message": "客户在等你确认交付时间：客户在等回复，希望今天内给出确认。"
+      },
+      "json_valid": false,
+      "raw": "```json\n{\n  \"action\": \"notify\",\n  \"channel\": \"email\",\n  \"urgency\": \"urgent\",\n  \"reason\": \"客户在等回复，希望今天内给出确认\",\n  \"message\": \"\"\n}\n```"
+    },
+    {
+      "model": "base",
+      "event_id": "evt_e0063",
+      "error_type": "invalid_json",
+      "gold": {
+        "action": "notify",
+        "channel": "im",
+        "urgency": "normal",
+        "reason": "直接发给用户的消息",
+        "message": "同步一个需要你拍板的点：需要你拍板后我们继续推进。"
+      },
+      "predicted": {
+        "action": "notify",
+        "channel": "im",
+        "urgency": "normal",
+        "reason": "模型输出无法解析，回退为通知",
+        "message": "同步一个需要你拍板的点：需要你拍板后我们继续推进。"
+      },
+      "json_valid": false,
+      "raw": "```json\n{\n  \"action\": \"notify\",\n  \"channel\": \"im\",\n  \"urgency\": \"urgent\",\n  \"reason\": \"需要你拍板后我们继续推进\",\n  \"message\": \"\"\n}\n```"
+    },
+    {
+      "model": "base",
+      "event_id": "evt_e0029",
+      "error_type": "invalid_json",
+      "gold": {
+        "action": "silence",
+        "channel": "none",
+        "urgency": "low",
+        "reason": "例行自动化通知，无需打扰",
+        "message": ""
+      },
+      "predicted": {
+        "action": "notify",
+        "channel": "push",
+        "urgency": "normal",
+        "reason": "模型输出无法解析，回退为通知",
+        "message": "流水线执行失败：pipeline #221 执行失败。"
+      },
+      "json_valid": false,
+      "raw": "```json\n{\n  \"action\": \"notify\",\n  \"channel\": \"im\",\n  \"urgency\": \"urgent\",\n  \"reason\": \"流水线执行失败\",\n  \"message\": \"\"\n}\n```"
+    },
+    {
+      "model": "base",
+      "event_id": "evt_e0014",
+      "error_type": "invalid_json",
+      "gold": {
+        "action": "digest",
+        "channel": "email",
+        "urgency": "low",
+        "reason": "非直接消息，进入汇总",
+        "message": "差旅政策更新说明：下月办公区将调整。"
+      },
+      "predicted": {
+        "action": "notify",
+        "channel": "email",
+        "urgency": "normal",
+        "reason": "模型输出无法解析，回退为通知",
+        "message": "差旅政策更新说明：下月办公区将调整。"
+      },
+      "json_valid": false,
+      "raw": "```json\n{\n  \"action\": \"notify\",\n  \"channel\": \"email\",\n  \"urgency\": \"urgent\",\n  \"reason\": \"差旅政策更新说明\",\n  \"message\": \"\"\n}\n```"
+    },
+    {
+      "model": "base",
+      "event_id": "evt_e0086",
+      "error_type": "invalid_json",
+      "gold": {
+        "action": "silence",
+        "channel": "none",
+        "urgency": "low",
+        "reason": "营销类群发，无需打扰",
+        "message": ""
+      },
+      "predicted": {
+        "action": "notify",
+        "channel": "im",
+        "urgency": "normal",
+        "reason": "模型输出无法解析，回退为通知",
+        "message": "限时折扣拼单：促销团购价很划算。"
+      },
+      "json_valid": false,
+      "raw": "```json\n{\n  \"action\": \"notify\",\n  \"channel\": \"im\",\n  \"urgency\": \"urgent\",\n  \"reason\": \"限时折扣拼单\",\n  \"message\": \"\"\n}\n```"
+    },
+    {
+      "model": "base",
+      "event_id": "evt_e0014_dup14",
+      "error_type": "invalid_json",
+      "gold": {
+        "action": "silence",
+        "channel": "none",
+        "urgency": "low",
+        "reason": "重复事件，不重复打扰",
+        "message": ""
+      },
+      "predicted": {
+        "action": "notify",
+        "channel": "email",
+        "urgency": "normal",
+        "reason": "模型输出无法解析，回退为通知",
+        "message": "差旅政策更新说明：下月办公区将调整。"
+      },
+      "json_valid": false,
+      "raw": "```json\n{\n  \"action\": \"notify\",\n  \"channel\": \"email\",\n  \"urgency\": \"urgent\",\n  \"reason\": \"差旅政策更新说明\",\n  \"message\": \"\"\n}\n```"
+    },
+    {
+      "model": "base",
+      "event_id": "evt_e0142",
+      "error_type": "invalid_json",
+      "gold": {
+        "action": "silence",
+        "channel": "none",
+        "urgency": "low",
+        "reason": "营销类群发，无需打扰",
+        "message": ""
+      },
+      "predicted": {
+        "action": "notify",
+        "channel": "email",
+        "urgency": "normal",
+        "reason": "模型输出无法解析，回退为通知",
+        "message": "限时优惠：全场 6 折：优惠券数量有限，先到先得。"
+      },
+      "json_valid": false,
+      "raw": "```json\n{\n  \"action\": \"notify\",\n  \"channel\": \"email\",\n  \"urgency\": \"urgent\",\n  \"reason\": \"限时优惠：全场 6 折\",\n  \"message\": \"\"\n}\n```"
+    },
+    {
+      "model": "base",
+      "event_id": "evt_e0009",
+      "error_type": "invalid_json",
+      "gold": {
+        "action": "notify",
+        "channel": "im",
+        "urgency": "normal",
+        "reason": "直接发给用户的消息",
+        "message": "同步一个需要你拍板的点：客户在群里等你答复。"
+      },
+      "predicted": {
+        "action": "notify",
+        "channel": "im",
+        "urgency": "normal",
+        "reason": "模型输出无法解析，回退为通知",
+        "message": "同步一个需要你拍板的点：客户在群里等你答复。"
+      },
+      "json_valid": false,
+      "raw": "{\n  \"action\": \"notify\",\n  \"channel\": \"im\",\n  \"urgency\": \"urgent\",\n  \"reason\": \"客户在群里等你答复\",\n  \"message\": \"\"\n}"
+    },
+    {
+      "model": "base",
+      "event_id": "evt_e0009_dup09",
+      "error_type": "invalid_json",
+      "gold": {
+        "action": "silence",
+        "channel": "none",
+        "urgency": "low",
+        "reason": "重复事件，不重复打扰",
+        "message": ""
+      },
+      "predicted": {
+        "action": "notify",
+        "channel": "im",
+        "urgency": "normal",
+        "reason": "模型输出无法解析，回退为通知",
+        "message": "同步一个需要你拍板的点：客户在群里等你答复。"
+      },
+      "json_valid": false,
+      "raw": "```json\n{\n  \"action\": \"notify\",\n  \"channel\": \"im\",\n  \"urgency\": \"urgent\",\n  \"reason\": \"客户在群里等你答复\",\n  \"message\": \"\"\n}\n```"
+    },
+    {
+      "model": "base",
+      "event_id": "evt_e0047",
+      "error_type": "invalid_json",
+      "gold": {
+        "action": "digest",
+        "channel": "email",
+        "urgency": "low",
+        "reason": "非直接消息，进入汇总",
+        "message": "培训课程报名开放：新的差旅政策下月生效。"
+      },
+      "predicted": {
+        "action": "notify",
+        "channel": "email",
+        "urgency": "normal",
+        "reason": "模型输出无法解析，回退为通知",
+        "message": "培训课程报名开放：新的差旅政策下月生效。"
+      },
+      "json_valid": false,
+      "raw": "```json\n{\n  \"action\": \"notify\",\n  \"channel\": \"email\",\n  \"urgency\": \"urgent\",\n  \"reason\": \"new training course registration policy is open for the next month\",\n  \"message\": \"\"\n}\n```"
+    },
+    {
+      "model": "base",
+      "event_id": "evt_e0131",
+      "error_type": "invalid_json",
+      "gold": {
+        "action": "silence",
+        "channel": "none",
+        "urgency": "low",
+        "reason": "营销类群发，无需打扰",
+        "message": ""
+      },
+      "predicted": {
+        "action": "notify",
+        "channel": "email",
+        "urgency": "normal",
+        "reason": "模型输出无法解析，回退为通知",
+        "message": "618 促销提前开启：升级套餐立享折扣，仅限本周。"
+      },
+      "json_valid": false,
+      "raw": "```json\n{\n  \"action\": \"notify\",\n  \"channel\": \"email\",\n  \"urgency\": \"urgent\",\n  \"reason\": \"618 促销提前开启，升级套餐立享折扣，仅限本周\",\n  \"message\": \"\"\n}\n```"
+    },
+    {
+      "model": "base",
+      "event_id": "evt_e0007",
+      "error_type": "invalid_json",
+      "gold": {
+        "action": "silence",
+        "channel": "none",
+        "urgency": "low",
+        "reason": "营销类群发，无需打扰",
+        "message": ""
+      },
+      "predicted": {
+        "action": "notify",
+        "channel": "email",
+        "urgency": "normal",
+        "reason": "模型输出无法解析，回退为通知",
+        "message": "618 促销提前开启：促销活动今晚结束，勿错过。"
+      },
+      "json_valid": false,
+      "raw": "```json\n{\n  \"action\": \"notify\",\n  \"channel\": \"email\",\n  \"urgency\": \"urgent\",\n  \"reason\": \"促销活动今晚结束，勿错过。\",\n  \"message\": \"\"\n}\n```"
+    },
+    {
+      "model": "base",
+      "event_id": "evt_e0007_dup07",
+      "error_type": "invalid_json",
+      "gold": {
+        "action": "silence",
+        "channel": "none",
+        "urgency": "low",
+        "reason": "重复事件，不重复打扰",
+        "message": ""
+      },
+      "predicted": {
+        "action": "notify",
+        "channel": "email",
+        "urgency": "normal",
+        "reason": "模型输出无法解析，回退为通知",
+        "message": "618 促销提前开启：促销活动今晚结束，勿错过。"
+      },
+      "json_valid": false,
+      "raw": "```json\n{\n  \"action\": \"notify\",\n  \"channel\": \"email\",\n  \"urgency\": \"urgent\",\n  \"reason\": \"Promotional activity is scheduled for tonight and is highly sought after.\",\n  \"message\": \"\"\n}\n```"
+    },
+    {
+      "model": "base",
+      "event_id": "evt_e0123",
+      "error_type": "invalid_json",
+      "gold": {
+        "action": "digest",
+        "channel": "email",
+        "urgency": "low",
+        "reason": "非直接消息，进入汇总",
+        "message": "差旅政策更新说明：下月办公区将调整。"
+      },
+      "predicted": {
+        "action": "notify",
+        "channel": "email",
+        "urgency": "normal",
+        "reason": "模型输出无法解析，回退为通知",
+        "message": "差旅政策更新说明：下月办公区将调整。"
+      },
+      "json_valid": false,
+      "raw": "```json\n{\n  \"action\": \"notify\",\n  \"channel\": \"email\",\n  \"urgency\": \"urgent\",\n  \"reason\": \"差旅政策更新说明\",\n  \"message\": \"\"\n}\n```"
+    },
+    {
+      "model": "base",
+      "event_id": "evt_e0051",
+      "error_type": "invalid_json",
+      "gold": {
+        "action": "silence",
+        "channel": "none",
+        "urgency": "low",
+        "reason": "例行自动化通知，无需打扰",
+        "message": ""
+      },
+      "predicted": {
+        "action": "notify",
+        "channel": "push",
+        "urgency": "normal",
+        "reason": "模型输出无法解析，回退为通知",
+        "message": "依赖安装失败：夜间构建出现 3 个失败用例。"
+      },
+      "json_valid": false,
+      "raw": "{\n  \"action\": \"notify\",\n  \"channel\": \"im\",\n  \"urgency\": \"urgent\",\n  \"reason\": \"夜间构建出现 3 个失败用例\",\n  \"message\": \"\"\n}"
+    },
+    {
+      "model": "base",
+      "event_id": "evt_e0092",
+      "error_type": "invalid_json",
+      "gold": {
+        "action": "digest",
+        "channel": "email",
+        "urgency": "low",
+        "reason": "默认进入汇总",
+        "message": "客户沟通会安排：明天 10:00 评审会，请确认参加。"
+      },
+      "predicted": {
+        "action": "notify",
+        "channel": "email",
+        "urgency": "normal",
+        "reason": "模型输出无法解析，回退为通知",
+        "message": "客户沟通会安排：明天 10:00 评审会，请确认参加。"
+      },
+      "json_valid": false,
+      "raw": "```json\n{\n  \"action\": \"notify\",\n  \"channel\": \"email\",\n  \"urgency\": \"urgent\",\n  \"reason\": \"客户沟通会安排，请确认参加\",\n  \"message\": \"\"\n}\n```"
+    },
+    {
+      "model": "base",
+      "event_id": "evt_e0128",
+      "error_type": "invalid_json",
+      "gold": {
+        "action": "silence",
+        "channel": "none",
+        "urgency": "low",
+        "reason": "例行自动化通知，无需打扰",
+        "message": ""
+      },
+      "predicted": {
+        "action": "notify",
+        "channel": "push",
+        "urgency": "normal",
+        "reason": "模型输出无法解析，回退为通知",
+        "message": "CI 构建失败：pipeline #221 执行失败。"
+      },
+      "json_valid": false,
+      "raw": "{\n  \"action\": \"notify\",\n  \"channel\": \"im\",\n  \"urgency\": \"urgent\",\n  \"reason\": \"CI 构建失败\",\n  \"message\": \"\"\n}"
+    },
+    {
+      "model": "base",
+      "event_id": "evt_e0033",
+      "error_type": "invalid_json",
+      "gold": {
+        "action": "silence",
+        "channel": "none",
+        "urgency": "low",
+        "reason": "营销类群发，无需打扰",
+        "message": ""
+      },
+      "predicted": {
+        "action": "notify",
+        "channel": "im",
+        "urgency": "normal",
+        "reason": "模型输出无法解析，回退为通知",
+        "message": "限时折扣拼单：免费试用限时开放。"
+      },
+      "json_valid": false,
+      "raw": "```json\n{\n  \"action\": \"notify\",\n  \"channel\": \"im\",\n  \"urgency\": \"urgent\",\n  \"reason\": \"限时开放\",\n  \"message\": \"\"\n}\n```"
+    },
+    {
+      "model": "base",
+      "event_id": "evt_e0137",
+      "error_type": "invalid_json",
+      "gold": {
+        "action": "digest",
+        "channel": "push",
+        "urgency": "normal",
+        "reason": "时效信息但非直接发给用户，进入汇总",
+        "message": "队列积压提醒：任务队列积压超过 500 条。"
+      },
+      "predicted": {
+        "action": "notify",
+        "channel": "push",
+        "urgency": "normal",
+        "reason": "模型输出无法解析，回退为通知",
+        "message": "队列积压提醒：任务队列积压超过 500 条。"
+      },
+      "json_valid": false,
+      "raw": "```json\n{\n  \"action\": \"notify\",\n  \"channel\": \"im\",\n  \"urgency\": \"urgent\",\n  \"reason\": \"任务队列积压超过 500 条\",\n  \"message\": \"\"\n}\n```"
+    },
+    {
+      "model": "base",
+      "event_id": "evt_e0031",
+      "error_type": "invalid_json",
+      "gold": {
+        "action": "digest",
+        "channel": "email",
+        "urgency": "low",
+        "reason": "非直接消息，进入汇总",
+        "message": "年度体检安排通知：新的差旅政策下月生效。"
+      },
+      "predicted": {
+        "action": "notify",
+        "channel": "email",
+        "urgency": "normal",
+        "reason": "模型输出无法解析，回退为通知",
+        "message": "年度体检安排通知：新的差旅政策下月生效。"
+      },
+      "json_valid": false,
+      "raw": "{\n  \"action\": \"notify\",\n  \"channel\": \"email\",\n  \"urgency\": \"urgent\",\n  \"reason\": \"年度体检安排通知\",\n  \"message\": \"\"\n}"
+    },
+    {
+      "model": "base",
+      "event_id": "evt_e0156",
+      "error_type": "invalid_json",
+      "gold": {
+        "action": "digest",
+        "channel": "email",
+        "urgency": "low",
+        "reason": "默认进入汇总",
+        "message": "客户沟通会安排：复盘会前请准备材料。"
+      },
+      "predicted": {
+        "action": "notify",
+        "channel": "email",
+        "urgency": "normal",
+        "reason": "模型输出无法解析，回退为通知",
+        "message": "客户沟通会安排：复盘会前请准备材料。"
+      },
+      "json_valid": false,
+      "raw": "{\n  \"action\": \"notify\",\n  \"channel\": \"email\",\n  \"urgency\": \"urgent\",\n  \"reason\": \"客户沟通会安排\",\n  \"message\": \"\"\n}"
+    },
+    {
+      "model": "base",
+      "event_id": "evt_e0071",
+      "error_type": "invalid_json",
+      "gold": {
+        "action": "notify",
+        "channel": "push",
+        "urgency": "urgent",
+        "reason": "时效性强且直接关联用户",
+        "message": "生产密钥疑似泄露：检测到异常提权操作，请确认。"
+      },
+      "predicted": {
+        "action": "notify",
+        "channel": "push",
+        "urgency": "normal",
+        "reason": "模型输出无法解析，回退为通知",
+        "message": "生产密钥疑似泄露：检测到异常提权操作，请确认。"
+      },
+      "json_valid": false,
+      "raw": "{\n  \"action\": \"notify\",\n  \"channel\": \"im\",\n  \"urgency\": \"urgent\",\n  \"reason\": \"检测到异常提权操作，请确认。\",\n  \"message\": \"\"\n}"
+    },
+    {
+      "model": "base",
+      "event_id": "evt_e0030",
+      "error_type": "invalid_json",
+      "gold": {
+        "action": "digest",
+        "channel": "email",
+        "urgency": "low",
+        "reason": "非直接消息，进入汇总",
+        "message": "钓鱼邮件预警：有员工下载了可疑附件，请留意。"
+      },
+      "predicted": {
+        "action": "notify",
+        "channel": "email",
+        "urgency": "normal",
+        "reason": "模型输出无法解析，回退为通知",
+        "message": "钓鱼邮件预警：有员工下载了可疑附件，请留意。"
+      },
+      "json_valid": false,
+      "raw": "```json\n{\n  \"action\": \"notify\",\n  \"channel\": \"email\",\n  \"urgency\": \"urgent\",\n  \"reason\": \"钓鱼邮件预警\",\n  \"message\": \"\"\n}\n```"
+    },
+    {
+      "model": "base",
+      "event_id": "evt_e0078",
+      "error_type": "invalid_json",
+      "gold": {
+        "action": "digest",
+        "channel": "email",
+        "urgency": "low",
+        "reason": "非直接消息，进入汇总",
+        "message": "安全周报：本周拦截可疑邮件 32 封。"
+      },
+      "predicted": {
+        "action": "notify",
+        "channel": "email",
+        "urgency": "normal",
+        "reason": "模型输出无法解析，回退为通知",
+        "message": "安全周报：本周拦截可疑邮件 32 封。"
+      },
+      "json_valid": false,
+      "raw": "```json\n{\n  \"action\": \"notify\",\n  \"channel\": \"email\",\n  \"urgency\": \"urgent\",\n  \"reason\": \"本周拦截可疑邮件 32 封\",\n  \"message\": \"\"\n}\n```"
+    },
+    {
+      "model": "base",
+      "event_id": "evt_e0088",
+      "error_type": "invalid_json",
+      "gold": {
+        "action": "digest",
+        "channel": "push",
+        "urgency": "normal",
+        "reason": "时效信息但非直接发给用户，进入汇总",
+        "message": "队列积压提醒：算力预算已使用 85%。"
+      },
+      "predicted": {
+        "action": "notify",
+        "channel": "push",
+        "urgency": "normal",
+        "reason": "模型输出无法解析，回退为通知",
+        "message": "队列积压提醒：算力预算已使用 85%。"
+      },
+      "json_valid": false,
+      "raw": "```json\n{\n  \"action\": \"notify\",\n  \"channel\": \"im\",\n  \"urgency\": \"urgent\",\n  \"reason\": \"队列积压提醒，算力预算已使用85%\",\n  \"message\": \"\"\n}\n```"
+    },
+    {
+      "model": "base",
+      "event_id": "evt_e0040",
+      "error_type": "invalid_json",
+      "gold": {
+        "action": "digest",
+        "channel": "im",
+        "urgency": "normal",
+        "reason": "时效信息但非直接发给用户，进入汇总",
+        "message": "告警在群里刷屏：多个同学反馈接口响应变慢。"
+      },
+      "predicted": {
+        "action": "notify",
+        "channel": "im",
+        "urgency": "normal",
+        "reason": "模型输出无法解析，回退为通知",
+        "message": "告警在群里刷屏：多个同学反馈接口响应变慢。"
+      },
+      "json_valid": false,
+      "raw": "```json\n{\n  \"action\": \"notify\",\n  \"channel\": \"im\",\n  \"urgency\": \"urgent\",\n  \"reason\": \"多个同学反馈接口响应变慢\",\n  \"message\": \"\"\n}\n```"
+    },
+    {
+      "model": "base",
+      "event_id": "evt_e0161",
+      "error_type": "invalid_json",
+      "gold": {
+        "action": "silence",
+        "channel": "none",
+        "urgency": "low",
+        "reason": "营销类群发，无需打扰",
+        "message": ""
+      },
+      "predicted": {
+        "action": "notify",
+        "channel": "im",
+        "urgency": "normal",
+        "reason": "模型输出无法解析，回退为通知",
+        "message": "免费试用名额：优惠券今晚过期，速领。"
+      },
+      "json_valid": false,
+      "raw": "```json\n{\n  \"action\": \"notify\",\n  \"channel\": \"im\",\n  \"urgency\": \"urgent\",\n  \"reason\": \"免费试用名额限时优惠，速领\",\n  \"message\": \"\"\n}\n```"
+    },
+    {
+      "model": "base",
+      "event_id": "evt_e0105",
+      "error_type": "invalid_json",
+      "gold": {
+        "action": "silence",
+        "channel": "none",
+        "urgency": "low",
+        "reason": "营销类群发，无需打扰",
+        "message": ""
+      },
+      "predicted": {
+        "action": "notify",
+        "channel": "push",
+        "urgency": "normal",
+        "reason": "模型输出无法解析，回退为通知",
+        "message": "专属折扣已发放：免费试用还剩 3 天，续费享折扣。"
+      },
+      "json_valid": false,
+      "raw": "{\n  \"action\": \"notify\",\n  \"channel\": \"im\",\n  \"urgency\": \"urgent\",\n  \"reason\": \"专属折扣已发放，免费试用还剩 3 天，续费享折扣。\",\n  \"message\": \"\"\n}"
+    },
+    {
+      "model": "base",
+      "event_id": "evt_e0061",
+      "error_type": "invalid_json",
+      "gold": {
+        "action": "notify",
+        "channel": "im",
+        "urgency": "normal",
+        "reason": "直接发给用户的消息",
+        "message": "需要你决定一下：这个需求的口径想跟你确认。"
+      },
+      "predicted": {
+        "action": "notify",
+        "channel": "im",
+        "urgency": "normal",
+        "reason": "模型输出无法解析，回退为通知",
+        "message": "需要你决定一下：这个需求的口径想跟你确认。"
+      },
+      "json_valid": false,
+      "raw": "{\n  \"action\": \"notify\",\n  \"channel\": \"im\",\n  \"urgency\": \"urgent\",\n  \"reason\": \"需要你决定一下\",\n  \"message\": \"\"\n}"
+    },
+    {
+      "model": "base",
+      "event_id": "evt_e0124",
+      "error_type": "invalid_json",
+      "gold": {
+        "action": "silence",
+        "channel": "none",
+        "urgency": "low",
+        "reason": "营销类群发，无需打扰",
+        "message": ""
+      },
+      "predicted": {
+        "action": "notify",
+        "channel": "push",
+        "urgency": "normal",
+        "reason": "模型输出无法解析，回退为通知",
+        "message": "促销活动最后一天：升级套餐限时 8 折。"
+      },
+      "json_valid": false,
+      "raw": "{\n  \"action\": \"notify\",\n  \"channel\": \"im\",\n  \"urgency\": \"urgent\",\n  \"reason\": \"促销活动最后一天\",\n  \"message\": \"\"\n}"
+    },
+    {
+      "model": "base",
+      "event_id": "evt_e0147",
+      "error_type": "invalid_json",
+      "gold": {
+        "action": "digest",
+        "channel": "email",
+        "urgency": "low",
+        "reason": "非直接消息，进入汇总",
+        "message": "异常附件下载提醒：有员工下载了可疑附件，请留意。"
+      },
+      "predicted": {
+        "action": "notify",
+        "channel": "email",
+        "urgency": "normal",
+        "reason": "模型输出无法解析，回退为通知",
+        "message": "异常附件下载提醒：有员工下载了可疑附件，请留意。"
+      },
+      "json_valid": false,
+      "raw": "```json\n{\n  \"action\": \"notify\",\n  \"channel\": \"email\",\n  \"urgency\": \"urgent\",\n  \"reason\": \"员工下载了可疑附件，请留意。\",\n  \"message\": \"\"\n}\n```"
+    },
+    {
+      "model": "base",
+      "event_id": "evt_e0095",
+      "error_type": "invalid_json",
+      "gold": {
+        "action": "notify",
+        "channel": "im",
+        "urgency": "normal",
+        "reason": "直接发给用户的消息",
+        "message": "同步一个需要你拍板的点：这个问题在群里等你回复。"
+      },
+      "predicted": {
+        "action": "notify",
+        "channel": "im",
+        "urgency": "normal",
+        "reason": "模型输出无法解析，回退为通知",
+        "message": "同步一个需要你拍板的点：这个问题在群里等你回复。"
+      },
+      "json_valid": false,
+      "raw": "{\n  \"action\": \"notify\",\n  \"channel\": \"im\",\n  \"urgency\": \"urgent\",\n  \"reason\": \"需要你拍板\",\n  \"message\": \"\"\n}"
+    },
+    {
+      "model": "base",
+      "event_id": "evt_e0138",
+      "error_type": "invalid_json",
+      "gold": {
+        "action": "digest",
+        "channel": "push",
+        "urgency": "low",
+        "reason": "默认进入汇总",
+        "message": "有一条审批待你处理：审批流停留在你这一环。"
+      },
+      "predicted": {
+        "action": "notify",
+        "channel": "push",
+        "urgency": "normal",
+        "reason": "模型输出无法解析，回退为通知",
+        "message": "有一条审批待你处理：审批流停留在你这一环。"
+      },
+      "json_valid": false,
+      "raw": "```json\n{\n  \"action\": \"notify\",\n  \"channel\": \"im\",\n  \"urgency\": \"urgent\",\n  \"reason\": \"审批流停留在你这一环\",\n  \"message\": \"\"\n}\n```"
+    },
+    {
+      "model": "sft",
+      "event_id": "evt_e0008",
+      "error_type": "over_notify",
+      "gold": {
+        "action": "digest",
+        "channel": "im",
+        "urgency": "normal",
+        "reason": "直接发给用户的消息；用户处于 deep_work，降级为汇总",
+        "message": "麻烦你回复一下群里：@你 刚才的结论需要你确认。"
+      },
+      "predicted": {
+        "action": "notify",
+        "channel": "im",
+        "urgency": "normal",
+        "reason": "直接发给用户的消息",
+        "message": "麻烦你回复一下群里：@你 刚才的结论需要你确认。"
+      },
+      "json_valid": true,
+      "raw": "{\"action\": \"notify\", \"channel\": \"im\", \"urgency\": \"normal\", \"reason\": \"直接发给用户的消息\", \"message\": \"麻烦你回复一下群里：@你 刚才的结论需要你确认。\"}"
+    },
+    {
+      "model": "sft",
+      "event_id": "evt_e0135",
+      "error_type": "invalid_json",
+      "gold": {
+        "action": "notify",
+        "channel": "im",
+        "urgency": "urgent",
+        "reason": "时效性强且直接关联用户",
+        "message": "在吗？客户在等回复：@你 刚才部署的版本有问题，麻烦看一下。"
+      },
+      "predicted": {
+        "action": "notify",
+        "channel": "im",
+        "urgency": "normal",
+        "reason": "模型输出无法解析，回退为通知",
+        "message": "在吗？客户在等回复：@你 刚才部署的版本有问题，麻烦看一下。"
+      },
+      "json_valid": false,
+      "raw": "{\"action\": \"notify\", \"channel\": \"im\", \"urgency\": \"urgent\", \"reason\": \"时效性强且直接关联用户\", \"message\": \"在吗？客户在等回复：在吗？客户在等回复：在吗？客户在等回复：在吗？客户在等回复：在吗？客户在等回复：在吗？客户在等回复：在吗？客户在等回复：在吗？客户在等回复：在吗？客户在等回复：在吗？客户在等回复：在吗？客户在等回复：在吗？客户在等回复：在吗？客户在等回复：在吗？客户在等回复：在吗？客户在等回复：在吗？客户在等回复：在吗？客户在等回复：在吗？客户在等回复：在吗？客户在等回复：在吗？客户在等回复：在吗？客户在等"
+    },
+    {
+      "model": "sft",
+      "event_id": "evt_e0174",
+      "error_type": "missed_notify",
+      "gold": {
+        "action": "notify",
+        "channel": "email",
+        "urgency": "normal",
+        "reason": "直接发给用户的消息",
+        "message": "需要你回复客户的方案确认：客户反馈交付延期，请确认新的排期。"
+      },
+      "predicted": {
+        "action": "digest",
+        "channel": "email",
+        "urgency": "normal",
+        "reason": "直接发给用户的消息；用户处于 offline，降级为汇总",
+        "message": "需要你回复客户的方案确认：客户反馈交付延期，请确认新的排期。"
+      },
+      "json_valid": true,
+      "raw": "{\"action\": \"digest\", \"channel\": \"email\", \"urgency\": \"normal\", \"reason\": \"直接发给用户的消息；用户处于 offline，降级为汇总\", \"message\": \"需要你回复客户的方案确认：客户反馈交付延期，请确认新的排期。\"}"
+    },
+    {
+      "model": "sft",
+      "event_id": "evt_e0015",
+      "error_type": "missed_notify",
+      "gold": {
+        "action": "notify",
+        "channel": "email",
+        "urgency": "normal",
+        "reason": "直接发给用户的消息",
+        "message": "客户升级问题需要你介入：客户反馈交付延期，请确认新的排期。"
+      },
+      "predicted": {
+        "action": "digest",
+        "channel": "email",
+        "urgency": "normal",
+        "reason": "直接发给用户的消息；用户处于 available，降级为汇总",
+        "message": "客户升级问题需要你介入：客户反馈交付延期，请确认新的排期。"
+      },
+      "json_valid": true,
+      "raw": "{\"action\": \"digest\", \"channel\": \"email\", \"urgency\": \"normal\", \"reason\": \"直接发给用户的消息；用户处于 available，降级为汇总\", \"message\": \"客户升级问题需要你介入：客户反馈交付延期，请确认新的排期。\"}"
+    },
+    {
+      "model": "sft",
+      "event_id": "evt_e0111",
+      "error_type": "wrong_action",
+      "gold": {
+        "action": "digest",
+        "channel": "push",
+        "urgency": "low",
+        "reason": "默认进入汇总",
+        "message": "计划维护窗口通知：旧版依赖服务将在月底下线。"
+      },
+      "predicted": {
+        "action": "silence",
+        "channel": "none",
+        "urgency": "low",
+        "reason": "营销类群发，无需打扰",
+        "message": ""
+      },
+      "json_valid": true,
+      "raw": "{\"action\": \"silence\", \"channel\": \"none\", \"urgency\": \"low\", \"reason\": \"营销类群发，无需打扰\", \"message\": \"\"}"
+    },
+    {
+      "model": "sft",
+      "event_id": "evt_e0176",
+      "error_type": "missed_notify",
+      "gold": {
+        "action": "notify",
+        "channel": "email",
+        "urgency": "normal",
+        "reason": "直接发给用户的消息",
+        "message": "需要你回复客户的方案确认：客户反馈交付延期，请确认新的排期。"
+      },
+      "predicted": {
+        "action": "digest",
+        "channel": "email",
+        "urgency": "normal",
+        "reason": "直接发给用户的消息；用户处于 offline，降级为汇总",
+        "message": "需要你回复客户的方案确认：客户反馈交付延期，请确认新的排期。"
+      },
+      "json_valid": true,
+      "raw": "{\"action\": \"digest\", \"channel\": \"email\", \"urgency\": \"normal\", \"reason\": \"直接发给用户的消息；用户处于 offline，降级为汇总\", \"message\": \"需要你回复客户的方案确认：客户反馈交付延期，请确认新的排期。\"}"
+    },
+    {
+      "model": "sft",
+      "event_id": "evt_e0097",
+      "error_type": "over_notify",
+      "gold": {
+        "action": "digest",
+        "channel": "push",
+        "urgency": "normal",
+        "reason": "直接发给用户的消息；用户处于 deep_work，降级为汇总",
+        "message": "批处理结果需要你确认：训练已完成，指标等待你验收。"
+      },
+      "predicted": {
+        "action": "notify",
+        "channel": "push",
+        "urgency": "normal",
+        "reason": "直接发给用户的消息",
+        "message": "批处理结果需要你确认：训练已完成，指标等待你验收。"
+      },
+      "json_valid": true,
+      "raw": "{\"action\": \"notify\", \"channel\": \"push\", \"urgency\": \"normal\", \"reason\": \"直接发给用户的消息\", \"message\": \"批处理结果需要你确认：训练已完成，指标等待你验收。\"}"
+    },
+    {
+      "model": "sft",
+      "event_id": "evt_e0172",
+      "error_type": "over_notify",
+      "gold": {
+        "action": "digest",
+        "channel": "im",
+        "urgency": "normal",
+        "reason": "直接发给用户的消息；用户处于 deep_work，降级为汇总",
+        "message": "群里 @你 需要确认：需要你拍板后我们继续推进。"
+      },
+      "predicted": {
+        "action": "notify",
+        "channel": "im",
+        "urgency": "normal",
+        "reason": "直接发给用户的消息",
+        "message": "群里 @你 需要确认：需要你拍板后我们继续推进。"
+      },
+      "json_valid": true,
+      "raw": "{\"action\": \"notify\", \"channel\": \"im\", \"urgency\": \"normal\", \"reason\": \"直接发给用户的消息\", \"message\": \"群里 @你 需要确认：需要你拍板后我们继续推进。\"}"
+    },
+    {
+      "model": "sft",
+      "event_id": "evt_e0001",
+      "error_type": "over_notify",
+      "gold": {
+        "action": "digest",
+        "channel": "im",
+        "urgency": "normal",
+        "reason": "直接发给用户的消息；用户处于 deep_work，降级为汇总",
+        "message": "群里 @你 需要确认：客户在群里等你答复。"
+      },
+      "predicted": {
+        "action": "notify",
+        "channel": "im",
+        "urgency": "normal",
+        "reason": "直接发给用户的消息",
+        "message": "群里 @你 需要确认：客户在群里等你答复。"
+      },
+      "json_valid": true,
+      "raw": "{\"action\": \"notify\", \"channel\": \"im\", \"urgency\": \"normal\", \"reason\": \"直接发给用户的消息\", \"message\": \"群里 @你 需要确认：客户在群里等你答复。\"}"
+    },
+    {
+      "model": "sft",
+      "event_id": "evt_e0005",
+      "error_type": "over_notify",
+      "gold": {
+        "action": "digest",
+        "channel": "im",
+        "urgency": "normal",
+        "reason": "直接发给用户的消息；用户处于 deep_work，降级为汇总",
+        "message": "麻烦你回复一下群里：这个问题在群里等你回复。"
+      },
+      "predicted": {
+        "action": "notify",
+        "channel": "im",
+        "urgency": "normal",
+        "reason": "直接发给用户的消息",
+        "message": "麻烦你回复一下群里：这个问题在群里等你回复。"
+      },
+      "json_valid": true,
+      "raw": "{\"action\": \"notify\", \"channel\": \"im\", \"urgency\": \"normal\", \"reason\": \"直接发给用户的消息\", \"message\": \"麻烦你回复一下群里：这个问题在群里等你回复。\"}"
+    },
+    {
+      "model": "sft",
+      "event_id": "evt_e0013",
+      "error_type": "over_notify",
+      "gold": {
+        "action": "digest",
+        "channel": "im",
+        "urgency": "normal",
+        "reason": "直接发给用户的消息；用户处于 deep_work，降级为汇总",
+        "message": "这份文档你能看一下吗：两个方案你更倾向哪个？"
+      },
+      "predicted": {
+        "action": "notify",
+        "channel": "im",
+        "urgency": "normal",
+        "reason": "直接发给用户的消息",
+        "message": "这份文档你能看一下吗：两个方案你更倾向哪个？"
+      },
+      "json_valid": true,
+      "raw": "{\"action\": \"notify\", \"channel\": \"im\", \"urgency\": \"normal\", \"reason\": \"直接发给用户的消息\", \"message\": \"这份文档你能看一下吗：两个方案你更倾向哪个？\"}"
+    },
+    {
+      "model": "sft",
+      "event_id": "evt_e0048",
+      "error_type": "over_notify",
+      "gold": {
+        "action": "digest",
+        "channel": "push",
+        "urgency": "normal",
+        "reason": "直接发给用户的消息；用户处于 deep_work，降级为汇总",
+        "message": "模型训练任务完成：训练已完成，指标等待你验收。"
+      },
+      "predicted": {
+        "action": "notify",
+        "channel": "push",
+        "urgency": "normal",
+        "reason": "直接发给用户的消息",
+        "message": "模型训练任务完成：训练已完成，指标等待你验收。"
+      },
+      "json_valid": true,
+      "raw": "{\"action\": \"notify\", \"channel\": \"push\", \"urgency\": \"normal\", \"reason\": \"直接发给用户的消息\", \"message\": \"模型训练任务完成：训练已完成，指标等待你验收。\"}"
+    },
+    {
+      "model": "sft",
+      "event_id": "evt_e0004",
+      "error_type": "wrong_action",
+      "gold": {
+        "action": "digest",
+        "channel": "im",
+        "urgency": "low",
+        "reason": "非直接消息，进入汇总",
+        "message": "部署已完成：构建 #1234 成功，耗时 3 分钟。"
+      },
+      "predicted": {
+        "action": "silence",
+        "channel": "none",
+        "urgency": "low",
+        "reason": "例行自动化通知，无需打扰",
+        "message": ""
+      },
+      "json_valid": true,
+      "raw": "{\"action\": \"silence\", \"channel\": \"none\", \"urgency\": \"low\", \"reason\": \"例行自动化通知，无需打扰\", \"message\": \"\"}"
+    },
+    {
+      "model": "sft",
+      "event_id": "evt_e0165",
+      "error_type": "wrong_action",
+      "gold": {
+        "action": "silence",
+        "channel": "none",
+        "urgency": "low",
+        "reason": "营销类群发，无需打扰",
+        "message": ""
+      },
+      "predicted": {
+        "action": "digest",
+        "channel": "push",
+        "urgency": "low",
+        "reason": "默认进入汇总",
+        "message": "版本升级公告：周六凌晨将进行网络调整，可能有短暂抖动。"
+      },
+      "json_valid": true,
+      "raw": "{\"action\": \"digest\", \"channel\": \"push\", \"urgency\": \"low\", \"reason\": \"默认进入汇总\", \"message\": \"版本升级公告：周六凌晨将进行网络调整，可能有短暂抖动。\"}"
+    },
+    {
+      "model": "sft",
+      "event_id": "evt_e0070",
+      "error_type": "missed_notify",
+      "gold": {
+        "action": "notify",
+        "channel": "email",
+        "urgency": "normal",
+        "reason": "直接发给用户的消息",
+        "message": "需要你回复客户的方案确认：客户的问题升级到你这层，需要你回复。"
+      },
+      "predicted": {
+        "action": "digest",
+        "channel": "email",
+        "urgency": "normal",
+        "reason": "直接发给用户的消息；用户处于 offline，降级为汇总",
+        "message": "需要你回复客户的方案确认：客户的问题升级到你这层，需要你回复。"
+      },
+      "json_valid": true,
+      "raw": "{\"action\": \"digest\", \"channel\": \"email\", \"urgency\": \"normal\", \"reason\": \"直接发给用户的消息；用户处于 offline，降级为汇总\", \"message\": \"需要你回复客户的方案确认：客户的问题升级到你这层，需要你回复。\"}"
+    },
+    {
+      "model": "sft",
+      "event_id": "evt_e0035",
+      "error_type": "missed_notify",
+      "gold": {
+        "action": "notify",
+        "channel": "email",
+        "urgency": "normal",
+        "reason": "直接发给用户的消息",
+        "message": "客户升级问题需要你介入：客户的问题升级到你这层，需要你回复。"
+      },
+      "predicted": {
+        "action": "digest",
+        "channel": "email",
+        "urgency": "normal",
+        "reason": "直接发给用户的消息；用户处于 available，降级为汇总",
+        "message": "客户升级问题需要你介入：客户的问题升级到你这层，需要你回复。"
+      },
+      "json_valid": true,
+      "raw": "{\"action\": \"digest\", \"channel\": \"email\", \"urgency\": \"normal\", \"reason\": \"直接发给用户的消息；用户处于 available，降级为汇总\", \"message\": \"客户升级问题需要你介入：客户的问题升级到你这层，需要你回复。\"}"
+    },
+    {
+      "model": "sft",
+      "event_id": "evt_e0012",
+      "error_type": "missed_notify",
+      "gold": {
+        "action": "notify",
+        "channel": "email",
+        "urgency": "normal",
+        "reason": "直接发给用户的消息",
+        "message": "客户咨询订单问题，需要你确认：客户反馈交付延期，请确认新的排期。"
+      },
+      "predicted": {
+        "action": "digest",
+        "channel": "email",
+        "urgency": "normal",
+        "reason": "直接发给用户的消息；用户处于 offline，降级为汇总",
+        "message": "客户咨询订单问题，需要你确认：客户反馈交付延期，请确认新的排期。"
+      },
+      "json_valid": true,
+      "raw": "{\"action\": \"digest\", \"channel\": \"email\", \"urgency\": \"normal\", \"reason\": \"直接发给用户的消息；用户处于 offline，降级为汇总\", \"message\": \"客户咨询订单问题，需要你确认：客户反馈交付延期，请确认新的排期。\"}"
+    },
+    {
+      "model": "sft",
+      "event_id": "evt_e0057",
+      "error_type": "missed_notify",
+      "gold": {
+        "action": "notify",
+        "channel": "email",
+        "urgency": "normal",
+        "reason": "直接发给用户的消息",
+        "message": "客户在等你确认交付时间：客户在等回复，希望今天内给出确认。"
+      },
+      "predicted": {
+        "action": "digest",
+        "channel": "email",
+        "urgency": "normal",
+        "reason": "直接发给用户的消息；用户处于离线状态，降级为汇总",
+        "message": "客户在等你确认交付时间：客户在等回复，希望今天内给出确认。"
+      },
+      "json_valid": true,
+      "raw": "{\"action\": \"digest\", \"channel\": \"email\", \"urgency\": \"normal\", \"reason\": \"直接发给用户的消息；用户处于离线状态，降级为汇总\", \"message\": \"客户在等你确认交付时间：客户在等回复，希望今天内给出确认。\"}"
+    },
+    {
+      "model": "sft_grpo",
+      "event_id": "evt_e0008",
+      "error_type": "over_notify",
+      "gold": {
+        "action": "digest",
+        "channel": "im",
+        "urgency": "normal",
+        "reason": "直接发给用户的消息；用户处于 deep_work，降级为汇总",
+        "message": "麻烦你回复一下群里：@你 刚才的结论需要你确认。"
+      },
+      "predicted": {
+        "action": "notify",
+        "channel": "im",
+        "urgency": "normal",
+        "reason": "直接发给用户的消息",
+        "message": "麻烦你回复一下群里：@你 刚才的结论需要你确认。"
+      },
+      "json_valid": true,
+      "raw": "{\"action\": \"notify\", \"channel\": \"im\", \"urgency\": \"normal\", \"reason\": \"直接发给用户的消息\", \"message\": \"麻烦你回复一下群里：@你 刚才的结论需要你确认。\"}"
+    },
+    {
+      "model": "sft_grpo",
+      "event_id": "evt_e0135",
+      "error_type": "invalid_json",
+      "gold": {
+        "action": "notify",
+        "channel": "im",
+        "urgency": "urgent",
+        "reason": "时效性强且直接关联用户",
+        "message": "在吗？客户在等回复：@你 刚才部署的版本有问题，麻烦看一下。"
+      },
+      "predicted": {
+        "action": "notify",
+        "channel": "im",
+        "urgency": "normal",
+        "reason": "模型输出无法解析，回退为通知",
+        "message": "在吗？客户在等回复：@你 刚才部署的版本有问题，麻烦看一下。"
+      },
+      "json_valid": false,
+      "raw": "{\"action\": \"notify\", \"channel\": \"im\", \"urgency\": \"urgent\", \"reason\": \"时效性强且直接关联用户\", \"message\": \"在吗？客户在等回复：在吗？客户在等回复：在吗？客户在等回复：在吗？客户在等回复：在吗？客户在等回复：在吗？客户在等回复：在吗？客户在等回复：在吗？客户在等回复：在吗？客户在等回复：在吗？客户在等回复：在吗？客户在等回复：在吗？客户在等回复：在吗？客户在等回复：在吗？客户在等回复：在吗？客户在等回复：在吗？客户在等回复：在吗？客户在等回复：在吗？客户在等回复：在吗？客户在等回复：在吗？客户在等回复：在吗？客户在等"
+    },
+    {
+      "model": "sft_grpo",
+      "event_id": "evt_e0174",
+      "error_type": "missed_notify",
+      "gold": {
+        "action": "notify",
+        "channel": "email",
+        "urgency": "normal",
+        "reason": "直接发给用户的消息",
+        "message": "需要你回复客户的方案确认：客户反馈交付延期，请确认新的排期。"
+      },
+      "predicted": {
+        "action": "digest",
+        "channel": "email",
+        "urgency": "normal",
+        "reason": "直接发给用户的消息；用户处于 offline，降级为汇总",
+        "message": "需要你回复客户的方案确认：客户反馈交付延期，请确认新的排期。"
+      },
+      "json_valid": true,
+      "raw": "{\"action\": \"digest\", \"channel\": \"email\", \"urgency\": \"normal\", \"reason\": \"直接发给用户的消息；用户处于 offline，降级为汇总\", \"message\": \"需要你回复客户的方案确认：客户反馈交付延期，请确认新的排期。\"}"
+    },
+    {
+      "model": "sft_grpo",
+      "event_id": "evt_e0178",
+      "error_type": "wrong_action",
+      "gold": {
+        "action": "digest",
+        "channel": "push",
+        "urgency": "low",
+        "reason": "默认进入汇总",
+        "message": "机房网络调整说明：维护窗口为 2 小时，请知悉。"
+      },
+      "predicted": {
+        "action": "silence",
+        "channel": "none",
+        "urgency": "low",
+        "reason": "例行自动化通知，无需打扰",
+        "message": ""
+      },
+      "json_valid": true,
+      "raw": "{\"action\": \"silence\", \"channel\": \"none\", \"urgency\": \"low\", \"reason\": \"例行自动化通知，无需打扰\", \"message\": \"\"}"
+    },
+    {
+      "model": "sft_grpo",
+      "event_id": "evt_e0015",
+      "error_type": "missed_notify",
+      "gold": {
+        "action": "notify",
+        "channel": "email",
+        "urgency": "normal",
+        "reason": "直接发给用户的消息",
+        "message": "客户升级问题需要你介入：客户反馈交付延期，请确认新的排期。"
+      },
+      "predicted": {
+        "action": "digest",
+        "channel": "email",
+        "urgency": "normal",
+        "reason": "直接发给用户的消息；用户处于 available，降级为汇总",
+        "message": "客户升级问题需要你介入：客户反馈交付延期，请确认新的排期。"
+      },
+      "json_valid": true,
+      "raw": "{\"action\": \"digest\", \"channel\": \"email\", \"urgency\": \"normal\", \"reason\": \"直接发给用户的消息；用户处于 available，降级为汇总\", \"message\": \"客户升级问题需要你介入：客户反馈交付延期，请确认新的排期。\"}"
+    },
+    {
+      "model": "sft_grpo",
+      "event_id": "evt_e0111",
+      "error_type": "wrong_action",
+      "gold": {
+        "action": "digest",
+        "channel": "push",
+        "urgency": "low",
+        "reason": "默认进入汇总",
+        "message": "计划维护窗口通知：旧版依赖服务将在月底下线。"
+      },
+      "predicted": {
+        "action": "silence",
+        "channel": "none",
+        "urgency": "low",
+        "reason": "营销类群发，无需打扰",
+        "message": ""
+      },
+      "json_valid": true,
+      "raw": "{\"action\": \"silence\", \"channel\": \"none\", \"urgency\": \"low\", \"reason\": \"营销类群发，无需打扰\", \"message\": \"\"}"
+    },
+    {
+      "model": "sft_grpo",
+      "event_id": "evt_e0039",
+      "error_type": "wrong_action",
+      "gold": {
+        "action": "digest",
+        "channel": "im",
+        "urgency": "low",
+        "reason": "非直接消息，进入汇总",
+        "message": "想和你聊聊合作：要不要安排一次产品介绍？"
+      },
+      "predicted": {
+        "action": "silence",
+        "channel": "none",
+        "urgency": "low",
+        "reason": "营销类群发，无需打扰",
+        "message": ""
+      },
+      "json_valid": true,
+      "raw": "{\"action\": \"silence\", \"channel\": \"none\", \"urgency\": \"low\", \"reason\": \"营销类群发，无需打扰\", \"message\": \"\"}"
+    },
+    {
+      "model": "sft_grpo",
+      "event_id": "evt_e0176",
+      "error_type": "missed_notify",
+      "gold": {
+        "action": "notify",
+        "channel": "email",
+        "urgency": "normal",
+        "reason": "直接发给用户的消息",
+        "message": "需要你回复客户的方案确认：客户反馈交付延期，请确认新的排期。"
+      },
+      "predicted": {
+        "action": "digest",
+        "channel": "email",
+        "urgency": "normal",
+        "reason": "直接发给用户的消息；用户处于 offline，降级为汇总",
+        "message": "需要你回复客户的方案确认：客户反馈交付延期，请确认新的排期。"
+      },
+      "json_valid": true,
+      "raw": "{\"action\": \"digest\", \"channel\": \"email\", \"urgency\": \"normal\", \"reason\": \"直接发给用户的消息；用户处于 offline，降级为汇总\", \"message\": \"需要你回复客户的方案确认：客户反馈交付延期，请确认新的排期。\"}"
+    },
+    {
+      "model": "sft_grpo",
+      "event_id": "evt_e0097",
+      "error_type": "over_notify",
+      "gold": {
+        "action": "digest",
+        "channel": "push",
+        "urgency": "normal",
+        "reason": "直接发给用户的消息；用户处于 deep_work，降级为汇总",
+        "message": "批处理结果需要你确认：训练已完成，指标等待你验收。"
+      },
+      "predicted": {
+        "action": "notify",
+        "channel": "push",
+        "urgency": "normal",
+        "reason": "直接发给用户的消息",
+        "message": "批处理结果需要你确认：训练已完成，指标等待你验收。"
+      },
+      "json_valid": true,
+      "raw": "{\"action\": \"notify\", \"channel\": \"push\", \"urgency\": \"normal\", \"reason\": \"直接发给用户的消息\", \"message\": \"批处理结果需要你确认：训练已完成，指标等待你验收。\"}"
+    },
+    {
+      "model": "sft_grpo",
+      "event_id": "evt_e0172",
+      "error_type": "over_notify",
+      "gold": {
+        "action": "digest",
+        "channel": "im",
+        "urgency": "normal",
+        "reason": "直接发给用户的消息；用户处于 deep_work，降级为汇总",
+        "message": "群里 @你 需要确认：需要你拍板后我们继续推进。"
+      },
+      "predicted": {
+        "action": "notify",
+        "channel": "im",
+        "urgency": "normal",
+        "reason": "直接发给用户的消息",
+        "message": "群里 @你 需要确认：需要你拍板后我们继续推进。"
+      },
+      "json_valid": true,
+      "raw": "{\"action\": \"notify\", \"channel\": \"im\", \"urgency\": \"normal\", \"reason\": \"直接发给用户的消息\", \"message\": \"群里 @你 需要确认：需要你拍板后我们继续推进。\"}"
+    },
+    {
+      "model": "sft_grpo",
+      "event_id": "evt_e0001",
+      "error_type": "over_notify",
+      "gold": {
+        "action": "digest",
+        "channel": "im",
+        "urgency": "normal",
+        "reason": "直接发给用户的消息；用户处于 deep_work，降级为汇总",
+        "message": "群里 @你 需要确认：客户在群里等你答复。"
+      },
+      "predicted": {
+        "action": "notify",
+        "channel": "im",
+        "urgency": "normal",
+        "reason": "直接发给用户的消息",
+        "message": "群里 @你 需要确认：客户在群里等你答复。"
+      },
+      "json_valid": true,
+      "raw": "{\"action\": \"notify\", \"channel\": \"im\", \"urgency\": \"normal\", \"reason\": \"直接发给用户的消息\", \"message\": \"群里 @你 需要确认：客户在群里等你答复。\"}"
+    },
+    {
+      "model": "sft_grpo",
+      "event_id": "evt_e0005",
+      "error_type": "over_notify",
+      "gold": {
+        "action": "digest",
+        "channel": "im",
+        "urgency": "normal",
+        "reason": "直接发给用户的消息；用户处于 deep_work，降级为汇总",
+        "message": "麻烦你回复一下群里：这个问题在群里等你回复。"
+      },
+      "predicted": {
+        "action": "notify",
+        "channel": "im",
+        "urgency": "normal",
+        "reason": "直接发给用户的消息",
+        "message": "麻烦你回复一下群里：这个问题在群里等你回复。"
+      },
+      "json_valid": true,
+      "raw": "{\"action\": \"notify\", \"channel\": \"im\", \"urgency\": \"normal\", \"reason\": \"直接发给用户的消息\", \"message\": \"麻烦你回复一下群里：这个问题在群里等你回复。\"}"
+    },
+    {
+      "model": "sft_grpo",
+      "event_id": "evt_e0013",
+      "error_type": "over_notify",
+      "gold": {
+        "action": "digest",
+        "channel": "im",
+        "urgency": "normal",
+        "reason": "直接发给用户的消息；用户处于 deep_work，降级为汇总",
+        "message": "这份文档你能看一下吗：两个方案你更倾向哪个？"
+      },
+      "predicted": {
+        "action": "notify",
+        "channel": "im",
+        "urgency": "normal",
+        "reason": "直接发给用户的消息",
+        "message": "这份文档你能看一下吗：两个方案你更倾向哪个？"
+      },
+      "json_valid": true,
+      "raw": "{\"action\": \"notify\", \"channel\": \"im\", \"urgency\": \"normal\", \"reason\": \"直接发给用户的消息\", \"message\": \"这份文档你能看一下吗：两个方案你更倾向哪个？\"}"
+    },
+    {
+      "model": "sft_grpo",
+      "event_id": "evt_e0048",
+      "error_type": "over_notify",
+      "gold": {
+        "action": "digest",
+        "channel": "push",
+        "urgency": "normal",
+        "reason": "直接发给用户的消息；用户处于 deep_work，降级为汇总",
+        "message": "模型训练任务完成：训练已完成，指标等待你验收。"
+      },
+      "predicted": {
+        "action": "notify",
+        "channel": "push",
+        "urgency": "normal",
+        "reason": "直接发给用户的消息",
+        "message": "模型训练任务完成：训练已完成，指标等待你验收。"
+      },
+      "json_valid": true,
+      "raw": "{\"action\": \"notify\", \"channel\": \"push\", \"urgency\": \"normal\", \"reason\": \"直接发给用户的消息\", \"message\": \"模型训练任务完成：训练已完成，指标等待你验收。\"}"
+    },
+    {
+      "model": "sft_grpo",
+      "event_id": "evt_e0065",
+      "error_type": "wrong_action",
+      "gold": {
+        "action": "digest",
+        "channel": "im",
+        "urgency": "low",
+        "reason": "非直接消息，进入汇总",
+        "message": "CI 构建成功：今日晴，气温 22°C。"
+      },
+      "predicted": {
+        "action": "silence",
+        "channel": "none",
+        "urgency": "low",
+        "reason": "例行自动化通知，无需打扰",
+        "message": ""
+      },
+      "json_valid": true,
+      "raw": "{\"action\": \"silence\", \"channel\": \"none\", \"urgency\": \"low\", \"reason\": \"例行自动化通知，无需打扰\", \"message\": \"\"}"
+    },
+    {
+      "model": "sft_grpo",
+      "event_id": "evt_e0004",
+      "error_type": "wrong_action",
+      "gold": {
+        "action": "digest",
+        "channel": "im",
+        "urgency": "low",
+        "reason": "非直接消息，进入汇总",
+        "message": "部署已完成：构建 #1234 成功，耗时 3 分钟。"
+      },
+      "predicted": {
+        "action": "silence",
+        "channel": "none",
+        "urgency": "low",
+        "reason": "例行自动化通知，无需打扰",
+        "message": ""
+      },
+      "json_valid": true,
+      "raw": "{\"action\": \"silence\", \"channel\": \"none\", \"urgency\": \"low\", \"reason\": \"例行自动化通知，无需打扰\", \"message\": \"\"}"
+    },
+    {
+      "model": "sft_grpo",
+      "event_id": "evt_e0070",
+      "error_type": "missed_notify",
+      "gold": {
+        "action": "notify",
+        "channel": "email",
+        "urgency": "normal",
+        "reason": "直接发给用户的消息",
+        "message": "需要你回复客户的方案确认：客户的问题升级到你这层，需要你回复。"
+      },
+      "predicted": {
+        "action": "digest",
+        "channel": "email",
+        "urgency": "normal",
+        "reason": "直接发给用户的消息；用户处于 offline，降级为汇总",
+        "message": "需要你回复客户的方案确认：客户的问题升级到你这层，需要你回复。"
+      },
+      "json_valid": true,
+      "raw": "{\"action\": \"digest\", \"channel\": \"email\", \"urgency\": \"normal\", \"reason\": \"直接发给用户的消息；用户处于 offline，降级为汇总\", \"message\": \"需要你回复客户的方案确认：客户的问题升级到你这层，需要你回复。\"}"
+    },
+    {
+      "model": "sft_grpo",
+      "event_id": "evt_e0035",
+      "error_type": "missed_notify",
+      "gold": {
+        "action": "notify",
+        "channel": "email",
+        "urgency": "normal",
+        "reason": "直接发给用户的消息",
+        "message": "客户升级问题需要你介入：客户的问题升级到你这层，需要你回复。"
+      },
+      "predicted": {
+        "action": "digest",
+        "channel": "email",
+        "urgency": "normal",
+        "reason": "直接发给用户的消息；用户处于 available，降级为汇总",
+        "message": "客户升级问题需要你介入：客户的问题升级到你这层，需要你回复。"
+      },
+      "json_valid": true,
+      "raw": "{\"action\": \"digest\", \"channel\": \"email\", \"urgency\": \"normal\", \"reason\": \"直接发给用户的消息；用户处于 available，降级为汇总\", \"message\": \"客户升级问题需要你介入：客户的问题升级到你这层，需要你回复。\"}"
+    },
+    {
+      "model": "sft_grpo",
+      "event_id": "evt_e0057",
+      "error_type": "missed_notify",
+      "gold": {
+        "action": "notify",
+        "channel": "email",
+        "urgency": "normal",
+        "reason": "直接发给用户的消息",
+        "message": "客户在等你确认交付时间：客户在等回复，希望今天内给出确认。"
+      },
+      "predicted": {
+        "action": "digest",
+        "channel": "email",
+        "urgency": "normal",
+        "reason": "直接发给用户的消息；用户处于离线状态，降级为汇总",
+        "message": "客户在等你确认交付时间：客户在等回复，希望今天内给出确认。"
+      },
+      "json_valid": true,
+      "raw": "{\"action\": \"digest\", \"channel\": \"email\", \"urgency\": \"normal\", \"reason\": \"直接发给用户的消息；用户处于离线状态，降级为汇总\", \"message\": \"客户在等你确认交付时间：客户在等回复，希望今天内给出确认。\"}"
+    }
+  ]
+}
