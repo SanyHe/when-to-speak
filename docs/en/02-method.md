@@ -80,4 +80,4 @@ Metric definitions and current results: [`03-eval.md`](03-eval.md).
 
 ## 7. Known deviations
 
-The harness default is "enter M2 only after M1 passes". Before GPU capacity was available, this project completed the GPU-independent parts (data pipeline, evaluator, web page) and validated the chain with mock decisions; training features stayed `blocked` rather than being faked as `passing`. That deviation is recorded in the session log in `private/claude-progress.md`.
+The harness default is "enter M2 only after M1 passes". Before GPU capacity was available, this project completed the GPU-independent parts (data pipeline, evaluator, web page) and validated the chain with mock decisions; training features stayed `blocked` rather than being faked as `passing`. That deviation is recorded in the session log in `private/trae-progress.md`.

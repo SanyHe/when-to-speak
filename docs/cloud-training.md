@@ -149,7 +149,7 @@ python3 training/src/grpo.py \
 - GRPO 依赖 full-SFT 权重，必须在上一步完成后执行。
 - 若 `GRPOConfig` 字段与当前版本不符，以
   `python -c "import trl; help(trl.GRPOConfig)"` 的实际签名为准调整，并把偏差记录到
-  `private/claude-progress.md`。
+  `private/trae-progress.md`。
 
 **GPU 执行前的本地证据**：奖励函数与 prompt 掩码均有确定性单测
 （`training/tests/test_rewards.py`、`test_full_sft.py`），`pytest` 全绿即证明打分规则与
@@ -301,6 +301,6 @@ scp -P <端口> root@<host>:~/experiment/when-to-speak/output/grpo/train_log.jso
 - **GRPO 生成不收敛 / reward 全 0**：检查是否开启 Qwen3 thinking（脚本已用 `enable_thinking=False`）；
   再检查 `grpo_prompts.jsonl` 的 gold 字段是否被 `remove_unused_columns` 裁掉（脚本已设 False）。
 - **TRL API 不匹配**：`python -c "import trl; print(trl.__version__)"`，按实际签名为准调整并在
-  `private/claude-progress.md` 记录偏差。
+  `private/trae-progress.md` 记录偏差。
 - **HuggingFace 下载慢**：设置 `HF_ENDPOINT=https://hf-mirror.com`，或预先下载模型到本地目录并用
   `--model_path` 指向。

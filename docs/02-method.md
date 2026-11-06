@@ -81,4 +81,4 @@
 
 ## 7. 已知偏差与约定
 
-Harness 的默认规则是"M1 验收通过后才进入 M2"。本项目在训练算力到位前，先完成了与 GPU 无关的部分（数据 pipeline、评测器、网页），并用 mock 决策验证链路；训练类 feature 保持 `blocked`，不伪造 `passing`。该偏差记录在 `private/claude-progress.md` 的会话记录中。
+Harness 的默认规则是"M1 验收通过后才进入 M2"。本项目在训练算力到位前，先完成了与 GPU 无关的部分（数据 pipeline、评测器、网页），并用 mock 决策验证链路；训练类 feature 保持 `blocked`，不伪造 `passing`。该偏差记录在 `private/trae-progress.md` 的会话记录中。

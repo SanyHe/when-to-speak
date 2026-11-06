@@ -67,5 +67,5 @@ echo
 echo "Pipeline finished. Weights: output/full_sft/final, output/grpo/final."
 echo "Next: start the inference service with ./training/src/serve_vllm.sh"
 echo "      (see docs/cloud-training.md section 6), then open the web demo."
-echo "Also backfill evidence into private/feature_list.json + private/claude-progress.md"
+echo "Also backfill evidence into private/feature_list.json + private/trae-progress.md"
 echo "      (run_config.json, train_log.json, eval_report_hf.*, final loss/reward)."

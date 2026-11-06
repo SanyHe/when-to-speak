@@ -30,7 +30,7 @@ paths:
   agents_md: AGENTS.md
   # Harness state files live in private/ (gitignored, never published).
   feature_list: private/feature_list.json
-  progress: private/claude-progress.md
+  progress: private/trae-progress.md
   plan: private/PLAN.md
   cloud_runbook: docs/cloud-training.md
   schema: training/src/schema.py

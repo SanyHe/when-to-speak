@@ -6,13 +6,13 @@
 
 ## 1. Startup Workflow (do this before writing any code)
 
-1. Read [`private/claude-progress.md`](./private/claude-progress.md) — find the **Current Verified State** and the **Next best action**.
+1. Read [`private/trae-progress.md`](./private/trae-progress.md) — find the **Current Verified State** and the **Next best action**.
 2. Read [`private/feature_list.json`](./private/feature_list.json) — identify the feature currently `in_progress` or the highest-priority `not_started` feature. Only **one** feature may be `in_progress` at a time.
 3. Read the sections relevant to that feature in [`docs/02-method.md`](./docs/02-method.md)
    (data contract, rules, training) and [`docs/03-eval.md`](./docs/03-eval.md) (metrics, milestones).
 4. Confirm the environment with `./init.sh` (installs dev deps, runs verification). If verification fails, fix the baseline before doing anything else.
 
-> Harness state files (`private/claude-progress.md`, `private/feature_list.json`, `private/PLAN.md`)
+> Harness state files (`private/trae-progress.md`, `private/feature_list.json`, `private/PLAN.md`)
 > live in `private/` — they are gitignored and never published to GitHub. A fresh clone will not
 > have them; they are local working state for the maintainer's agent sessions.
 
@@ -34,7 +34,7 @@
 A feature is done when all of the following are true:
 
 1. `private/feature_list.json` status is `passing` and `evidence` is filled with concrete, reproducible proof (test output, file paths, metrics).
-2. `private/claude-progress.md` has a new session record with: Goal, Completed, Verification run, Evidence recorded, Known risks, Next best action.
+2. `private/trae-progress.md` has a new session record with: Goal, Completed, Verification run, Evidence recorded, Known risks, Next best action.
 3. `pytest training/tests/` passes (for any feature touching training/data code).
 4. No half-finished work is left uncommitted or unrecorded.
 
@@ -76,6 +76,6 @@ Before ending a session:
 
 - [ ] `./init.sh` verification still passes.
 - [ ] `private/feature_list.json` reflects the true state (no false `passing`).
-- [ ] `private/claude-progress.md` is updated with the session record and next best action.
+- [ ] `private/trae-progress.md` is updated with the session record and next best action.
 - [ ] No `in_progress` feature is left half-done without a recorded handoff.
-- [ ] Any blocker is documented in the feature's `notes` and in `private/claude-progress.md`.
+- [ ] Any blocker is documented in the feature's `notes` and in `private/trae-progress.md`.

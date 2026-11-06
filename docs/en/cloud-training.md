@@ -149,7 +149,7 @@ Implementation and version notes:
 - `beta` is the KL coefficient against the SFT reference model; `beta 0` disables the reference model to save VRAM.
 - GRPO depends on the full-SFT weights, so it must run after the previous step.
 - If `GRPOConfig` fields differ from the installed version, check
-  `python -c "import trl; help(trl.GRPOConfig)"` and record the deviation in `private/claude-progress.md`.
+  `python -c "import trl; help(trl.GRPOConfig)"` and record the deviation in `private/trae-progress.md`.
 
 **Local evidence before spending GPU time**: the reward functions and prompt masking are deterministically unit-tested
 (`training/tests/test_rewards.py`, `test_full_sft.py`), so a green `pytest` proves the scoring rules match the data
@@ -300,5 +300,5 @@ scp -P <port> root@<host>:~/experiment/when-to-speak/output/grpo/train_log.json 
 - **OOM (GRPO)**: drop `--num_generations` first (8 → 4), then set `--beta 0` to disable the reference model.
 - **GRPO not converging / reward stuck at 0**: check that Qwen3 thinking is off (the script sets `enable_thinking=False`),
   then check that the gold field in `grpo_prompts.jsonl` is not dropped by `remove_unused_columns` (the script sets it to False).
-- **TRL API mismatch**: run `python -c "import trl; print(trl.__version__)"`, adapt to the real signature and record the deviation in `private/claude-progress.md`.
+- **TRL API mismatch**: run `python -c "import trl; print(trl.__version__)"`, adapt to the real signature and record the deviation in `private/trae-progress.md`.
 - **Slow HuggingFace downloads**: set `HF_ENDPOINT=https://hf-mirror.com`, or pre-download the model and point `--model_path` at it.
