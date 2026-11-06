@@ -363,6 +363,8 @@
       return '<div class="compare-card' + (model.id === state.modelId ? " active" : "") + '">' +
         '<div class="c-label">' + model.label + "</div>" +
         '<div class="c-sub">' + sub + "</div>" +
+        '<div class="c-row c-headline"><span>' + t("metric.macro") + "</span><b>" +
+          (metrics ? formatPct(metrics.macro_f1) : "—") + "</b></div>" +
         '<div class="c-row"><span>' + t("compare.noise") + "</span><b>" +
           (metrics ? formatPct(metrics.noise_rate) : "—") + "</b></div>" +
         '<div class="c-row"><span>' + t("compare.miss") + "</span><b>" +
