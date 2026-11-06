@@ -8,6 +8,8 @@
 - 交付：静态站点 + 可选远程推理；默认离线回放轨迹，无需本机 GPU
 - 界面：中英文双语（右上角按钮切换，或 `?lang=zh` / `?lang=en`）
 
+**在线试玩：<https://sanyhe.github.io/when-to-speak/>**（静态托管，零后端、零 API Key）
+
 ## 快速开始
 
 ### 本地预览网页（无需 GPU）
