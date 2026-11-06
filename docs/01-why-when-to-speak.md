@@ -1,5 +1,7 @@
 # 为什么是「When to Speak」
 
+[English](en/01-why-when-to-speak.md) | **简体中文**
+
 > 一个 always-on agent 最难的不是"能做什么"，而是"**什么时候该开口**"。
 
 ## 1. 问题

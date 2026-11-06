@@ -1,5 +1,7 @@
 # 国内云 GPU 训练运行手册（全参 SFT + GRPO）
 
+[English](en/cloud-training.md) | **简体中文**
+
 > 训练**不在本地执行**，统一在**国内云 GPU** 上跑。本文档以 **AutoDL**（国内主流按小时租卡平台）为例，火山引擎 / 阿里云 PAI 等同理。
 
 ## 1. 选型
@@ -151,7 +153,7 @@ python3 training/src/grpo.py \
 
 **GPU 执行前的本地证据**：奖励函数与 prompt 掩码均有确定性单测
 （`training/tests/test_rewards.py`、`test_full_sft.py`），`pytest` 全绿即证明打分规则与
-数据契约一致；训练指标本身在 GPU 跑完后才回填，当前下游 mock 数字均明确标注 MOCK。
+数据契约一致；训练指标在 GPU 跑完后回填，已落在 `output/*/run_config.json` 与 `train_log.json`。
 
 ## 5. 真实模型评测
 
@@ -171,13 +173,13 @@ python3 training/src/evaluate.py --mode hf \
 - 噪音率：base → SFT → SFT+GRPO 单调下降
 - 漏报率：SFT+GRPO 相对 SFT 不上升
 
-当前 mock 参考值（仅用于链路验证，GPU 后必须替换）：
+实测值（200 条留出集）：
 
-| Model | JSON 合法率 | 噪音率 | 漏报率 |
-|---|---|---|---|
-| base | 85.50% | 34.50% | 10.53% |
-| SFT | 98.50% | 7.00% | 7.89% |
-| SFT + GRPO | 99.00% | 3.50% | 2.63% |
+| Model | JSON 合法率 | 噪音率 | 漏报率 | Macro-F1 |
+|---|---|---|---|---|
+| base | 0.00% | 81.00% | 0.00% | 0.106 |
+| SFT | 99.50% | 3.50% | 18.42% | 0.899 |
+| SFT + GRPO | 99.50% | 3.50% | 5.26% | 0.924 |
 
 ## 6. 部署推理服务（vLLM）
 

@@ -46,7 +46,7 @@ pip install -r training/requirements.txt
 ./training/run_all.sh   # dataset -> full-parameter SFT -> GRPO -> real evaluation
 ```
 
-Command-by-command notes, VRAM estimates and troubleshooting: [docs/cloud-training.md](docs/cloud-training.md) (in Chinese).
+Command-by-command notes, VRAM estimates and troubleshooting: [docs/en/cloud-training.md](docs/en/cloud-training.md).
 
 ### Serve the model with vLLM
 
@@ -59,17 +59,17 @@ After training, start an OpenAI-compatible server on the GPU host:
 Open `http://localhost:8765`, fill in the endpoint and model name (default `wts`) in the
 "Remote inference (vLLM)" panel, click "Test connection" then "Enable", and switch to the
 "vLLM Live" tab to call the remote model in real time. Full steps (AutoDL port mapping, CORS,
-troubleshooting) are in [docs/cloud-training.md §6](docs/cloud-training.md).
+troubleshooting) are in [docs/en/cloud-training.md §6](docs/en/cloud-training.md).
 
 ## Docs
 
-The documents below are currently written in Chinese; an English translation is a follow-up.
+Each document is available in English (`docs/en/`) and Chinese (`docs/`); both carry a language switcher at the top.
 
-- [docs/01-why-when-to-speak.md](docs/01-why-when-to-speak.md) — why "when to speak" deserves its own training target
-- [docs/02-method.md](docs/02-method.md) — data contract, rule-based expert, SFT + GRPO
-- [docs/03-eval.md](docs/03-eval.md) — JSON validity, noise rate, miss rate and acceptance criteria
-- [docs/cloud-training.md](docs/cloud-training.md) — cloud GPU runbook
-- [AGENTS.md](AGENTS.md) — how this repo is run as harness engineering work
+- [docs/en/01-why-when-to-speak.md](docs/en/01-why-when-to-speak.md) — why "when to speak" deserves its own training target
+- [docs/en/02-method.md](docs/en/02-method.md) — data contract, rule-based expert, SFT + GRPO
+- [docs/en/03-eval.md](docs/en/03-eval.md) — JSON validity, noise rate, miss rate and acceptance criteria
+- [docs/en/cloud-training.md](docs/en/cloud-training.md) — cloud GPU runbook
+- [AGENTS.md](AGENTS.md) — how this repo is run as harness engineering work (Chinese)
 
 ## Project status
 

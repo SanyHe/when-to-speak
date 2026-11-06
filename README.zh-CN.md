@@ -61,6 +61,8 @@ pip install -r training/requirements.txt
 
 ## 文档
 
+每篇文档都有中英两版（`docs/` 中文、`docs/en/` 英文），页面顶部可互相切换。
+
 - [docs/01-why-when-to-speak.md](docs/01-why-when-to-speak.md) — 选题：为什么"何时说话"值得单独训练
 - [docs/02-method.md](docs/02-method.md) — 方法：数据契约、规则专家、SFT + GRPO
 - [docs/03-eval.md](docs/03-eval.md) — 评测：JSON 合法率 / 噪音率 / 漏报率与验收标准

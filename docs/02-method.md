@@ -1,5 +1,7 @@
 # 方法：能力 = 模型 × Harness × Eval
 
+[English](en/02-method.md) | **简体中文**
+
 > 本文说明「When to Speak」如何用 Harness Engineering 的方式把后训练拆成可验收的闭环。
 
 ## 1. 为什么需要 Harness
