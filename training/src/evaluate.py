@@ -58,6 +58,33 @@ REPO_ROOT = os.path.abspath(os.path.join(_SRC_DIR, "..", ".."))
 
 ACTION_ORDER = list(ACTIONS)
 
+# Display copy for real (hf-mode) checkpoints. MODEL_SPECS in mock_models.py
+# carries mock-phase wording ("mock 行为"), which would mislabel real traces;
+# hf mode overrides the presentation fields from this table instead.
+HF_MODEL_INFO: Dict[str, Dict[str, str]] = {
+    "base": {
+        "label": "Base",
+        "tagline": "Qwen3-0.6B 原始模型",
+        "tagline_en": "Original Qwen3-0.6B",
+        "description": "未后训练：输出无法解析为严格 JSON，回退策略下退化为全量打扰。",
+        "description_en": "Not post-trained: output fails strict JSON parsing and the fallback degenerates into notifying everything.",
+    },
+    "sft": {
+        "label": "SFT",
+        "tagline": "全参监督微调",
+        "tagline_en": "Full-parameter supervised fine-tuning",
+        "description": "已学会严格 JSON 与基础决策；漏报仍偏高。",
+        "description_en": "Strict JSON and basic decisions learned; miss rate still high.",
+    },
+    "sft_grpo": {
+        "label": "SFT + GRPO",
+        "tagline": "GRPO 强化学习后的校准模型",
+        "tagline_en": "GRPO-calibrated model",
+        "description": "打扰阈值校准：漏报显著下降，噪音保持低位。",
+        "description_en": "Calibrated interruption threshold: far fewer misses, noise stays low.",
+    },
+}
+
 
 # ---------------------------------------------------------------------------
 # Metric computation
@@ -318,6 +345,21 @@ def render_markdown(report: Dict[str, Any]) -> str:
     return "\n".join(lines)
 
 
+def _model_display_info(model_id: str, mode: str) -> Dict[str, str]:
+    """Pick presentation copy for a model, aware of mock vs real traces."""
+    if mode == "hf" and model_id in HF_MODEL_INFO:
+        return {"id": model_id, **HF_MODEL_INFO[model_id]}
+    spec = MODEL_SPECS.get(model_id, {})
+    return {
+        "id": model_id,
+        "label": spec.get("label", model_id),
+        "tagline": spec.get("tagline", ""),
+        "tagline_en": spec.get("tagline_en", ""),
+        "description": spec.get("description", ""),
+        "description_en": spec.get("description_en", ""),
+    }
+
+
 def build_web_traces(items: List[Dict[str, Any]],
                      results: Dict[str, List[Dict[str, Any]]],
                      mode: str) -> Dict[str, Any]:
@@ -353,17 +395,7 @@ def build_web_traces(items: List[Dict[str, Any]],
             # it for live vLLM requests so inference matches training exactly.
             "system_prompt": SYSTEM_PROMPT,
         },
-        "models": [
-            {
-                "id": model_id,
-                "label": MODEL_SPECS.get(model_id, {}).get("label", model_id),
-                "tagline": MODEL_SPECS.get(model_id, {}).get("tagline", ""),
-                "tagline_en": MODEL_SPECS.get(model_id, {}).get("tagline_en", ""),
-                "description": MODEL_SPECS.get(model_id, {}).get("description", ""),
-                "description_en": MODEL_SPECS.get(model_id, {}).get("description_en", ""),
-            }
-            for model_id in by_model.keys()
-        ],
+        "models": [_model_display_info(model_id, mode) for model_id in by_model.keys()],
         "events": events,
         "metrics": {m: compute_metrics(r) for m, r in by_model.items()},
     }
