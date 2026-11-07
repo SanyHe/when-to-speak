@@ -580,6 +580,17 @@
     el("langBtn").setAttribute("title", t("lang.switch"));
   }
 
+  // Reflect the traces mode (mock vs real checkpoints) in the badge, its
+  // styling, and the comparison-panel subtitle.
+  function applyModeChrome() {
+    var isMock = state.traces._meta.mode === "mock";
+    el("modeBadge").textContent = isMock ? t("badge.mock") : t("badge.real");
+    el("modeBadge").title = state.traces._meta.note || t("badge.mockTitle");
+    el("modeBadge").classList.toggle("badge-mock", isMock);
+    el("modeBadge").classList.toggle("badge-ok", !isMock);
+    el("compareSub").textContent = isMock ? t("compare.subMock") : t("compare.subReal");
+  }
+
   function relocalize() {
     i18n.applyDom();
     renderLangButton();
@@ -597,8 +608,7 @@
     }
 
     el("streamSub").textContent = t("stream.sub", { total: state.traces.events.length });
-    el("modeBadge").textContent = state.traces._meta.mode === "mock" ? t("badge.mock") : t("badge.real");
-    el("modeBadge").title = state.traces._meta.note || t("badge.mockTitle");
+    applyModeChrome();
     renderModelTabs();
     rebuildStream();
     renderCurrent();
@@ -633,10 +643,7 @@
         state.modelId = traces.models[0].id;
         ensureLiveSpec();
         el("streamSub").textContent = t("stream.sub", { total: traces.events.length });
-        el("modeBadge").textContent = traces._meta.mode === "mock" ? t("badge.mock") : t("badge.real");
-        if (traces._meta.mode === "mock") {
-          el("modeBadge").title = traces._meta.note;
-        }
+        applyModeChrome();
         renderModelTabs();
         rebuildStream();
         renderCurrent();

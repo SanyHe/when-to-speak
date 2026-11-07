@@ -76,7 +76,8 @@
       "metric.macro": "Macro-F1",
 
       "compare.title": "三模型终局对比",
-      "compare.sub": "全量 Eval 集 · mock 值，待云端训练后替换",
+      "compare.subMock": "全量 Eval 集 · mock 值，仅供离线演示",
+      "compare.subReal": "全量 Eval 集 · 云端 GPU 实测值",
       "compare.noise": "噪音率",
       "compare.miss": "漏报率",
       "compare.json": "JSON 合法",
@@ -92,7 +93,7 @@
       "live.test": "测试连接",
       "live.enable": "启用",
       "live.disable": "停用",
-      "live.hint": "未启用时页面只回放 mock 轨迹，不会发起任何网络请求。",
+      "live.hint": "未启用时页面只回放离线评测轨迹，不会发起任何网络请求。",
       "live.pending": "正在请求远程模型…",
       "live.testing": "正在测试连接…",
       "live.testOk": "连接成功，可用模型：{models}",
@@ -100,7 +101,7 @@
       "live.needBase": "请先填写服务地址。",
       "live.onMsg": "已启用远程推理（模型 {model}）。切到「vLLM Live」标签并点「单步」发起请求。",
 
-      "footer": "纯静态页面 · 默认离线回放 mock 轨迹；启用远程推理后由 AutoDL 上的 vLLM 服务返回真实模型决策。",
+      "footer": "纯静态页面 · 默认离线回放评测轨迹；启用远程推理后由 AutoDL 上的 vLLM 服务返回真实模型决策。",
 
       "banner.loadFail": "<b>无法加载决策轨迹 data/traces.json：</b> {error}。请先生成数据（python3 training/src/evaluate.py --web-out web/data/traces.json）。",
 
@@ -178,7 +179,8 @@
       "metric.macro": "Macro-F1",
 
       "compare.title": "Final comparison across models",
-      "compare.sub": "Full eval split · mock values, replaced after cloud training",
+      "compare.subMock": "Full eval split · mock values, offline demo only",
+      "compare.subReal": "Full eval split · measured on cloud GPU checkpoints",
       "compare.noise": "Noise rate",
       "compare.miss": "Miss rate",
       "compare.json": "Valid JSON",
@@ -194,7 +196,7 @@
       "live.test": "Test connection",
       "live.enable": "Enable",
       "live.disable": "Disable",
-      "live.hint": "While disabled the page only replays mock traces and makes no network requests.",
+      "live.hint": "While disabled the page only replays offline eval traces and makes no network requests.",
       "live.pending": "Requesting the remote model…",
       "live.testing": "Testing connection…",
       "live.testOk": "Connected. Models: {models}",
@@ -202,7 +204,7 @@
       "live.needBase": "Enter the endpoint first.",
       "live.onMsg": "Remote inference enabled (model {model}). Switch to the “vLLM Live” tab and press “Step” to send a request.",
 
-      "footer": "Static page · replays mock traces offline by default; once remote inference is enabled, decisions come from a vLLM server on AutoDL.",
+      "footer": "Static page · replays offline eval traces by default; once remote inference is enabled, decisions come from a vLLM server on AutoDL.",
 
       "banner.loadFail": "<b>Failed to load decision traces data/traces.json:</b> {error}. Generate them first with python3 training/src/evaluate.py --web-out web/data/traces.json.",
 
