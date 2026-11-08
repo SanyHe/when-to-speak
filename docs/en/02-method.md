@@ -75,7 +75,7 @@ Metric definitions and current results: [`03-eval.md`](03-eval.md).
 
 - `web/` is a pure static site reading `web/data/traces.json` (events + gold + per-model decisions + metrics), replaying them one by one and accumulating stats live.
 - Three-model switching, single step / autoplay / reset, noise-rate and miss-rate panels.
-- Real models plug in through the vLLM service on AutoDL (OpenAI-compatible API) called directly from the page; by default it replays mock traces offline with zero network requests.
+- Real models plug in through the vLLM service on AutoDL (OpenAI-compatible API) called directly from the page; by default it replays traces precomputed by the real checkpoints offline (`_meta.mode = "hf"` in `web/data/traces.json`) with zero network requests.
 - Earlier stages used **deterministic mock traces** to validate the whole chain; every mock number is labelled as such in the UI and docs, and the real weights replaced them after training.
 
 ## 7. Known deviations
