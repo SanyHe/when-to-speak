@@ -12,6 +12,45 @@ A reproducible minimal **post-training** demo: fine-tune a small model to decide
 
 **Live demo: <https://sanyhe.github.io/when-to-speak/>** — static hosting, no backend, no API key.
 
+## How it works
+
+### Post-training pipeline
+
+```mermaid
+flowchart LR
+    subgraph Data["Data (synthetic, seed-fixed, one-command rebuild)"]
+        T["38 event templates<br/>5 sources × 3 actions"]
+        R["Rule expert<br/>deterministic gold labels"]
+        T --> R
+    end
+    R --> S["SFT set · 800"]
+    R --> P["GRPO prompts · 300"]
+    R --> E["Eval set · 200 held-out"]
+    S --> SFT["Full-parameter SFT<br/>Qwen3-0.6B"]
+    SFT --> G["GRPO<br/>rule-based rewards"]
+    P --> G
+    G --> EV["evaluate.py<br/>base vs SFT vs SFT+GRPO"]
+    E --> EV
+    EV --> OUT["web/data/traces.json<br/>+ eval reports"]
+```
+
+### Runtime topology
+
+```mermaid
+flowchart TB
+    subgraph Browser["Browser (GitHub Pages, zero backend)"]
+        UI["Static site web/<br/>bilingual EN / 中文"]
+        TR["traces.json<br/>offline replay (default)"]
+        UI --> TR
+    end
+    subgraph GPU["Cloud GPU (e.g. AutoDL)"]
+        VLLM["vLLM server :6006<br/>OpenAI-compatible API"]
+        CKPT["Fine-tuned checkpoint<br/>output/grpo/final"]
+        VLLM --> CKPT
+    end
+    UI -. "optional live inference<br/>(user-enabled)" .-> VLLM
+```
+
 ## Quick start
 
 ### Preview the site locally (no GPU)

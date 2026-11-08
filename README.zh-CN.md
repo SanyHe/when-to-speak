@@ -12,6 +12,45 @@
 
 **在线试玩：<https://sanyhe.github.io/when-to-speak/>**（静态托管，零后端、零 API Key）
 
+## 工作原理
+
+### 后训练流水线
+
+```mermaid
+flowchart LR
+    subgraph Data["数据（合成、固定种子、一键重建）"]
+        T["38 个事件模板<br/>5 种来源 × 3 类动作"]
+        R["规则专家<br/>确定性 gold label"]
+        T --> R
+    end
+    R --> S["SFT 集 · 800 条"]
+    R --> P["GRPO prompts · 300 条"]
+    R --> E["Eval 集 · 200 条留出"]
+    S --> SFT["全参 SFT<br/>Qwen3-0.6B"]
+    SFT --> G["GRPO<br/>规则奖励"]
+    P --> G
+    G --> EV["evaluate.py<br/>base vs SFT vs SFT+GRPO"]
+    E --> EV
+    EV --> OUT["web/data/traces.json<br/>+ 评测报告"]
+```
+
+### 运行时拓扑
+
+```mermaid
+flowchart TB
+    subgraph Browser["浏览器（GitHub Pages，零后端）"]
+        UI["静态站点 web/<br/>中英文双语"]
+        TR["traces.json<br/>默认离线回放"]
+        UI --> TR
+    end
+    subgraph GPU["云 GPU（如 AutoDL）"]
+        VLLM["vLLM 服务 :6006<br/>OpenAI 兼容 API"]
+        CKPT["微调 checkpoint<br/>output/grpo/final"]
+        VLLM --> CKPT
+    end
+    UI -. "可选实时推理<br/>（用户手动启用）" .-> VLLM
+```
+
 ## 快速开始
 
 ### 本地预览网页（无需 GPU）
