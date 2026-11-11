@@ -1,0 +1,382 @@
+{
+ "trial_id": "r03_digest_focus2",
+ "eval_file": "./autoresearch/data/sealed_test.jsonl",
+ "metrics": {
+  "total": 200,
+  "json_valid_rate": 0.995,
+  "accuracy": 0.98,
+  "macro_f1": 0.9828,
+  "notify_precision": 1.0,
+  "notify_recall": 1.0,
+  "noise_rate": 0.0,
+  "miss_rate": 0.0,
+  "counts": {
+   "should_notify": 43,
+   "predicted_notify": 43,
+   "true_notify": 43,
+   "noisy_notify": 0,
+   "missed_notify": 0,
+   "invalid_json": 1
+  },
+  "per_class": {
+   "notify": {
+    "precision": 1.0,
+    "recall": 1.0,
+    "f1": 1.0,
+    "support": 43,
+    "predicted": 43
+   },
+   "digest": {
+    "precision": 0.9663,
+    "recall": 0.9885,
+    "f1": 0.9773,
+    "support": 87,
+    "predicted": 89
+   },
+   "silence": {
+    "precision": 0.9853,
+    "recall": 0.9571,
+    "f1": 0.971,
+    "support": 70,
+    "predicted": 68
+   }
+  },
+  "confusion": {
+   "notify->notify": 43,
+   "digest->digest": 86,
+   "digest->silence": 1,
+   "silence->digest": 3,
+   "silence->silence": 67
+  }
+ },
+ "slices": {
+  "source": {
+   "email": {
+    "total": 51,
+    "json_valid_rate": 1.0,
+    "accuracy": 1.0,
+    "macro_f1": 1.0,
+    "notify_precision": 1.0,
+    "notify_recall": 1.0,
+    "noise_rate": 0.0,
+    "miss_rate": 0.0,
+    "counts": {
+     "should_notify": 8,
+     "predicted_notify": 8,
+     "true_notify": 8,
+     "noisy_notify": 0,
+     "missed_notify": 0,
+     "invalid_json": 0
+    },
+    "per_class": {
+     "notify": {
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1": 1.0,
+      "support": 8,
+      "predicted": 8
+     },
+     "digest": {
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1": 1.0,
+      "support": 33,
+      "predicted": 33
+     },
+     "silence": {
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1": 1.0,
+      "support": 10,
+      "predicted": 10
+     }
+    },
+    "confusion": {
+     "notify->notify": 8,
+     "digest->digest": 33,
+     "silence->silence": 10
+    }
+   },
+   "im": {
+    "total": 45,
+    "json_valid_rate": 0.9778,
+    "accuracy": 1.0,
+    "macro_f1": 1.0,
+    "notify_precision": 1.0,
+    "notify_recall": 1.0,
+    "noise_rate": 0.0,
+    "miss_rate": 0.0,
+    "counts": {
+     "should_notify": 13,
+     "predicted_notify": 13,
+     "true_notify": 13,
+     "noisy_notify": 0,
+     "missed_notify": 0,
+     "invalid_json": 1
+    },
+    "per_class": {
+     "notify": {
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1": 1.0,
+      "support": 13,
+      "predicted": 13
+     },
+     "digest": {
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1": 1.0,
+      "support": 14,
+      "predicted": 14
+     },
+     "silence": {
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1": 1.0,
+      "support": 18,
+      "predicted": 18
+     }
+    },
+    "confusion": {
+     "notify->notify": 13,
+     "digest->digest": 14,
+     "silence->silence": 18
+    }
+   },
+   "task": {
+    "total": 30,
+    "json_valid_rate": 1.0,
+    "accuracy": 1.0,
+    "macro_f1": 1.0,
+    "notify_precision": 1.0,
+    "notify_recall": 1.0,
+    "noise_rate": 0.0,
+    "miss_rate": 0.0,
+    "counts": {
+     "should_notify": 6,
+     "predicted_notify": 6,
+     "true_notify": 6,
+     "noisy_notify": 0,
+     "missed_notify": 0,
+     "invalid_json": 0
+    },
+    "per_class": {
+     "notify": {
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1": 1.0,
+      "support": 6,
+      "predicted": 6
+     },
+     "digest": {
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1": 1.0,
+      "support": 9,
+      "predicted": 9
+     },
+     "silence": {
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1": 1.0,
+      "support": 15,
+      "predicted": 15
+     }
+    },
+    "confusion": {
+     "notify->notify": 6,
+     "digest->digest": 9,
+     "silence->silence": 15
+    }
+   },
+   "routine": {
+    "total": 33,
+    "json_valid_rate": 1.0,
+    "accuracy": 1.0,
+    "macro_f1": 1.0,
+    "notify_precision": 1.0,
+    "notify_recall": 1.0,
+    "noise_rate": 0.0,
+    "miss_rate": 0.0,
+    "counts": {
+     "should_notify": 9,
+     "predicted_notify": 9,
+     "true_notify": 9,
+     "noisy_notify": 0,
+     "missed_notify": 0,
+     "invalid_json": 0
+    },
+    "per_class": {
+     "notify": {
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1": 1.0,
+      "support": 9,
+      "predicted": 9
+     },
+     "digest": {
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1": 1.0,
+      "support": 8,
+      "predicted": 8
+     },
+     "silence": {
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1": 1.0,
+      "support": 16,
+      "predicted": 16
+     }
+    },
+    "confusion": {
+     "notify->notify": 9,
+     "digest->digest": 8,
+     "silence->silence": 16
+    }
+   },
+   "system": {
+    "total": 41,
+    "json_valid_rate": 1.0,
+    "accuracy": 0.9024,
+    "macro_f1": 0.9056,
+    "notify_precision": 1.0,
+    "notify_recall": 1.0,
+    "noise_rate": 0.0,
+    "miss_rate": 0.0,
+    "counts": {
+     "should_notify": 7,
+     "predicted_notify": 7,
+     "true_notify": 7,
+     "noisy_notify": 0,
+     "missed_notify": 0,
+     "invalid_json": 0
+    },
+    "per_class": {
+     "notify": {
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1": 1.0,
+      "support": 7,
+      "predicted": 7
+     },
+     "digest": {
+      "precision": 0.88,
+      "recall": 0.9565,
+      "f1": 0.9167,
+      "support": 23,
+      "predicted": 25
+     },
+     "silence": {
+      "precision": 0.8889,
+      "recall": 0.7273,
+      "f1": 0.8,
+      "support": 11,
+      "predicted": 9
+     }
+    },
+    "confusion": {
+     "notify->notify": 7,
+     "digest->digest": 22,
+     "digest->silence": 1,
+     "silence->digest": 3,
+     "silence->silence": 8
+    }
+   }
+  },
+  "boundary": {
+   "total": 77,
+   "json_valid_rate": 1.0,
+   "accuracy": 0.987,
+   "macro_f1": 0.3312,
+   "notify_precision": 0.0,
+   "notify_recall": 0.0,
+   "noise_rate": 0.0,
+   "miss_rate": 0.0,
+   "counts": {
+    "should_notify": 0,
+    "predicted_notify": 0,
+    "true_notify": 0,
+    "noisy_notify": 0,
+    "missed_notify": 0,
+    "invalid_json": 0
+   },
+   "per_class": {
+    "notify": {
+     "precision": 0.0,
+     "recall": 0.0,
+     "f1": 0.0,
+     "support": 0,
+     "predicted": 0
+    },
+    "digest": {
+     "precision": 1.0,
+     "recall": 0.987,
+     "f1": 0.9935,
+     "support": 77,
+     "predicted": 76
+    },
+    "silence": {
+     "precision": 0.0,
+     "recall": 0.0,
+     "f1": 0.0,
+     "support": 0,
+     "predicted": 1
+    }
+   },
+   "confusion": {
+    "digest->digest": 76,
+    "digest->silence": 1
+   }
+  },
+  "non_boundary": {
+   "total": 123,
+   "json_valid_rate": 0.9919,
+   "accuracy": 0.9756,
+   "macro_f1": 0.9492,
+   "notify_precision": 1.0,
+   "notify_recall": 1.0,
+   "noise_rate": 0.0,
+   "miss_rate": 0.0,
+   "counts": {
+    "should_notify": 43,
+    "predicted_notify": 43,
+    "true_notify": 43,
+    "noisy_notify": 0,
+    "missed_notify": 0,
+    "invalid_json": 1
+   },
+   "per_class": {
+    "notify": {
+     "precision": 1.0,
+     "recall": 1.0,
+     "f1": 1.0,
+     "support": 43,
+     "predicted": 43
+    },
+    "digest": {
+     "precision": 0.7692,
+     "recall": 1.0,
+     "f1": 0.8696,
+     "support": 10,
+     "predicted": 13
+    },
+    "silence": {
+     "precision": 1.0,
+     "recall": 0.9571,
+     "f1": 0.9781,
+     "support": 70,
+     "predicted": 67
+    }
+   },
+   "confusion": {
+    "notify->notify": 43,
+    "digest->digest": 10,
+    "silence->digest": 3,
+    "silence->silence": 67
+   }
+  }
+ },
+ "elapsed_seconds": 157.38,
+ "timestamp": "2026-11-11T21:48:19"
+}

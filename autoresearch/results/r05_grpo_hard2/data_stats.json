@@ -1,0 +1,33 @@
+{
+  "sft": {
+    "base_rows": 800,
+    "rows": 1928,
+    "contrastive_added": 0,
+    "action_dist": {
+      "silence": 451,
+      "notify": 257,
+      "digest": 1220
+    },
+    "focus_dist": {
+      "available": 390,
+      "offline": 728,
+      "deep_work": 810
+    }
+  },
+  "grpo": {
+    "base_rows": 300,
+    "rows": 422,
+    "hard_prompts": 244,
+    "action_dist": {
+      "digest": 253,
+      "silence": 108,
+      "notify": 61
+    },
+    "focus_dist": {
+      "available": 134,
+      "deep_work": 123,
+      "offline": 165
+    }
+  },
+  "smoke": false
+}

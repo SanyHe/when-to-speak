@@ -1,0 +1,391 @@
+{
+ "model": "./autoresearch/runs/r01_sft_1ep/grpo/final",
+ "eval_file": "./autoresearch/data/dev.jsonl",
+ "eval_items": 450,
+ "elapsed_seconds": 332.37,
+ "metrics": {
+  "total": 450,
+  "json_valid_rate": 1.0,
+  "accuracy": 0.8089,
+  "macro_f1": 0.8225,
+  "notify_precision": 0.8393,
+  "notify_recall": 1.0,
+  "noise_rate": 0.04,
+  "miss_rate": 0.0,
+  "counts": {
+   "should_notify": 94,
+   "predicted_notify": 112,
+   "true_notify": 94,
+   "noisy_notify": 18,
+   "missed_notify": 0,
+   "invalid_json": 0
+  },
+  "per_class": {
+   "notify": {
+    "precision": 0.8393,
+    "recall": 1.0,
+    "f1": 0.9126,
+    "support": 94,
+    "predicted": 112
+   },
+   "digest": {
+    "precision": 1.0,
+    "recall": 0.6176,
+    "f1": 0.7636,
+    "support": 204,
+    "predicted": 126
+   },
+   "silence": {
+    "precision": 0.6792,
+    "recall": 0.9474,
+    "f1": 0.7912,
+    "support": 152,
+    "predicted": 212
+   }
+  },
+  "confusion": {
+   "notify->notify": 94,
+   "digest->notify": 10,
+   "digest->digest": 126,
+   "digest->silence": 68,
+   "silence->notify": 8,
+   "silence->silence": 144
+  }
+ },
+ "slices": {
+  "source": {
+   "email": {
+    "total": 144,
+    "json_valid_rate": 1.0,
+    "accuracy": 0.7014,
+    "macro_f1": 0.742,
+    "notify_precision": 0.8333,
+    "notify_recall": 1.0,
+    "noise_rate": 0.0278,
+    "miss_rate": 0.0,
+    "counts": {
+     "should_notify": 20,
+     "predicted_notify": 24,
+     "true_notify": 20,
+     "noisy_notify": 4,
+     "missed_notify": 0,
+     "invalid_json": 0
+    },
+    "per_class": {
+     "notify": {
+      "precision": 0.8333,
+      "recall": 1.0,
+      "f1": 0.9091,
+      "support": 20,
+      "predicted": 24
+     },
+     "digest": {
+      "precision": 1.0,
+      "recall": 0.5455,
+      "f1": 0.7059,
+      "support": 88,
+      "predicted": 48
+     },
+     "silence": {
+      "precision": 0.4583,
+      "recall": 0.9167,
+      "f1": 0.6111,
+      "support": 36,
+      "predicted": 72
+     }
+    },
+    "confusion": {
+     "notify->notify": 20,
+     "digest->notify": 1,
+     "digest->digest": 48,
+     "digest->silence": 39,
+     "silence->notify": 3,
+     "silence->silence": 33
+    }
+   },
+   "im": {
+    "total": 110,
+    "json_valid_rate": 1.0,
+    "accuracy": 0.7364,
+    "macro_f1": 0.7381,
+    "notify_precision": 0.7333,
+    "notify_recall": 1.0,
+    "noise_rate": 0.0727,
+    "miss_rate": 0.0,
+    "counts": {
+     "should_notify": 22,
+     "predicted_notify": 30,
+     "true_notify": 22,
+     "noisy_notify": 8,
+     "missed_notify": 0,
+     "invalid_json": 0
+    },
+    "per_class": {
+     "notify": {
+      "precision": 0.7333,
+      "recall": 1.0,
+      "f1": 0.8462,
+      "support": 22,
+      "predicted": 30
+     },
+     "digest": {
+      "precision": 1.0,
+      "recall": 0.4167,
+      "f1": 0.5882,
+      "support": 48,
+      "predicted": 20
+     },
+     "silence": {
+      "precision": 0.65,
+      "recall": 0.975,
+      "f1": 0.78,
+      "support": 40,
+      "predicted": 60
+     }
+    },
+    "confusion": {
+     "notify->notify": 22,
+     "digest->notify": 7,
+     "digest->digest": 20,
+     "digest->silence": 21,
+     "silence->notify": 1,
+     "silence->silence": 39
+    }
+   },
+   "task": {
+    "total": 73,
+    "json_valid_rate": 1.0,
+    "accuracy": 0.9589,
+    "macro_f1": 0.9494,
+    "notify_precision": 0.875,
+    "notify_recall": 1.0,
+    "noise_rate": 0.0411,
+    "miss_rate": 0.0,
+    "counts": {
+     "should_notify": 21,
+     "predicted_notify": 24,
+     "true_notify": 21,
+     "noisy_notify": 3,
+     "missed_notify": 0,
+     "invalid_json": 0
+    },
+    "per_class": {
+     "notify": {
+      "precision": 0.875,
+      "recall": 1.0,
+      "f1": 0.9333,
+      "support": 21,
+      "predicted": 24
+     },
+     "digest": {
+      "precision": 1.0,
+      "recall": 0.8667,
+      "f1": 0.9286,
+      "support": 15,
+      "predicted": 13
+     },
+     "silence": {
+      "precision": 1.0,
+      "recall": 0.973,
+      "f1": 0.9863,
+      "support": 37,
+      "predicted": 36
+     }
+    },
+    "confusion": {
+     "notify->notify": 21,
+     "digest->notify": 2,
+     "digest->digest": 13,
+     "silence->notify": 1,
+     "silence->silence": 36
+    }
+   },
+   "routine": {
+    "total": 59,
+    "json_valid_rate": 1.0,
+    "accuracy": 1.0,
+    "macro_f1": 1.0,
+    "notify_precision": 1.0,
+    "notify_recall": 1.0,
+    "noise_rate": 0.0,
+    "miss_rate": 0.0,
+    "counts": {
+     "should_notify": 18,
+     "predicted_notify": 18,
+     "true_notify": 18,
+     "noisy_notify": 0,
+     "missed_notify": 0,
+     "invalid_json": 0
+    },
+    "per_class": {
+     "notify": {
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1": 1.0,
+      "support": 18,
+      "predicted": 18
+     },
+     "digest": {
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1": 1.0,
+      "support": 14,
+      "predicted": 14
+     },
+     "silence": {
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1": 1.0,
+      "support": 27,
+      "predicted": 27
+     }
+    },
+    "confusion": {
+     "notify->notify": 18,
+     "digest->digest": 14,
+     "silence->silence": 27
+    }
+   },
+   "system": {
+    "total": 64,
+    "json_valid_rate": 1.0,
+    "accuracy": 0.8281,
+    "macro_f1": 0.801,
+    "notify_precision": 0.8125,
+    "notify_recall": 1.0,
+    "noise_rate": 0.0469,
+    "miss_rate": 0.0,
+    "counts": {
+     "should_notify": 13,
+     "predicted_notify": 16,
+     "true_notify": 13,
+     "noisy_notify": 3,
+     "missed_notify": 0,
+     "invalid_json": 0
+    },
+    "per_class": {
+     "notify": {
+      "precision": 0.8125,
+      "recall": 1.0,
+      "f1": 0.8966,
+      "support": 13,
+      "predicted": 16
+     },
+     "digest": {
+      "precision": 1.0,
+      "recall": 0.7949,
+      "f1": 0.8857,
+      "support": 39,
+      "predicted": 31
+     },
+     "silence": {
+      "precision": 0.5294,
+      "recall": 0.75,
+      "f1": 0.6207,
+      "support": 12,
+      "predicted": 17
+     }
+    },
+    "confusion": {
+     "notify->notify": 13,
+     "digest->digest": 31,
+     "digest->silence": 8,
+     "silence->notify": 3,
+     "silence->silence": 9
+    }
+   }
+  },
+  "boundary": {
+   "total": 194,
+   "json_valid_rate": 1.0,
+   "accuracy": 0.6495,
+   "macro_f1": 0.2625,
+   "notify_precision": 0.0,
+   "notify_recall": 0.0,
+   "noise_rate": 0.0,
+   "miss_rate": 0.0,
+   "counts": {
+    "should_notify": 0,
+    "predicted_notify": 0,
+    "true_notify": 0,
+    "noisy_notify": 0,
+    "missed_notify": 0,
+    "invalid_json": 0
+   },
+   "per_class": {
+    "notify": {
+     "precision": 0.0,
+     "recall": 0.0,
+     "f1": 0.0,
+     "support": 0,
+     "predicted": 0
+    },
+    "digest": {
+     "precision": 1.0,
+     "recall": 0.6495,
+     "f1": 0.7875,
+     "support": 194,
+     "predicted": 126
+    },
+    "silence": {
+     "precision": 0.0,
+     "recall": 0.0,
+     "f1": 0.0,
+     "support": 0,
+     "predicted": 68
+    }
+   },
+   "confusion": {
+    "digest->digest": 126,
+    "digest->silence": 68
+   }
+  },
+  "non_boundary": {
+   "total": 256,
+   "json_valid_rate": 1.0,
+   "accuracy": 0.9297,
+   "macro_f1": 0.6285,
+   "notify_precision": 0.8393,
+   "notify_recall": 1.0,
+   "noise_rate": 0.0703,
+   "miss_rate": 0.0,
+   "counts": {
+    "should_notify": 94,
+    "predicted_notify": 112,
+    "true_notify": 94,
+    "noisy_notify": 18,
+    "missed_notify": 0,
+    "invalid_json": 0
+   },
+   "per_class": {
+    "notify": {
+     "precision": 0.8393,
+     "recall": 1.0,
+     "f1": 0.9126,
+     "support": 94,
+     "predicted": 112
+    },
+    "digest": {
+     "precision": 0.0,
+     "recall": 0.0,
+     "f1": 0.0,
+     "support": 10,
+     "predicted": 0
+    },
+    "silence": {
+     "precision": 1.0,
+     "recall": 0.9474,
+     "f1": 0.973,
+     "support": 152,
+     "predicted": 144
+    }
+   },
+   "confusion": {
+    "notify->notify": 94,
+    "digest->notify": 10,
+    "silence->notify": 8,
+    "silence->silence": 144
+   }
+  }
+ }
+}

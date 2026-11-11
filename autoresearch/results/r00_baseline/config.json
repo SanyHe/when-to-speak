@@ -1,0 +1,84 @@
+{
+  "recipe": {
+    "name": "r00_baseline",
+    "sft": {
+      "epochs": 2,
+      "batch_size": 2,
+      "grad_accum_steps": 8,
+      "learning_rate": 2e-05,
+      "seed": 42
+    },
+    "data": {
+      "focus_oversample": {},
+      "action_oversample": {},
+      "contrastive_limit": 0,
+      "grpo_focus_oversample": {}
+    },
+    "grpo": {
+      "enabled": true,
+      "epochs": 1,
+      "batch_size": 2,
+      "grad_accum_steps": 4,
+      "learning_rate": 1e-06,
+      "beta": 0.04,
+      "temperature": 1.1,
+      "num_generations": 8,
+      "max_completion_length": 200,
+      "seed": 42,
+      "prompt_mode": "all",
+      "hard_boost": 1,
+      "reward_weights": {
+        "format": 1.0,
+        "action": 1.0,
+        "channel": 0.25,
+        "urgency": 0.1,
+        "context": 0.0
+      }
+    }
+  },
+  "sft": {
+    "model_path": "./autoresearch/models/Qwen3-0.6B",
+    "max_seq_length": 1024,
+    "epochs": 2,
+    "batch_size": 2,
+    "grad_accum_steps": 8,
+    "learning_rate": 2e-05,
+    "warmup_ratio": 0.05,
+    "weight_decay": 0.01,
+    "seed": 42,
+    "data_path": "./autoresearch/runs/r00_baseline/sft.jsonl",
+    "output_dir": "./autoresearch/runs/r00_baseline/sft",
+    "optimizer": "adamw_torch",
+    "full_finetune": true
+  },
+  "grpo": {
+    "model_path": "./autoresearch/runs/r00_baseline/sft/final",
+    "data_path": "./autoresearch/runs/r00_baseline/grpo.jsonl",
+    "output_dir": "./autoresearch/runs/r00_baseline/grpo",
+    "epochs": 1,
+    "batch_size": 2,
+    "grad_accum_steps": 4,
+    "learning_rate": 1e-06,
+    "num_generations": 8,
+    "max_completion_length": 200,
+    "beta": 0.04,
+    "temperature": 1.1,
+    "seed": 42,
+    "reward_weights": {
+      "format": 1.0,
+      "action": 1.0,
+      "channel": 0.25,
+      "urgency": 0.1,
+      "context": 0.0
+    },
+    "reward_functions": [
+      "format_reward_x1",
+      "action_reward_x1",
+      "channel_reward_x0.25",
+      "urgency_reward_x0.1"
+    ],
+    "train_samples": 300,
+    "full_finetune": true,
+    "algorithm": "grpo"
+  }
+}

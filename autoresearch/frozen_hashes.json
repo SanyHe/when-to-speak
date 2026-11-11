@@ -1,0 +1,29 @@
+{
+  "created_at": "2026-11-11T22:13:57",
+  "git_sha": "92440f83e6071d3970e0b93d992dab48b52b0004",
+  "files": {
+    "training/src/build_dataset.py": "274f819d9b0a2ed67f2677ed3554316b37f20533dc189892fc2698e3231f2b4b",
+    "training/src/evaluate.py": "2f3fe204186cff8ba953d42ae75a075bd2b8037bc62f4099d24451ce5d4c9765",
+    "training/src/expert_rules.py": "fd02461c0372ead269551081ebef587c0a804d12b14b5fb2241b4565a8bcbdc9",
+    "training/src/format_sft.py": "3207be8ad08929a7125e076b499e314a29908c241c7312c0fa2afa16985b1d56",
+    "training/src/full_sft.py": "9840f67f9a0a89b1d2f70296bf7b4dfd523f9efd4136c7201c2e37b99d51afd6",
+    "training/src/gen_events.py": "a8bfc04fe7fe088a01052c26bddafd10389f4bf01dfbcbad47844effe385b281",
+    "training/src/grpo.py": "bb54a1ef28f521752eaafd81580996a8f95c9381b4c7032cb00b8d90ead5d6c4",
+    "training/src/rewards.py": "03fb0266901f89b390fb6281d5360290133176d7b134b1f9707074921b5e061a",
+    "training/src/schema.py": "69824fdd1255b1b93d6e416b5da55abdcbf08bc0678871fe2bf55cf44d52fec0",
+    "training/src/mock_models.py": "114fa57625b379b0311eb71ef5781307bc58636e1442aed04122a068c974bd7a",
+    "data/synthetic/sft_full.jsonl": "1615efe446b7d095a4459b68857dd25e48ab82743e3181deb7b4554057021d35",
+    "data/synthetic/grpo_prompts.jsonl": "3979172206fe7a1f1d1afc2a50dbe6a8938f1f0ca8cf32e8849caa7ec56cbfc8",
+    "data/synthetic/eval_set.jsonl": "7374ba1d70a0d7972110eda0c4d7a1061e4c97fff91765812ccc36949879b314",
+    "data/templates/seed_templates.json": "d940efec24e41e2f1c6c5907bc1e97b68d81867423bf46426bdfa307039de8c6",
+    "data/templates/extra_templates.json": "d1cd9448a52fc113a148f2fd287e82426bad4eb91492daf4ecf9d5260d4543ea",
+    "autoresearch/data/dev.jsonl": "a49f841ecd17ff205050359e7510599aee815aa7905f26e97b498d3de57b1520",
+    "autoresearch/data/sealed_test.jsonl": "ca9c765dcbfce16abf7747e382d9c63213839261db3469f885aedf20d33447f2",
+    "autoresearch/data/sft_labeled.jsonl": "29979dc98870f558005c7ccb352be2580c68fbd5028e25a5cc331f9763df88ec",
+    "autoresearch/data/grpo_labeled.jsonl": "e26d3bfc0dc38606e51b1a83ea52ea3b0d66915ef994963ed58ac3380b91b0fb",
+    "autoresearch/data/dev_extra_labeled.jsonl": "9031bbf3c7980801e2d563eaa14d20cf555223101a8ace68d3d56ee2665bac93",
+    "autoresearch/eval_one.py": "df4d12b56c977955f0cf4daaaf23c38921159b46fe6c143184dd734a2c4c77c1",
+    "autoresearch/gate.py": "098635707a7cfb71aa6725a4d1765494afb011eb4531aae4999c1dd87d149371",
+    "autoresearch/program.md": "ec46c5a903ba15612fc378a55eb6ad5ef64c2facf096ea06eacfd8352f2d3d64"
+  }
+}

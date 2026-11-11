@@ -1,0 +1,42 @@
+{
+  "name": "r03_digest_focus2",
+  "sft": {
+    "epochs": 2,
+    "batch_size": 2,
+    "grad_accum_steps": 8,
+    "learning_rate": 2e-05,
+    "seed": 42
+  },
+  "data": {
+    "focus_oversample": {
+      "deep_work": 2,
+      "offline": 2
+    },
+    "action_oversample": {
+      "digest": 2
+    },
+    "contrastive_limit": 0,
+    "grpo_focus_oversample": {}
+  },
+  "grpo": {
+    "enabled": true,
+    "epochs": 1,
+    "batch_size": 2,
+    "grad_accum_steps": 4,
+    "learning_rate": 1e-06,
+    "beta": 0.04,
+    "temperature": 1.1,
+    "num_generations": 8,
+    "max_completion_length": 200,
+    "seed": 42,
+    "prompt_mode": "all",
+    "hard_boost": 1,
+    "reward_weights": {
+      "format": 1.0,
+      "action": 1.0,
+      "channel": 0.25,
+      "urgency": 0.1,
+      "context": 0.0
+    }
+  }
+}

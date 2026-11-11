@@ -22,6 +22,18 @@ standalone_train.zip
 .trae-html-share-packages/
 .screenshots/
 
+# Auto Research runtime artifacts: datasets, weights, per-trial outputs
+.venv/
+autoresearch/models/
+autoresearch/runs/
+autoresearch/data/
+autoresearch/logs/
+autoresearch/state.json
+autoresearch/loop.pid
+autoresearch/loop.lock
+autoresearch/STOP
+autoresearch/.sealed_opened
+
 # IDE / OS
 .vscode/
 .idea/
