@@ -51,6 +51,78 @@ flowchart TB
     UI -. "optional live inference<br/>(user-enabled)" .-> VLLM
 ```
 
+## Auto Research: a bounded RSI loop
+
+[`autoresearch/`](autoresearch/) is a deliberately narrow version of **recursive self-improvement
+(RSI)**: the thing being improved is not the model's code but *the recipe that produces the model*.
+A loop proposes a recipe, retrains Qwen3-0.6B from the same base in full, scores it on the same
+held-out set, and keeps it only when an external acceptance gate agrees.
+
+It is not a model rewriting its own trainer. The editable surface is one config file, and
+everything that could be used to cheat the score is hash-frozen.
+
+```mermaid
+flowchart TB
+    subgraph Frozen["frozen surface · verified by SHA-256"]
+        F1["trainer<br/>training/src"]
+        F2["synthetic data<br/>dev 450 / sealed 200"]
+        F3["evaluator<br/>eval_one.py + gate.py"]
+    end
+
+    R["next round: loop.py rewrites recipe.py<br/>only editable surface<br/>data mix · SFT epochs · GRPO hyper-params"]
+    RUN["runner.py<br/>materialize data<br/>full SFT → GRPO → dev eval"]
+    GATE{"5 gates<br/>validity · noise · miss<br/>no regression · significance"}
+    REP["seed 43 retrain<br/>two-seed mean must win"]
+    ACC["accepted recipe<br/>becomes the new incumbent"]
+    LED[["ledger.jsonl + state.json<br/>one line per trial"]]
+    SEL["next candidate<br/>from SEARCH_SPACE"]
+    SEAL["sealed 200<br/>scored once, after stop"]
+    FIN["FINAL_REPORT.md<br/>+ accepted/recipe.json"]
+
+    Frozen --> RUN
+    R --> RUN
+    RUN --> GATE
+    GATE -- reject --> LED
+    GATE -- pass --> REP
+    REP -- "mean wins" --> ACC
+    REP -- loses --> LED
+    ACC --> SEL
+    LED --> SEL
+    SEL -. "next trial" .-> R
+    ACC -. "loop stops" .-> SEAL
+    SEAL --> FIN
+```
+
+Only `recipe.py` is editable. The loop may rewrite it, but everything after that point is either
+hash-frozen or decided by an external gate.
+
+| Constraint | Rule |
+|---|---|
+| Editable surface | only [`autoresearch/recipe.py`](autoresearch/recipe.py) — data mix, SFT epochs, GRPO hyper-parameters |
+| Frozen surface | training code, synthetic data, evaluator and both splits, pinned by SHA-256 |
+| Judge | dev `macro-F1` on 450 held-out events |
+| Gates | JSON validity ≥ 99%, noise ≤ 2%, miss ≤ 2%, no regression, significant gain (paired bootstrap, 2000 resamples) |
+| Confirmation | a passing candidate is retrained with `seed=43`; the two-seed mean must still win |
+| Sealed set | 200 events, opened once after the loop stops |
+
+One round, one 96 GB GPU, 7 trials, 141 GPU-minutes:
+
+| stage | dev macro-F1 | note |
+|---|---|---|
+| baseline recipe | 0.9264 | initial incumbent |
+| best rejected candidate | 0.9904 | below the accepted recipe, not a significant gain |
+| **accepted recipe** | **0.9943** | data mix only: `digest` ×2 + `{deep_work, offline}` ×2 |
+| accepted, retrained (`seed=43`) | 0.9923 | two-seed mean 0.9933 |
+| **sealed (200 events)** | **0.9828** | precision / recall 1.0, noise 0, miss 0 |
+
+The more useful result is what the loop did **not** get away with: the six rejected candidates
+included more RL (`G=16`), a weaker KL penalty (`β=0.02`) and 300 extra boundary samples. None
+cleared the significance gate, and the only accepted change was a data-mix edit. In this round the
+bottleneck was the acceptance standard, not the model's imagination.
+
+Full record: [`autoresearch/README.md`](autoresearch/README.md) ·
+[`autoresearch/FINAL_REPORT.md`](autoresearch/FINAL_REPORT.md).
+
 ## Quick start
 
 ### Preview the site locally (no GPU)
@@ -117,6 +189,7 @@ Each document is available in English (`docs/en/`) and Chinese (`docs/`); both c
 | M1 minimal loop | Done | Data contract, seed set and rule expert ready; full-parameter SFT of Qwen3-0.6B trained on a cloud GPU |
 | M2 data + training + eval | Done | 800/300/200 synthetic dataset, SFT + GRPO, real three-model evaluation (macro-F1 SFT 0.899 → GRPO 0.924) |
 | M3 web demo | Done | Player, model switching, live metrics, direct vLLM calls; ships real model traces |
+| Auto Research (bounded RSI) | Done | One editable recipe file, hash-frozen oracles, 5 acceptance gates, sealed set opened once; dev 0.9264 → 0.9943, sealed 0.9828 |
 
 ## Scope
 
@@ -139,11 +212,12 @@ in `private/` (gitignored, not published with the repo).
 ## Layout
 
 ```
-training/   dataset generation, rule expert, full-parameter SFT, GRPO rewards and training, scripts
-data/       schema, templates, synthetic data (publishable)
-web/        static site and model records
-docs/       design and method documents
-private/    internal plans and progress (.gitignore excluded, never published)
+training/       dataset generation, rule expert, full-parameter SFT, GRPO rewards and training, scripts
+autoresearch/   unattended recipe search loop (bounded RSI) with frozen oracles and acceptance gates
+data/           schema, templates, synthetic data (publishable)
+web/            static site and model records
+docs/           design and method documents
+private/        internal plans and progress (.gitignore excluded, never published)
 ```
 
 ## License
