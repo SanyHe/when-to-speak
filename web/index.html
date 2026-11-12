@@ -32,7 +32,10 @@
           切换模型，逐条回放，直观看到后训练如何降低噪音而不增加漏报。
         </p>
       </div>
-      <div class="model-switch" id="modelSwitch" role="tablist" aria-label="模型切换"></div>
+      <div class="hero-controls">
+        <div class="dataset-switch" id="datasetSwitch" role="tablist" aria-label="数据集切换"></div>
+        <div class="model-switch" id="modelSwitch" role="tablist" aria-label="模型切换"></div>
+      </div>
     </section>
 
     <div class="banner hidden" id="banner"></div>
@@ -131,7 +134,7 @@
         <div class="panel compare-panel">
           <div class="panel-head">
             <div>
-              <h2 data-i18n="compare.title">三模型终局对比</h2>
+              <h2 id="compareTitle" data-i18n="compare.title">三模型终局对比</h2>
               <p class="muted" id="compareSub" data-i18n="compare.subMock">全量 Eval 集 · mock 值，仅供离线演示</p>
             </div>
           </div>

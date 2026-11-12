@@ -1,8 +1,9 @@
 // Event-stream player for the When-to-Speak demo.
 //
-// Pure static JS: loads data/traces.json (events + gold labels + per-model
-// decisions + full-eval metrics), replays the stream, and recomputes the
-// metrics live with exactly the same formulas as training/src/evaluate.py.
+// Pure static JS: loads a replay dataset (data/traces.json for the eval split,
+// data/autoresearch.json for the AutoResearch dev replay), replays the stream,
+// and recomputes the metrics live with exactly the same formulas as
+// training/src/evaluate.py.
 //
 // All user-facing strings come from js/i18n.js, so the whole page can switch
 // between Chinese and English at runtime (button in the top-right corner).
@@ -17,8 +18,17 @@
   // Virtual model id for decisions coming from the remote vLLM endpoint.
   var LIVE_ID = "live";
 
+  // Replay datasets sharing one schema: the original three-model eval traces
+  // and the AutoResearch dev replay (baseline recipe vs accepted recipe).
+  var DATASETS = [
+    { id: "eval", url: "data/traces.json" },
+    { id: "autoresearch", url: "data/autoresearch.json" },
+  ];
+
   var state = {
     traces: null,
+    datasetId: "eval",
+    cache: {},
     modelId: "base",
     index: -1,
     timer: null,
@@ -100,6 +110,28 @@
   // ---------------------------------------------------------------------
   // Rendering
   // ---------------------------------------------------------------------
+  function datasetSpec(id) {
+    return DATASETS.find(function (dataset) { return dataset.id === id; });
+  }
+
+  function renderDatasetTabs() {
+    var container = el("datasetSwitch");
+    if (!container) return;
+    container.innerHTML = "";
+    DATASETS.forEach(function (dataset) {
+      var button = document.createElement("button");
+      button.type = "button";
+      button.className = "dataset-tab" + (dataset.id === state.datasetId ? " active" : "");
+      button.setAttribute("role", "tab");
+      button.setAttribute("aria-selected", dataset.id === state.datasetId ? "true" : "false");
+      button.innerHTML =
+        '<span class="tab-label">' + t("dataset." + dataset.id) + "</span>" +
+        '<span class="tab-tag">' + t("dataset." + dataset.id + "Tag") + "</span>";
+      button.addEventListener("click", function () { switchDataset(dataset.id); });
+      container.appendChild(button);
+    });
+  }
+
   function renderModelTabs() {
     var container = el("modelSwitch");
     container.innerHTML = "";
@@ -346,7 +378,7 @@
 
   function renderCompare() {
     var container = el("compareGrid");
-    if (!state.traces) return;
+    if (!state.traces) { container.innerHTML = ""; return; }
     container.innerHTML = state.traces.models.map(function (model) {
       var metrics;
       if (model.id === LIVE_ID) {
@@ -373,6 +405,68 @@
           (metrics ? formatPct(metrics.json_valid_rate) : "—") + "</b></div>" +
         "</div>";
     }).join("");
+  }
+
+  // ---------------------------------------------------------------------
+  // Dataset loading / switching
+  // ---------------------------------------------------------------------
+  function applyTraces() {
+    var traces = state.traces;
+    state.index = -1;
+    state.modelId = traces.models[0].id;
+    state.livePending = {};
+    ensureLiveSpec();
+    renderDatasetTabs();
+    applyModeChrome();
+    renderModelTabs();
+    rebuildStream();
+    renderCurrent();
+    renderMetrics();
+    renderCompare();
+    renderProgress();
+  }
+
+  function showLoadError(error) {
+    state.loadError = error.message;
+    renderBanner();
+    rebuildStream();
+  }
+
+  function loadDataset(id) {
+    return fetch(datasetSpec(id).url)
+      .then(function (response) {
+        if (!response.ok) throw new Error("HTTP " + response.status);
+        return response.json();
+      })
+      .then(function (traces) {
+        state.cache[id] = traces;
+        state.traces = traces;
+        return traces;
+      });
+  }
+
+  function switchDataset(id) {
+    if (id === state.datasetId) return;
+    stopAuto();
+    state.datasetId = id;
+    state.loadError = null;
+    renderBanner();
+    renderDatasetTabs();
+    if (state.cache[id]) {
+      state.traces = state.cache[id];
+      applyTraces();
+      return;
+    }
+    // First visit: clear the previous replay while the file downloads.
+    state.traces = null;
+    state.index = -1;
+    el("modelSwitch").innerHTML = "";
+    rebuildStream();
+    renderCurrent();
+    renderMetrics();
+    renderCompare();
+    renderProgress();
+    loadDataset(id).then(applyTraces).catch(showLoadError);
   }
 
   // ---------------------------------------------------------------------
@@ -580,21 +674,31 @@
     el("langBtn").setAttribute("title", t("lang.switch"));
   }
 
-  // Reflect the traces mode (mock vs real checkpoints) in the badge, its
-  // styling, and the comparison-panel subtitle.
+  // Reflect the traces mode (mock vs real checkpoints vs AutoResearch) in the
+  // badge, its styling, and the stream / comparison-panel copy.
   function applyModeChrome() {
-    var isMock = state.traces._meta.mode === "mock";
-    el("modeBadge").textContent = isMock ? t("badge.mock") : t("badge.real");
+    if (!state.traces) return;
+    var mode = state.traces._meta.mode;
+    var isMock = mode === "mock";
+    var isAuto = mode === "autoresearch";
+    el("modeBadge").textContent = isMock ? t("badge.mock")
+      : (isAuto ? t("badge.autoresearch") : t("badge.real"));
     el("modeBadge").title = state.traces._meta.note || t("badge.mockTitle");
     el("modeBadge").classList.toggle("badge-mock", isMock);
     el("modeBadge").classList.toggle("badge-ok", !isMock);
-    el("compareSub").textContent = isMock ? t("compare.subMock") : t("compare.subReal");
+    el("compareSub").textContent = isMock ? t("compare.subMock")
+      : (isAuto ? t("compare.subAuto") : t("compare.subReal"));
+    el("compareTitle").textContent = isAuto ? t("compare.titleAuto") : t("compare.title");
+    el("streamSub").textContent = t(isAuto ? "stream.subAuto" : "stream.sub", {
+      total: state.traces.events.length,
+    });
   }
 
   function relocalize() {
     i18n.applyDom();
     renderLangButton();
     el("modelSwitch").setAttribute("aria-label", t("hero.switchAria"));
+    el("datasetSwitch").setAttribute("aria-label", t("dataset.switchAria"));
     renderBanner();
     renderAutoButton();
     renderLiveBadge();
@@ -607,7 +711,7 @@
       return;
     }
 
-    el("streamSub").textContent = t("stream.sub", { total: state.traces.events.length });
+    renderDatasetTabs();
     applyModeChrome();
     renderModelTabs();
     rebuildStream();
@@ -632,30 +736,9 @@
     });
     i18n.onChange(relocalize);
 
-    fetch("data/traces.json")
-      .then(function (response) {
-        if (!response.ok) throw new Error("HTTP " + response.status);
-        return response.json();
-      })
-      .then(function (traces) {
-        state.traces = traces;
-        state.index = -1;
-        state.modelId = traces.models[0].id;
-        ensureLiveSpec();
-        el("streamSub").textContent = t("stream.sub", { total: traces.events.length });
-        applyModeChrome();
-        renderModelTabs();
-        rebuildStream();
-        renderCurrent();
-        renderMetrics();
-        renderCompare();
-        renderProgress();
-      })
-      .catch(function (error) {
-        state.loadError = error.message;
-        renderBanner();
-        rebuildStream();
-      });
+    renderDatasetTabs();
+    el("datasetSwitch").setAttribute("aria-label", t("dataset.switchAria"));
+    loadDataset(state.datasetId).then(applyTraces).catch(showLoadError);
 
     el("stepBtn").addEventListener("click", step);
     el("autoBtn").addEventListener("click", toggleAuto);
